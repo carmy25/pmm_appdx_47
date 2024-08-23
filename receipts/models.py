@@ -8,7 +8,11 @@ class BaseReceiptRequest(models.Model):
     number = models.CharField(verbose_name='номер', max_length=50)
     book_number = models.CharField(verbose_name='номер книги', max_length=50)
     book_series = models.CharField(verbose_name='серія книги', max_length=50)
+    document_date = models.DateField(verbose_name='дата документу', null=True)
     operation_date = models.DateField(verbose_name='дата операції')
+    sender = models.CharField(verbose_name='відправник', max_length=50)
+    destination = models.CharField(verbose_name='отримувач', max_length=50,
+                                   default='А4548')
     fals = GenericRelation(
         'fals.FAL', object_id_field='object_id', related_query_name='document')
 
