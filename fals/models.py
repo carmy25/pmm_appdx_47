@@ -14,10 +14,11 @@ class FALType(models.Model):
         POISON = 'POISON', _('отрута')
 
     name = models.CharField(max_length=100, verbose_name="ім'я")
-    year_in_school = models.CharField(
+    category = models.CharField(
         max_length=20,
         choices=Category.choices,
         default=Category.OIL,
+        verbose_name='категорія',
     )
 
     class Meta:

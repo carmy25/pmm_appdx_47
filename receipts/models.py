@@ -15,22 +15,22 @@ class BaseReceiptRequest(models.Model):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return f'{self._meta.verbose_name}: {self.number}/{self.book_number}{self.book_series}'
+
+    def get_absolute_url(self):
+        return reverse(f"{type(self).__name__}_detail", kwargs={"pk": self.pk})
+
 
 class ReceiptRequest(BaseReceiptRequest):
     '''Definition for ReceiptRequest model.'''
-
-    def __str__(self):
-        return f'чекова вимога: {self.number} {self.book_number}{self.book_series}'
-
-    def get_absolute_url(self):
-        return reverse("ReceiptRequest_detail", kwargs={"pk": self.pk})
+    class Meta:
+        verbose_name = 'чекова вимога'
+        verbose_name_plural = 'чекові вимоги'
 
 
 class ReceiptRequestCoupon(BaseReceiptRequest):
     '''Definition for ReceiptRequest model.'''
-
-    def __str__(self):
-        return f'талон чекової вимоги: {self.number} {self.book_number}{self.book_series}'
-
-    def get_absolute_url(self):
-        return reverse("ReceiptRequestCoupon_detail", kwargs={"pk": self.pk})
+    class Meta:
+        verbose_name = 'талон чекової вимоги'
+        verbose_name_plural = 'талони чекових вимог'
