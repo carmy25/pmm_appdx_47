@@ -19,6 +19,7 @@ class BaseReceiptRequest(models.Model):
 
     class Meta:
         abstract = True
+        unique_together = ('number', 'book_number', 'book_series')
 
     def __str__(self):
         return f'{self._meta.verbose_name}: {self.number}/{self.book_number}{self.book_series}'
