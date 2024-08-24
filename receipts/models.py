@@ -19,7 +19,6 @@ class BaseReceiptRequest(models.Model):
 
     class Meta:
         abstract = True
-        unique_together = ('number', 'book_number', 'book_series')
 
     def __str__(self):
         return f'{self._meta.verbose_name}: {self.number}/{self.book_number}{self.book_series}'
@@ -33,6 +32,7 @@ class ReceiptRequest(BaseReceiptRequest):
     class Meta:
         verbose_name = 'чекова вимога'
         verbose_name_plural = 'чекові вимоги'
+        unique_together = ('number', 'book_number', 'book_series')
 
 
 class ReceiptRequestCoupon(BaseReceiptRequest):
@@ -40,3 +40,4 @@ class ReceiptRequestCoupon(BaseReceiptRequest):
     class Meta:
         verbose_name = 'талон чекової вимоги'
         verbose_name_plural = 'талони чекових вимог'
+        unique_together = ('number', 'book_number', 'book_series')

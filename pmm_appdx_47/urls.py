@@ -16,6 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.contrib.auth.models import User, Group
+from adminplus.sites import AdminSitePlus
+
+admin.site = AdminSitePlus()
+admin.autodiscover()
+
+admin.site.site_header = "ПММ 47 Додаток"
+admin.site.site_title = "ПММ 47 Додаток"
+admin.site.index_title = "Панель Адміністратора"
+
+# admin.site.unregister(User)
+# admin.site.unregister(Group)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
