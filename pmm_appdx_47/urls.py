@@ -30,5 +30,5 @@ admin.site.index_title = "Панель Адміністратора"
 # admin.site.unregister(Group)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('', admin.site.urls),
 ]

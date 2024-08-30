@@ -7,10 +7,11 @@ import openpyxl
 from openpyxl.utils import get_column_letter
 
 
-from fals.models import FAL
+from fals.models import FAL, FALType
 
 
-from .models import ReceiptRequest, ReceiptRequestCoupon
+from .models import ReceiptRequest, ReceiptRequestCoupon, Certificate, SummaryReport
+from .xlsx_export import export_fal_type
 
 
 class FALInline(GenericTabularInline):
@@ -24,7 +25,7 @@ class DocumentAdmin(admin.ModelAdmin):
     list_filter = (
         ('operation_date', DateFieldListFilter),
     )
-    list_display = ['number', 'book_number', 'book_series', 'sender']
+    list_display = ['number', 'sender', 'destination']
 
 
 @admin.site.register_view('export-xlsx', 'Експортувати в XLSX', urlname='export_xlsx')
@@ -32,9 +33,19 @@ def export_xlsx(request):
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=47appendix.xlsx'
-    response.writelines(['heelo', 'wollddd'])
+    wb = openpyxl.Workbook()
+    category = request.GET.get('category')
+    fal_types = FALType.objects.filter(
+        category=category) if category else FALType.objects.all()
+    for fal_type in fal_types:
+        ws = wb.create_sheet(fal_type.name)
+        export_fal_type(fal_type, ws)
+
+    wb.save(response)
     return response
 
 
 admin.site.register(ReceiptRequest, DocumentAdmin)
 admin.site.register(ReceiptRequestCoupon, DocumentAdmin)
+admin.site.register(Certificate, DocumentAdmin)
+admin.site.register(SummaryReport, DocumentAdmin)

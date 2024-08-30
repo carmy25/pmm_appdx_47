@@ -36,8 +36,36 @@ class ReceiptRequest(BaseReceiptRequest):
 
 
 class ReceiptRequestCoupon(BaseReceiptRequest):
-    '''Definition for ReceiptRequest model.'''
+    '''Definition for ReceiptRequestCoupon model.'''
     class Meta:
         verbose_name = 'талон чекової вимоги'
         verbose_name_plural = 'талони чекових вимог'
         unique_together = ('number', 'book_number', 'book_series')
+
+
+class Certificate(models.Model):
+    class Meta:
+        verbose_name = 'Атестат'
+        verbose_name_plural = 'Атестати'
+
+    number = models.CharField(verbose_name='номер', max_length=50)
+    sender = models.CharField(verbose_name='відправник', max_length=50)
+    destination = models.CharField(verbose_name='отримувач', max_length=50,
+                                   default='А4548')
+    operation_date = models.DateField(verbose_name='дата операції')
+    fals = GenericRelation(
+        'fals.FAL', object_id_field='object_id', related_query_name='document')
+
+
+class SummaryReport(models.Model):
+    class Meta:
+        verbose_name = 'Зведена відомість'
+        verbose_name_plural = 'Зведені відомості'
+
+    number = models.CharField(verbose_name='номер', max_length=50)
+    sender = models.CharField(verbose_name='відправник', max_length=50)
+    destination = models.CharField(verbose_name='отримувач', max_length=50,
+                                   default='А4548')
+    operation_date = models.DateField(verbose_name='дата операції')
+    fals = GenericRelation(
+        'fals.FAL', object_id_field='object_id', related_query_name='document')
