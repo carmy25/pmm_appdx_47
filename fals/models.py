@@ -28,9 +28,6 @@ class FALType(models.Model):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self):
-        return reverse("FALType_detail", kwargs={"pk": self.pk})
-
 
 class FAL(models.Model):
     fal_type = models.ForeignKey(
@@ -48,6 +45,3 @@ class FAL(models.Model):
 
     def __str__(self):
         return f'{self.fal_type.name}: {self.amount}'
-
-    def get_absolute_url(self):
-        return reverse("FAL_detail", kwargs={"pk": self.pk})

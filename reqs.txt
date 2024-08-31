@@ -1,2 +1,3 @@
 django-adminplus
 openpyxl
+django-nested-admin

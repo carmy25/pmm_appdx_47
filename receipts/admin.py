@@ -2,11 +2,11 @@ from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericTabularInline
 from django.contrib.admin import DateFieldListFilter
 from django.http import HttpResponse
+import nested_admin
 
 import openpyxl
-from openpyxl.utils import get_column_letter
 
-
+from departments.models import DepartmentEntity
 from fals.models import FAL, FALType
 
 
@@ -29,6 +29,26 @@ class DocumentAdmin(admin.ModelAdmin):
     list_display = ['number', 'sender', 'destination']
 
 
+class FALNestedInline(nested_admin.NestedGenericTabularInline):
+    model = FAL
+    autocomplete_fields = ['fal_type']
+
+
+class DepartmentInline(nested_admin.NestedTabularInline):
+    model = DepartmentEntity
+    inlines = [FALNestedInline]
+
+
+class SummaryReportAdmin(nested_admin.NestedModelAdmin):
+    inlines = [DepartmentInline]
+    search_fields = ['number',]
+    ordering = ['operation_date']
+    list_filter = (
+        ('operation_date', DateFieldListFilter),
+    )
+    list_display = ['number']
+
+
 @admin.site.register_view('export-xlsx', 'Експортувати в XLSX', urlname='export_xlsx')
 def export_xlsx(request):
     response = HttpResponse(
@@ -49,4 +69,4 @@ def export_xlsx(request):
 admin.site.register(ReceiptRequest, DocumentAdmin)
 admin.site.register(ReceiptRequestCoupon, DocumentAdmin)
 admin.site.register(Certificate, DocumentAdmin)
-admin.site.register(SummaryReport, DocumentAdmin)
+admin.site.register(SummaryReport, SummaryReportAdmin)

@@ -63,9 +63,4 @@ class SummaryReport(models.Model):
         verbose_name_plural = 'Зведені відомості'
 
     number = models.CharField(verbose_name='номер', max_length=50)
-    sender = models.CharField(verbose_name='відправник', max_length=50)
-    destination = models.CharField(verbose_name='отримувач', max_length=50,
-                                   default='А4548')
     operation_date = models.DateField(verbose_name='дата операції')
-    fals = GenericRelation(
-        'fals.FAL', object_id_field='object_id', related_query_name='document')
