@@ -16,6 +16,7 @@ from .xlsx_export import export_fal_type
 
 class FALInline(GenericTabularInline):
     model = FAL
+    autocomplete_fields = ['fal_type']
 
 
 class DocumentAdmin(admin.ModelAdmin):
@@ -38,7 +39,7 @@ def export_xlsx(request):
     fal_types = FALType.objects.filter(
         category=category) if category else FALType.objects.all()
     for fal_type in fal_types:
-        ws = wb.create_sheet(fal_type.name)
+        ws = wb.create_sheet(fal_type.name.replace('/', ' ')[:30])
         export_fal_type(fal_type, ws)
 
     wb.save(response)
