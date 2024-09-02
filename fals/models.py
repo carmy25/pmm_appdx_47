@@ -31,7 +31,7 @@ class FALType(models.Model):
 
 class FAL(models.Model):
     fal_type = models.ForeignKey(
-        FALType, verbose_name='тип', on_delete=models.CASCADE)
+        FALType, verbose_name='тип', on_delete=models.CASCADE, related_name='fals')
     amount = models.FloatField(verbose_name='кількість')
 
     content_type = models.ForeignKey(

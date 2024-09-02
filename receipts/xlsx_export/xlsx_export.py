@@ -184,8 +184,8 @@ class SummaryReportDocumentHandler(BaseFALDocumentHandler):
             self.ws[total_cell].border = THIN_BORDER
 
 
-def export_fal_type(fal_type, ws):
-    format_header(ws, fal_type)
+def export_fal_type(fal_type, ws, departments):
+    format_header(ws, fal_type, departments)
     format_rows(ws, fal_type)
 
 
@@ -197,7 +197,7 @@ def get_fal_operation_date(fal):
 
 def format_rows(ws, fal_type):
     fals = FAL.objects.filter(fal_type=fal_type).order_by(
-        'document__operation_date')
+        'document__operation_date').prefetch_related('document_object')
     ws_state = {'total': 0,
                 'total_by_dep': {'4548': 0, '4635': 0}}
     for i, fal in enumerate(sorted(filter(lambda x: x.document_object, fals), key=get_fal_operation_date)):
@@ -209,7 +209,7 @@ def format_rows(ws, fal_type):
         SummaryReportDocumentHandler(fal, ws, ws_state).process()
 
 
-def format_header(ws, fal_type):
+def format_header(ws, fal_type, departments):
     ws.column_dimensions['A'].width = 30
     ws.column_dimensions['b'].width = 30
     ws.column_dimensions['c'].width = 30
@@ -258,11 +258,10 @@ def format_header(ws, fal_type):
     cell_center_border(ws, 'L2', 'Вибуло').font = Font(bold=True)
     cell_center_border(ws, 'M2', 'Всього').font = Font(bold=True)
 
-    format_departments(ws)
+    format_departments(ws, departments)
 
 
-def format_departments(ws):
-    deps = Department.objects.all().order_by('name')
+def format_departments(ws, deps):
     col_idx = 14
     for dep in deps:
         DEP_BY_INDEX[dep.name] = col_idx
