@@ -108,7 +108,7 @@ class FALDocumentHandler(BaseFALDocumentHandler):
         doc = self.fal.document_object
         if type(doc) in [ReceiptRequest, ReceiptRequestCoupon]:
             return f'{
-                doc.number}/{doc.book_number}{doc.book_series}'
+                doc.number}/{doc.book_number}{doc.book_series.upper()}'
         return doc.number
 
     def get_fal_income(self):
@@ -126,8 +126,8 @@ class FALDocumentHandler(BaseFALDocumentHandler):
     def get_document_sender(self):
         doc = self.fal.document_object
         if type(doc) in [Certificate, ReceiptRequestCoupon]:
-            return doc.sender
-        return doc.destination
+            return doc.sender.upper()
+        return doc.destination.upper()
 
     def get_document_operation_date(self):
         return self.fal.document_object.operation_date
