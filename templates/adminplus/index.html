@@ -10,7 +10,7 @@
 
         {% url 'admin:export_xlsx' as view_url %}
         {% for path, name in custom_list %}
-          {% if '/'|add:path == view_url %}
+          {% if '/admin/'|add:path == view_url %}
             <tr><th><a href="{{ path }}?category=PETROL">АБ: &ensp;{{ name }}</a></th></tr>
             <tr><th><a href="{{ path }}?category=DIESEL">ДП: &ensp;{{ name }}</a></th></tr>
             <tr><th><a href="{{ path }}?category=OIL">Масла: {{ name }}</a></th></tr>
