@@ -18,6 +18,10 @@ class BaseReceiptRequest(models.Model):
     fals = GenericRelation(
         'fals.FAL', object_id_field='object_id', related_query_name='document')
 
+    @property
+    def book(self):
+        return f'{self.book_number}{self.book_series.upper()}'
+
     class Meta:
         abstract = True
 
@@ -56,6 +60,10 @@ class Certificate(models.Model):
     operation_date = models.DateField(verbose_name='дата операції')
     fals = GenericRelation(
         'fals.FAL', object_id_field='object_id', related_query_name='document')
+
+    @property
+    def book(self):
+        return ''
 
 
 class SummaryReport(models.Model):

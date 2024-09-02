@@ -46,6 +46,8 @@ class ScanListFilter(admin.SimpleListFilter):
         provided in the query string and retrievable via
         `self.value()`.
         """
+        if queryset.model is Certificate:
+            return queryset
         scan_present_qs = queryset.exclude(
             scan__isnull=True).exclude(scan__exact='')
         if self.value() == "scan_present":
@@ -62,7 +64,13 @@ class DocumentAdmin(admin.ModelAdmin):
         ScanListFilter,
         ('operation_date', DateFieldListFilter),
     )
-    list_display = ['number', 'sender', 'destination']
+    list_display = ['number', 'sender', 'destination', 'book']
+
+    def book(self, obj):
+        if type(obj) == Certificate:
+            return ''
+        return f'{obj.book_number}{obj.book_series.upper()}'
+    book.short_description = 'Книга'
 
 
 class FALNestedInline(nested_admin.NestedGenericTabularInline):
