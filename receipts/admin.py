@@ -46,10 +46,12 @@ class ScanListFilter(admin.SimpleListFilter):
         provided in the query string and retrievable via
         `self.value()`.
         """
+        scan_present_qs = queryset.exclude(
+            scan__isnull=True).exclude(scan__exact='')
         if self.value() == "scan_present":
-            return queryset.filter(scan__isnull=False)
+            return scan_present_qs
         if self.value() == "scan_absent":
-            return queryset.filter(scan__isnull=True)
+            return queryset.exclude(scan__isnull=False).exclude(scan__exact='')
 
 
 class DocumentAdmin(admin.ModelAdmin):
