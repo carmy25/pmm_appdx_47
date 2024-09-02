@@ -25,6 +25,7 @@ class DocumentAdmin(admin.ModelAdmin):
     ordering = ['operation_date']
     list_filter = (
         ('operation_date', DateFieldListFilter),
+        # 'scan'
     )
     list_display = ['number', 'sender', 'destination']
 
