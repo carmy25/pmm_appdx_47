@@ -19,13 +19,46 @@ class FALInline(GenericTabularInline):
     autocomplete_fields = ['fal_type']
 
 
+class ScanListFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = 'найвністю скану документу'
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = "have_scan"
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        return [
+            ("scan_present", 'Cкан документа присутній'),
+            ("scan_absent", 'Без скану документа'),
+        ]
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        if self.value() == "scan_present":
+            return queryset.filter(scan__isnull=False)
+        if self.value() == "scan_absent":
+            return queryset.filter(scan__isnull=True)
+
+
 class DocumentAdmin(admin.ModelAdmin):
     inlines = [FALInline]
     search_fields = ['number', 'sender', 'destination']
     ordering = ['operation_date']
     list_filter = (
+        ScanListFilter,
         ('operation_date', DateFieldListFilter),
-        # 'scan'
     )
     list_display = ['number', 'sender', 'destination']
 

@@ -18,6 +18,12 @@ class BaseReceiptRequest(models.Model):
     fals = GenericRelation(
         'fals.FAL', object_id_field='object_id', related_query_name='document')
 
+    @property
+    def have_scan(self):
+        import pdb
+        pdb.set_trace()
+        pass
+
     class Meta:
         abstract = True
 
