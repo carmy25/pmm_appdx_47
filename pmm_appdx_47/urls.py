@@ -14,9 +14,10 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path
-from django.contrib.auth.models import User, Group
+from django.conf.urls.static import static
 from adminplus.sites import AdminSitePlus
 
 admin.site = AdminSitePlus()
@@ -30,5 +31,5 @@ admin.site.index_title = "Панель Адміністратора"
 # admin.site.unregister(Group)
 
 urlpatterns = [
-    path('', admin.site.urls),
-]
+    path('admin/', admin.site.urls),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

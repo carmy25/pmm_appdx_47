@@ -14,6 +14,7 @@ class BaseReceiptRequest(models.Model):
     sender = models.CharField(verbose_name='відправник', max_length=50)
     destination = models.CharField(verbose_name='отримувач', max_length=50,
                                    default='А4548')
+    scan = models.FileField(null=True, blank=True, verbose_name='Скан')
     fals = GenericRelation(
         'fals.FAL', object_id_field='object_id', related_query_name='document')
 
