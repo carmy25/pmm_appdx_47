@@ -6,6 +6,9 @@ import nested_admin
 
 import openpyxl
 
+from rangefilter.filters import DateRangeFilterBuilder
+
+
 from departments.models import Department, DepartmentEntity
 from fals.models import FAL, FALType
 
@@ -63,9 +66,10 @@ class DocumentAdmin(admin.ModelAdmin):
     ordering = ['operation_date']
     list_filter = (
         ScanListFilter,
-        ('operation_date', DateFieldListFilter),
+        ('operation_date', DateRangeFilterBuilder()),
     )
-    list_display = ['number', 'book', 'sender', 'destination']
+    list_display = ['number', 'book', 'sender',
+                    'destination', 'operation_date']
 
     def book(self, obj):
         if type(obj) == Certificate:

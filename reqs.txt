@@ -1,3 +1,4 @@
 django-adminplus
 openpyxl
 django-nested-admin
+django-admin-rangefilter

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'adminplus',
     'nested_admin',
+    'rangefilter',
 
     'fals.apps.FalsConfig',
     'receipts.apps.ReceiptsConfig',
