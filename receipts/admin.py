@@ -68,8 +68,9 @@ class DocumentAdmin(admin.ModelAdmin):
         ScanListFilter,
         ('operation_date', DateRangeFilterBuilder()),
     )
-    list_display = ['number', 'book', 'sender', 'scan_present',
-                    'destination', 'operation_date']
+    list_display = ['number', 'book', 'sender',
+                    'destination', 'operation_date', 'scan_present',
+                    ]
 
     def book(self, obj):
         if type(obj) == Certificate:
