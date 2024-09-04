@@ -68,7 +68,7 @@ class DocumentAdmin(admin.ModelAdmin):
         ScanListFilter,
         ('operation_date', DateRangeFilterBuilder()),
     )
-    list_display = ['number', 'book', 'sender',
+    list_display = ['number', 'book', 'sender', 'scan_present',
                     'destination', 'operation_date']
 
     def book(self, obj):
@@ -76,6 +76,12 @@ class DocumentAdmin(admin.ModelAdmin):
             return ''
         return f'{obj.book_number}{obj.book_series.upper()}'
     book.short_description = 'Книга'
+
+    def scan_present(self, obj):
+        if type(obj) == Certificate:
+            return 'Ні'
+        return 'Так' if obj.scan.name else 'Ні'
+    scan_present.short_description = 'Скан присутній'
 
 
 class FALNestedInline(nested_admin.NestedGenericTabularInline):
