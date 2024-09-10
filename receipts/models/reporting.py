@@ -35,6 +35,9 @@ class Reporting(BaseDocument):
     note = models.CharField(
         max_length=500, verbose_name='нотатка', blank=True, null=True)
 
+    def __str__(self):
+        return f'{self._meta.verbose_name}: {self.number or 'без номеру'}({self.department.name})'
+
 
 class FALReportEntry(models.Model):
     fal_type = models.ForeignKey(

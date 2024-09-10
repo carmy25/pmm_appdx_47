@@ -1,8 +1,6 @@
 from django.contrib import admin
-from django.contrib.admin import DateFieldListFilter
-import nested_admin
 
-from receipts.models.reporting import Reporting, FALReportEntry
+from receipts.models.reporting import FALReportEntry
 
 
 class FALReportEntry(admin.TabularInline):
@@ -12,3 +10,5 @@ class FALReportEntry(admin.TabularInline):
 
 class ReportingAdmin(admin.ModelAdmin):
     inlines = [FALReportEntry]
+    search_fields = ['number', 'department__name']
+    list_display = ['department__name', 'start_date', 'end_date']
