@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericTabularInline
 from django.contrib.admin import DateFieldListFilter
 from django.http import HttpResponse
-from django.db.models import Q
 import nested_admin
 
 import openpyxl
@@ -14,8 +13,8 @@ from departments.models import Department, DepartmentEntity
 from fals.models import FAL, FALType
 
 
-from .models import ReceiptRequest, ReceiptRequestCoupon, Certificate, SummaryReport
-from .xlsx_export import export_fal_type
+from ..models import ReceiptRequest, ReceiptRequestCoupon, Certificate, SummaryReport
+from ..xlsx_export import export_fal_type
 
 
 class FALInline(GenericTabularInline):
@@ -58,7 +57,7 @@ class ScanListFilter(admin.SimpleListFilter):
         if self.value() == "scan_present":
             return scan_present_qs
         if self.value() == "scan_absent":
-            return queryset.filter(Q(scan='') | Q(scan=None))
+            return queryset.exclude(scan__isnull=False).exclude(scan__exact='')
 
 
 class DocumentAdmin(admin.ModelAdmin):
@@ -104,32 +103,3 @@ class SummaryReportAdmin(nested_admin.NestedModelAdmin):
         ('operation_date', DateFieldListFilter),
     )
     list_display = ['number']
-
-
-@admin.site.register_view('export-xlsx', 'Експортувати в XLSX', urlname='export_xlsx')
-def export_xlsx(request):
-    import time
-    start = time.time()
-    response = HttpResponse(
-        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename=47appendix.xlsx'
-    wb = openpyxl.Workbook()
-    category = request.GET.get('category')
-    fal_types = FALType.objects.filter(
-        category=category) if category else FALType.objects.all()
-    departments = Department.objects.all().order_by('name')
-    for fal_type in fal_types:
-        ws = wb.create_sheet(fal_type.name.replace('/', ' ')[:30])
-        export_fal_type(fal_type, ws, departments)
-
-    end = time.time()
-    print(end - start)
-    wb.save(response)
-    print(time.time() - end)
-    return response
-
-
-admin.site.register(ReceiptRequest, DocumentAdmin)
-admin.site.register(ReceiptRequestCoupon, DocumentAdmin)
-admin.site.register(Certificate, DocumentAdmin)
-admin.site.register(SummaryReport, SummaryReportAdmin)
