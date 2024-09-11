@@ -13,8 +13,6 @@ class Reporting(BaseDocument):
         verbose_name_plural = 'Донесення'
         unique_together = ('department', 'start_date', 'end_date')
 
-    operation_date = models.DateField(
-        verbose_name='дата операції', blank=True, null=True)
     number = models.CharField(verbose_name='номер',
                               null=True, blank=True, max_length=50)
 
