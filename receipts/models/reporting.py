@@ -11,6 +11,7 @@ class Reporting(BaseDocument):
     class Meta:
         verbose_name = 'Донесення'
         verbose_name_plural = 'Донесення'
+        unique_together = ('department', 'start_date', 'end_date')
 
     operation_date = models.DateField(verbose_name='дата операції')
     number = models.CharField(verbose_name='номер',
