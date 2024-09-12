@@ -1,20 +1,14 @@
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericTabularInline
-from django.contrib.admin import DateFieldListFilter
-from django.http import HttpResponse
-import nested_admin
 
-import openpyxl
 
 from rangefilter.filters import DateRangeFilterBuilder
 
 
-from departments.models import Department, DepartmentEntity
-from fals.models import FAL, FALType
+from fals.models import FAL
 
 
-from ..models import ReceiptRequest, ReceiptRequestCoupon, Certificate, SummaryReport
-from ..xlsx_export import export_fal_type
+from ..models import Certificate
 
 
 class FALInline(GenericTabularInline):
@@ -83,23 +77,3 @@ class DocumentAdmin(admin.ModelAdmin):
             return 'Ні'
         return 'Так' if obj.scan.name else 'Ні'
     scan_present.short_description = 'Скан присутній'
-
-
-class FALNestedInline(nested_admin.NestedGenericTabularInline):
-    model = FAL
-    autocomplete_fields = ['fal_type']
-
-
-class DepartmentInline(nested_admin.NestedTabularInline):
-    model = DepartmentEntity
-    inlines = [FALNestedInline]
-
-
-class SummaryReportAdmin(nested_admin.NestedModelAdmin):
-    inlines = [DepartmentInline]
-    search_fields = ['number',]
-    ordering = ['operation_date']
-    list_filter = (
-        ('operation_date', DateFieldListFilter),
-    )
-    list_display = ['number']

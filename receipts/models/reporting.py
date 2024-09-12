@@ -3,6 +3,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.utils.translation import gettext_lazy as _
 from departments.models import Department
 from fals.models import FALType
+from receipts.models.summary_report import ReportingSummaryReport
 
 from .base import BaseDocument
 
@@ -18,6 +19,10 @@ class Reporting(BaseDocument):
 
     department = models.ForeignKey(
         Department, on_delete=models.CASCADE,  verbose_name='підрозділ')
+    summary_report = models.ForeignKey(
+        ReportingSummaryReport, null=True,
+        related_name='reportings',
+        on_delete=models.SET_NULL)
 
     start_date = models.DateField(verbose_name='початкова дата')
     end_date = models.DateField(verbose_name='кінцева дата')

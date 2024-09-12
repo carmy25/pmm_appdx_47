@@ -12,17 +12,3 @@ class Department(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class DepartmentEntity(models.Model):
-    class Meta:
-        verbose_name = 'Підрозділ'
-        verbose_name_plural = 'Підрозділи'
-
-    fals = GenericRelation(
-        'fals.FAL', object_id_field='object_id', related_query_name='department')
-    department = models.ForeignKey(
-        Department, verbose_name="ім'я", on_delete=models.CASCADE)
-
-    summary_report = models.ForeignKey(
-        'receipts.SummaryReport', on_delete=models.CASCADE)

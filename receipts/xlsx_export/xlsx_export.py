@@ -1,7 +1,8 @@
 from openpyxl.styles import PatternFill, Font, Alignment
 from openpyxl.utils import get_column_letter
-from departments.models import Department, DepartmentEntity
+from itertools import chain
 from fals.models import FAL
+from receipts.models.reporting import FALReportEntry
 from ..models import ReceiptRequest, ReceiptRequestCoupon, Certificate
 
 from .utils import CENTER_ALIGNMENT, cell_center_border, BASE_DEP_CELL_FILL, THIN_BORDER, OTHER_DEP_CELL_FILL
@@ -52,7 +53,7 @@ class BaseFALDocumentHandler:
             cell_center_border(self.ws, self.add_idx('I'), outcome or '')
             cell_center_border(self.ws, self.add_idx('K'), '')
             cell_center_border(self.ws, self.add_idx('L'), '')
-        else:
+        elif dep == '4635':
             cell_center_border(self.ws, self.add_idx('H'), '')
             cell_center_border(self.ws, self.add_idx('I'), '')
             cell_center_border(self.ws, self.add_idx('K'), income or '')
@@ -83,6 +84,62 @@ class BaseFALDocumentHandler:
         income = self.get_fal_income() or 0
         outcome = self.get_fal_outcome() or 0
         self.state['total'] = self.state['total'] - outcome + income
+
+
+class ReportingSummaryReportDocumentHandler(BaseFALDocumentHandler):
+    '''Handle ReportingSummaryReport
+    '''
+
+    def update_total_base_dep(self):
+        pass
+
+    def get_document_name(self):
+        return self.fal.report.summary_report._meta.verbose_name
+
+    def get_dep(self):
+        return ''
+
+    def get_document_number(self):
+        return self.fal.report.summary_report.number or '-'
+
+    def get_document_operation_date(self):
+        return self.fal.report.summary_report.end_date
+
+    def get_document_sender(self):
+        return 'в підр.'
+
+    def get_fal_income(self):
+        return 0
+
+    def get_fal_outcome(self):
+        fals = FALReportEntry.objects.filter(
+            fal_type=self.fal.fal_type,
+            report__summary_report=self.fal.report.summary_report)
+        return sum([fal.outcome for fal in fals])
+
+    def process(self):
+        if self.fal.report.summary_report in self.state.setdefault('reports_processed', []):
+            return
+        self.state['reports_processed'].append(
+            self.fal.report.summary_report)
+        super().process()
+        self.format_departments()
+
+    def format_departments(self):
+        fals = FALReportEntry.objects.filter(
+            fal_type=self.fal.fal_type,
+            report__summary_report=self.fal.report.summary_report)
+        for fal in fals:
+            dep_index = DEP_BY_INDEX[fal.report.department.name]
+            cell_center_border(self.ws, self.add_idx(
+                get_column_letter(dep_index+1)), fal.outcome)
+            col_letter = get_column_letter(dep_index+2)
+            total_cell = self.add_idx(col_letter)
+            self.ws[total_cell].value = \
+                f'=SUM({get_column_letter(dep_index)}$3:{get_column_letter(dep_index)}{self.state["idx"]})-SUM({
+                get_column_letter(dep_index+1)}$3:{get_column_letter(dep_index+1)}{self.state["idx"]})'
+            self.ws[total_cell].alignment = CENTER_ALIGNMENT
+            self.ws[total_cell].border = THIN_BORDER
 
 
 class FALDocumentHandler(BaseFALDocumentHandler):
@@ -133,80 +190,43 @@ class FALDocumentHandler(BaseFALDocumentHandler):
         return self.fal.document_object.operation_date
 
 
-class SummaryReportDocumentHandler(BaseFALDocumentHandler):
-
-    def update_total_base_dep(self):
-        self.state['total_by_dep']['4548'] -= self.get_fal_outcome() or 0
-
-    def get_document_name(self):
-        return self.fal.document_object.summary_report._meta.verbose_name
-
-    def get_dep(self):
-        return 'A4548'
-
-    def get_document_number(self):
-        return self.fal.document_object.summary_report.number
-
-    def get_document_operation_date(self):
-        return self.fal.document_object.summary_report.operation_date
-
-    def get_document_sender(self):
-        return 'в підр.'
-
-    def get_fal_income(self):
-        return 0
-
-    def get_fal_outcome(self):
-        fals = FAL.objects.filter(fal_type=self.fal.fal_type,
-                                  department__summary_report=self.fal.document_object.summary_report)
-        return sum([fal.amount for fal in fals])
-
-    def process(self):
-        if self.fal.document_object.summary_report in self.state.setdefault('reports_processed', []):
-            return
-        self.state['reports_processed'].append(
-            self.fal.document_object.summary_report)
-        super().process()
-        self.format_departments()
-
-    def format_departments(self):
-        fals = FAL.objects.filter(fal_type=self.fal.fal_type,
-                                  department__summary_report=self.fal.document_object.summary_report)
-        for fal in fals:
-            dep_index = DEP_BY_INDEX[fal.document_object.department.name]
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index)), fal.amount)
-            col_letter = get_column_letter(dep_index+2)
-            total_cell = self.add_idx(col_letter)
-            self.ws[total_cell].value = f'=SUM({get_column_letter(dep_index)}3:{get_column_letter(dep_index)}{
-                self.state["idx"]})'
-            self.ws[total_cell].alignment = CENTER_ALIGNMENT
-            self.ws[total_cell].border = THIN_BORDER
-
-
 def export_fal_type(fal_type, ws, departments):
     format_header(ws, fal_type, departments)
     format_rows(ws, fal_type)
 
 
-def get_fal_operation_date(fal):
-    if type(fal.document_object) is DepartmentEntity:
-        return fal.document_object.summary_report.operation_date
-    return fal.document_object.operation_date
+def get_fal_date(obj):
+    if type(obj) is FALReportEntry:
+        return obj.report.summary_report.end_date
+    return obj.document_object.operation_date
+
+
+def get_sorted_fals(fal_type):
+    fals = FAL.objects \
+        .filter(fal_type=fal_type) \
+        .exclude(object_id__isnull=True) \
+        .prefetch_related('document_object')
+    fal_report_entries = FALReportEntry.objects \
+        .filter(fal_type=fal_type) \
+        .exclude(report__isnull=True) \
+        .exclude(report__summary_report__isnull=True)
+
+    sorted_fals = sorted(
+        chain(fals, fal_report_entries),
+        key=get_fal_date)
+    return sorted_fals
 
 
 def format_rows(ws, fal_type):
-    fals = FAL.objects.filter(fal_type=fal_type).order_by(
-        'document__operation_date').prefetch_related('document_object')
     ws_state = {'total': 0,
                 'total_by_dep': {'4548': 0, '4635': 0}}
-    for i, fal in enumerate(sorted(filter(lambda x: x.document_object, fals), key=get_fal_operation_date)):
-        document = fal.document_object
+    fals = get_sorted_fals(fal_type)
+    for i, fal in enumerate(fals):
         ws_state['idx'] = i + 3
-        if type(document) != DepartmentEntity:
-            FALDocumentHandler(fal, ws, ws_state).process()
+        if type(fal) is FALReportEntry:
+            ReportingSummaryReportDocumentHandler(fal, ws, ws_state).process()
             continue
-        SummaryReportDocumentHandler(fal, ws, ws_state).process()
+        FALDocumentHandler(fal, ws, ws_state).process()
 
 
 def format_header(ws, fal_type, departments):

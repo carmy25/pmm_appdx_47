@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'adminplus',
     'nested_admin',
     'rangefilter',
+    'admin_object_actions',
 
     'fals.apps.FalsConfig',
     'receipts.apps.ReceiptsConfig',
@@ -55,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'crum.CurrentRequestUserMiddleware',
 ]
 
 ROOT_URLCONF = 'pmm_appdx_47.urls'
