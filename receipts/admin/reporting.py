@@ -1,5 +1,6 @@
 from constance import config
-
+from django.utils.safestring import mark_safe
+from django.urls import reverse
 from django.contrib import admin
 from django.contrib import messages
 
@@ -23,14 +24,15 @@ class ReportingAdmin(admin.ModelAdmin):
     actions = ['create_summary_report']
     exclude = ['summary_report']
 
+    def get_last_doc_number(self, model):
+        sorted_docs = list(sorted(model.objects.all(),
+                                  key=lambda r: int(r.number) if r.number else 0))
+        if not sorted_docs:
+            return 0
+        return int(sorted_docs[-1].number) if sorted_docs[-1].number else 0
+
     def prepear_reportings(self, queryset):
-        last_report = list(sorted(Reporting.objects.all(),
-                                  key=lambda r: int(r.number) if r.number else 1))
-        if not last_report:
-            last_report_number = 1
-        else:
-            last_report_number = int(
-                last_report[-1].number) if last_report[-1].number else 1
+        last_report_number = self.get_last_doc_number(Reporting)
 
         for reporting in queryset:
             last_report_number += 1
@@ -48,12 +50,7 @@ class ReportingAdmin(admin.ModelAdmin):
     def create_summary_report(self, request, queryset):
         self.prepear_reportings(queryset)
 
-        last_summary = list(sorted(ReportingSummaryReport.objects.all(),
-                                   key=lambda r: int(r.number) if r.number else 1))
-        if not last_summary or last_summary[-1].number is None:
-            last_summary_number = 1
-        else:
-            last_summary_number = int(last_summary[-1].number)
+        last_summary_number = self.get_last_doc_number(ReportingSummaryReport)
 
         start_date = queryset.order_by('start_date').first().start_date
         end_date = queryset.order_by('-end_date').first().end_date
@@ -69,5 +66,7 @@ class ReportingAdmin(admin.ModelAdmin):
         summary_report.save()
 
         queryset.update(summary_report=summary_report)
+        summary_report_url = reverse('admin:%s_%s_change' % (
+            summary_report._meta.app_label, summary_report._meta.model_name), args=(summary_report.pk,))
         self.message_user(
-            request, f'Зведену відомість #{summary_report.number} створено', messages.SUCCESS)
+            request, mark_safe(f'Зведену відомість <a href="{summary_report_url}">#{summary_report.number}</a> створено'), messages.SUCCESS)
