@@ -14,6 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.apps import apps
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path
@@ -26,6 +27,8 @@ admin.autodiscover()
 admin.site.site_header = "ПММ 47 Додаток"
 admin.site.site_title = "ПММ 47 Додаток"
 admin.site.index_title = "Панель Адміністратора"
+
+apps.get_app_config('constance').verbose_name = "Налаштування"
 
 # admin.site.unregister(User)
 # admin.site.unregister(Group)

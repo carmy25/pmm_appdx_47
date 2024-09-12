@@ -38,15 +38,26 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+
     'adminplus',
     'nested_admin',
     'rangefilter',
     'admin_object_actions',
+    'constance',
 
     'fals.apps.FalsConfig',
     'receipts.apps.ReceiptsConfig',
     'departments.apps.DepartmentsConfig',
 ]
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_CONFIG = {
+    'CHIEF_RANK': ('', 'Звання начальника ПММ'),
+    'CHIEF_NAME': ('', 'Ініціали Прізвище начальника ПММ'),
+    'REPORTING_DOCUMENT_DATE_DAY': (21, 'День для дати документу донесення'),
+    'SUMMARY_REPORT_DOCUMENT_DATE_DAY': (21, 'День для дати документу зведеної відомості'),
+
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
