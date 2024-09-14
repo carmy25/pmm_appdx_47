@@ -6,6 +6,7 @@ from rangefilter.filters import DateRangeFilterBuilder
 
 
 from fals.models import FAL
+from receipts.models.invoice import Invoice
 
 
 from ..models import Certificate
@@ -67,13 +68,17 @@ class DocumentAdmin(admin.ModelAdmin):
                     ]
 
     def book(self, obj):
-        if type(obj) == Certificate:
+        if type(obj) in [Certificate, Invoice]:
             return ''
         return f'{obj.book_number}{obj.book_series.upper()}'
     book.short_description = 'Книга'
 
     def scan_present(self, obj):
-        if type(obj) == Certificate:
-            return 'Ні'
         return 'Так' if obj.scan.name else 'Ні'
     scan_present.short_description = 'Скан присутній'
+
+
+class InvoiceAdmin(DocumentAdmin):
+    list_display = ['number', 'book', 'sender',
+                    'receiver', 'operation_date', 'scan_present',
+                    ]

@@ -2,6 +2,7 @@ from openpyxl.styles import PatternFill, Font, Alignment
 from openpyxl.utils import get_column_letter
 from itertools import chain
 from fals.models import FAL
+from receipts.models.invoice import Invoice
 from receipts.models.reporting import FALReportEntry
 from ..models import ReceiptRequest, ReceiptRequestCoupon, Certificate
 
@@ -225,8 +226,8 @@ def format_rows(ws, fal_type):
         ws_state['idx'] = i + 3
         if type(fal) is FALReportEntry:
             ReportingSummaryReportDocumentHandler(fal, ws, ws_state).process()
-            continue
-        FALDocumentHandler(fal, ws, ws_state).process()
+        elif type(fal.document_object) != Invoice:
+            FALDocumentHandler(fal, ws, ws_state).process()
 
 
 def format_header(ws, fal_type, departments):
