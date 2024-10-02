@@ -16,3 +16,6 @@ class BaseDocument(models.Model):
     def verbose_scan_present(self):
         return 'Так' if self.scan.name else 'Ні'
     verbose_scan_present.short_description = 'Скан присутній'
+
+    def __str__(self):
+        return f'{self._meta.verbose_name}: {self.number}'

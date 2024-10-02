@@ -222,12 +222,15 @@ def format_rows(ws, fal_type):
     ws_state = {'total': 0,
                 'total_by_dep': {'4548': 0, '4635': 0}}
     fals = get_sorted_fals(fal_type)
+    j = 3
     for i, fal in enumerate(fals):
-        ws_state['idx'] = i + 3
+        ws_state['idx'] = i + j
         if type(fal) is FALReportEntry:
             ReportingSummaryReportDocumentHandler(fal, ws, ws_state).process()
         elif type(fal.document_object) != Invoice:
             FALDocumentHandler(fal, ws, ws_state).process()
+        else:
+            j -= 1
 
 
 def format_header(ws, fal_type, departments):
@@ -301,3 +304,8 @@ def format_departments(ws, deps):
         cell_center_border(ws, f'{get_column_letter(
             col_idx+2)}2', 'Всього').font = Font(bold=True)
         col_idx += 3
+
+
+def format_departments_column(ws, deps):
+    for dep in deps:
+        pass

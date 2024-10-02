@@ -4,18 +4,24 @@ from django.http import HttpResponse
 
 from departments.models import Department
 from fals.models import FALType
+from receipts.models.reporting import Reporting
+from receipts.xlsx_export.reportings_report import export_reportings_report
 from ..xlsx_export import export_fal_type
 
 import openpyxl
+
+
+def xlsx_response(filename):
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename={filename}.xlsx'
+    return response
 
 
 @admin.site.register_view('export-xlsx', 'Експортувати в XLSX', urlname='export_xlsx')
 def export_xlsx(request):
     import time
     start = time.time()
-    response = HttpResponse(
-        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename=47appendix.xlsx'
     wb = openpyxl.Workbook()
     category = request.GET.get('category')
     fal_types = FALType.objects.filter(
@@ -27,6 +33,19 @@ def export_xlsx(request):
 
     end = time.time()
     print(end - start)
+    response = xlsx_response('47appendix')
     wb.save(response)
     print(time.time() - end)
+    return response
+
+
+@admin.site.register_view('reportings-report', 'Звіт по донесеннях', urlname='reportings_report')
+def reportings_report(request):
+    response = xlsx_response('reportings_report')
+    reportings = Reporting.objects.all().order_by('end_date')
+    wb = openpyxl.Workbook()
+    ws = wb.create_sheet('Звіт')
+    if reportings.count() > 0:
+        export_reportings_report(ws, reportings)
+    wb.save(response)
     return response
