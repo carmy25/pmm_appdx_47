@@ -57,7 +57,7 @@ class ScanListFilter(admin.SimpleListFilter):
 
 class DocumentAdmin(admin.ModelAdmin):
     inlines = [FALInline]
-    search_fields = ['number', 'sender', 'destination']
+    search_fields = ['number', 'sender', 'destination', 'fals__fal_type__name']
     ordering = ['operation_date']
     list_filter = (
         ScanListFilter,
@@ -79,6 +79,5 @@ class DocumentAdmin(admin.ModelAdmin):
 
 
 class InvoiceAdmin(DocumentAdmin):
-    list_display = ['number', 'book', 'sender',
-                    'receiver', 'operation_date', 'scan_present',
-                    ]
+    search_fields = ['number', 'sender__name',
+                     'destination__name', 'fals__fal_type__name']

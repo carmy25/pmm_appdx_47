@@ -18,7 +18,7 @@ def xlsx_response(filename):
     return response
 
 
-@admin.site.register_view('export-xlsx', 'Експортувати в XLSX', urlname='export_xlsx')
+@admin.site.register_view('export-xlsx', 'Експортувати в Excel', urlname='export_xlsx')
 def export_xlsx(request):
     import time
     start = time.time()

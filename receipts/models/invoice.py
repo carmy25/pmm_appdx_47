@@ -17,7 +17,7 @@ class Invoice(BaseDocument):
         Department, on_delete=models.CASCADE,
         related_name='invoices_sender',
         verbose_name='відправник')
-    receiver = models.ForeignKey(
+    destination = models.ForeignKey(
         Department, on_delete=models.CASCADE,
         related_name='invoices_receiver',
         verbose_name='отримувач')
@@ -26,4 +26,4 @@ class Invoice(BaseDocument):
     fals = GenericRelation(
         'fals.FAL',
         object_id_field='object_id',
-        related_name='document')
+        related_query_name='document')
