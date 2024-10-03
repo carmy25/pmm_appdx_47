@@ -1,22 +1,24 @@
 from openpyxl.utils import get_column_letter
 
 from receipts.xlsx_export.utils import cell_center_border, month_iter
-from receipts.xlsx_export.xlsx_export import format_departments_column
 
 
 MONTH_BY_INDEX = {}
 DEP_BY_INDEX = {}
 
 
+def format_departments_column(ws, deps):
+    idx = 2
+    for dep in set(deps):
+        DEP_BY_INDEX[dep.name] = idx
+        cell_center_border(ws, f'A{idx}', dep.name)
+        idx += 1
+
+
 def export_reportings_report(ws, reportings):
     departments = [r.department for r in reportings]
     ws.column_dimensions['A'].width = 40
     format_departments_column(ws, departments)
-    idx = 2
-    for dep in departments:
-        DEP_BY_INDEX[dep.name] = idx
-        cell_center_border(ws, f'A{idx}', dep.name)
-        idx += 1
     oldest = reportings.first().end_date
     newest = reportings.last().end_date
 
