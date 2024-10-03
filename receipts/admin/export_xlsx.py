@@ -26,7 +26,8 @@ def export_xlsx(request):
     category = request.GET.get('category')
     fal_types = FALType.objects.filter(
         category=category) if category else FALType.objects.all()
-    departments = Department.objects.all().order_by('name')
+    departments = Department.objects.all().order_by(
+        '-name').order_by('-warehouse__name')
     for fal_type in fal_types:
         ws = wb.create_sheet(fal_type.name.replace('/', ' ')[:30])
         export_fal_type(fal_type, ws, departments)
