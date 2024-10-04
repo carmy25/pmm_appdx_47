@@ -5,6 +5,7 @@ from django.contrib.contenttypes.admin import GenericTabularInline
 from rangefilter.filters import DateRangeFilterBuilder
 
 
+from departments.models import Department
 from fals.models import FAL
 from receipts.models.invoice import Invoice
 
@@ -87,3 +88,4 @@ class DocumentAdmin(admin.ModelAdmin):
 class InvoiceAdmin(DocumentAdmin):
     search_fields = ['number', 'sender__name',
                      'destination__name', 'fals__fal_type__name']
+    autocomplete_fields = ['sender', 'destination']

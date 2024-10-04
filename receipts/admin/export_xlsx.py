@@ -32,6 +32,7 @@ def export_xlsx(request):
     for fal_type in fal_types:
         ws = wb.create_sheet(fal_type.name.replace('/', ' ')[:30])
         export_fal_type(fal_type, ws, departments)
+        ws.freeze_panes = ws['B3']
 
     end = time.time()
     print(end - start)

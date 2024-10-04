@@ -6,154 +6,13 @@ from receipts.models.invoice import Invoice
 from receipts.models.reporting import FALReportEntry
 from ..models import ReceiptRequest, ReceiptRequestCoupon, Certificate
 
-from .utils import CENTER_ALIGNMENT, cell_center_border, BASE_DEP_CELL_FILL, THIN_BORDER, OTHER_DEP_CELL_FILL
+from .utils import cell_center_border, THIN_BORDER
+from .reporting_summary_document_handler import ReportingSummaryReportDocumentHandler
+from .base_document_handler import BaseFALDocumentHandler
+from .invoice_document_handler import InvoiceDocumentHandler
 
 
 DEP_BY_INDEX = {}
-
-
-class BaseFALDocumentHandler:
-    def __init__(self, fal, ws, state):
-        self.ws = ws
-        self.fal = fal
-        self.state = state
-
-    def add_idx(self, col_name):
-        return f"{col_name}{self.state['idx']}"
-
-    def format_document_name(self, name):
-        cell_center_border(self.ws, self.add_idx('A'), name)
-
-    def format_document_number(self, number):
-        cell_center_border(self.ws, self.add_idx('B'), number)
-
-    def format_document_operation_date(self, date):
-        cell_center_border(self.ws, self.add_idx('C'), date)
-
-    def format_document_sender(self, sender):
-        cell_center_border(self.ws, self.add_idx('D'), sender)
-
-    def format_fal_income(self, amount):
-        cell_center_border(self.ws, self.add_idx('E'), amount or '')
-
-    def format_fal_income_dep(self, amount):
-        cell_center_border(self.ws, self.add_idx('E'), amount or '')
-
-    def format_fal_outcome(self, amount):
-        cell_center_border(self.ws, self.add_idx('F'), amount or '')
-
-    def format_fal_total(self):
-        cell_center_border(self.ws, self.add_idx('G'), self.state['total'])
-
-    def format_fal_by_dep(self):
-        income = self.get_fal_income()
-        outcome = self.get_fal_outcome()
-        dep = self.get_dep()
-        dep_index_base = DEP_BY_INDEX['А4548']
-        dep_index_505 = DEP_BY_INDEX['А4635']
-        if dep == 'А4548':
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index_base)), income or '')
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index_base+1)), outcome or '')
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index_505)), '')
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index_505+1)), '')
-        elif dep == 'А4635':
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index_base)), '')
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index_base+1)), '')
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index_505)), income or '')
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index_505 + 1)), outcome or '')
-
-    def format_fal_total_base_dep(self):
-        dep_index_base = DEP_BY_INDEX['А4548']
-        dep_index_505 = DEP_BY_INDEX['А4635']
-        cell_center_border(self.ws, self.add_idx(
-            get_column_letter(dep_index_base+2)), self.state['total_by_dep'].setdefault('А4548', 0))
-        cell_center_border(self.ws, self.add_idx(
-            get_column_letter(dep_index_505+2)), self.state['total_by_dep'].setdefault('А4635', 0))
-
-    def process(self):
-        self.format_document_name(self.get_document_name())
-        self.format_document_number(self.get_document_number())
-        self.format_document_operation_date(self.get_document_operation_date())
-        self.format_document_sender(self.get_document_sender())
-        self.format_fal_income(self.get_fal_income())
-        self.format_fal_outcome(self.get_fal_outcome())
-
-        self.update_total()
-        self.format_fal_total()
-
-        self.update_total_base_dep()
-        self.format_fal_total_base_dep()
-        self.format_fal_by_dep()
-
-    def update_total(self):
-        income = self.get_fal_income() or 0
-        outcome = self.get_fal_outcome() or 0
-        self.state['total'] = self.state['total'] - outcome + income
-
-
-class ReportingSummaryReportDocumentHandler(BaseFALDocumentHandler):
-    '''Handle ReportingSummaryReport
-    '''
-
-    def update_total_base_dep(self):
-        pass
-
-    def get_document_name(self):
-        return self.fal.report.summary_report._meta.verbose_name
-
-    def get_dep(self):
-        return ''
-
-    def get_document_number(self):
-        return self.fal.report.summary_report.number or '-'
-
-    def get_document_operation_date(self):
-        return self.fal.report.summary_report.end_date
-
-    def get_document_sender(self):
-        return 'в підр.'
-
-    def get_fal_income(self):
-        return 0
-
-    def get_fal_outcome(self):
-        fals = FALReportEntry.objects.filter(
-            fal_type=self.fal.fal_type,
-            report__summary_report=self.fal.report.summary_report)
-        return sum([fal.outcome for fal in fals])
-
-    def process(self):
-        if self.fal.report.summary_report in self.state.setdefault('reports_processed', []):
-            return False
-        self.state['reports_processed'].append(
-            self.fal.report.summary_report)
-        super().process()
-        self.format_departments()
-        return True
-
-    def format_departments(self):
-        fals = FALReportEntry.objects.filter(
-            fal_type=self.fal.fal_type,
-            report__summary_report=self.fal.report.summary_report)
-        for fal in fals:
-            dep_index = DEP_BY_INDEX[fal.report.department.name]
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index+1)), fal.outcome)
-            col_letter = get_column_letter(dep_index+2)
-            total_cell = self.add_idx(col_letter)
-            self.ws[total_cell].value = \
-                f'=SUM({get_column_letter(dep_index)}$3:{get_column_letter(dep_index)}{self.state["idx"]})-SUM({
-                get_column_letter(dep_index+1)}$3:{get_column_letter(dep_index+1)}{self.state["idx"]})'
-            self.ws[total_cell].alignment = CENTER_ALIGNMENT
-            self.ws[total_cell].border = THIN_BORDER
 
 
 class FALDocumentHandler(BaseFALDocumentHandler):
@@ -234,7 +93,8 @@ def get_sorted_fals(fal_type):
 
 def format_rows(ws, fal_type):
     ws_state = {'total': 0,
-                'total_by_dep': {}}
+                'total_by_dep': {},
+                'DEP_BY_INDEX': DEP_BY_INDEX}
     fals = get_sorted_fals(fal_type)
     j = 3
     for i, fal in enumerate(fals):
@@ -244,6 +104,8 @@ def format_rows(ws, fal_type):
                 j -= 1
         elif type(fal.document_object) != Invoice:
             FALDocumentHandler(fal, ws, ws_state).process()
+        elif type(fal.document_object) == Invoice:
+            InvoiceDocumentHandler(fal, ws, ws_state).process()
 
 
 def format_header(ws, fal_type, departments):
@@ -265,7 +127,7 @@ def format_header(ws, fal_type, departments):
     total_cell = cell_center_border(ws, 'E1', 'Загалом')
     total_cell.font = Font(bold=True)
     total_cell.fill = PatternFill(
-        start_color="fee8d9", end_color="fee8d9", fill_type="solid")
+        start_color="9bb8d9", end_color="9bb8d9", fill_type="solid")
 
     cell_center_border(
         ws, 'a2', 'Найменування документу').font = Font(bold=True)
