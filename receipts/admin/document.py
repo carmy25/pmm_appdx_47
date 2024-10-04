@@ -77,6 +77,12 @@ class DocumentAdmin(admin.ModelAdmin):
         return 'Так' if obj.scan.name else 'Ні'
     scan_present.short_description = 'Скан присутній'
 
+    def save_model(self, request, obj, form, change):
+        if type(obj.sender) is str and type(obj.destination) is str:
+            obj.sender = obj.sender.upper()
+            obj.destination = obj.destination.upper()
+        super().save_model(request, obj, form, change)
+
 
 class InvoiceAdmin(DocumentAdmin):
     search_fields = ['number', 'sender__name',

@@ -9,6 +9,7 @@ class Warehouse(models.Model):
         verbose_name_plural = 'Склади'
 
     name = models.CharField(max_length=100, verbose_name="ім'я", unique=True)
+    order = models.IntegerField(default=10, verbose_name='порядок')
 
     def __str__(self):
         return self.name

@@ -1,4 +1,5 @@
 
+from django.db.models import F
 from django.contrib import admin
 from django.http import HttpResponse
 
@@ -27,7 +28,7 @@ def export_xlsx(request):
     fal_types = FALType.objects.filter(
         category=category) if category else FALType.objects.all()
     departments = Department.objects.all().order_by(
-        '-name').order_by('-warehouse__name')
+        '-name').order_by(F('warehouse__order').asc(nulls_last=True))
     for fal_type in fal_types:
         ws = wb.create_sheet(fal_type.name.replace('/', ' ')[:30])
         export_fal_type(fal_type, ws, departments)

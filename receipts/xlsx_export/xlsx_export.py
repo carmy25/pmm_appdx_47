@@ -48,23 +48,35 @@ class BaseFALDocumentHandler:
     def format_fal_by_dep(self):
         income = self.get_fal_income()
         outcome = self.get_fal_outcome()
-        dep = self.get_dep()[1:]
-        if dep == '4548':
-            cell_center_border(self.ws, self.add_idx('H'), income or '')
-            cell_center_border(self.ws, self.add_idx('I'), outcome or '')
-            cell_center_border(self.ws, self.add_idx('K'), '')
-            cell_center_border(self.ws, self.add_idx('L'), '')
-        elif dep == '4635':
-            cell_center_border(self.ws, self.add_idx('H'), '')
-            cell_center_border(self.ws, self.add_idx('I'), '')
-            cell_center_border(self.ws, self.add_idx('K'), income or '')
-            cell_center_border(self.ws, self.add_idx('L'), outcome or '')
+        dep = self.get_dep()
+        dep_index_base = DEP_BY_INDEX['А4548']
+        dep_index_505 = DEP_BY_INDEX['А4635']
+        if dep == 'А4548':
+            cell_center_border(self.ws, self.add_idx(
+                get_column_letter(dep_index_base)), income or '')
+            cell_center_border(self.ws, self.add_idx(
+                get_column_letter(dep_index_base+1)), outcome or '')
+            cell_center_border(self.ws, self.add_idx(
+                get_column_letter(dep_index_505)), '')
+            cell_center_border(self.ws, self.add_idx(
+                get_column_letter(dep_index_505+1)), '')
+        elif dep == 'А4635':
+            cell_center_border(self.ws, self.add_idx(
+                get_column_letter(dep_index_base)), '')
+            cell_center_border(self.ws, self.add_idx(
+                get_column_letter(dep_index_base+1)), '')
+            cell_center_border(self.ws, self.add_idx(
+                get_column_letter(dep_index_505)), income or '')
+            cell_center_border(self.ws, self.add_idx(
+                get_column_letter(dep_index_505 + 1)), outcome or '')
 
     def format_fal_total_base_dep(self):
+        dep_index_base = DEP_BY_INDEX['А4548']
+        dep_index_505 = DEP_BY_INDEX['А4635']
         cell_center_border(self.ws, self.add_idx(
-            'J'), self.state['total_by_dep']['4548'])
+            get_column_letter(dep_index_base+2)), self.state['total_by_dep'].setdefault('А4548', 0))
         cell_center_border(self.ws, self.add_idx(
-            'M'), self.state['total_by_dep']['4635'])
+            get_column_letter(dep_index_505+2)), self.state['total_by_dep'].setdefault('А4635', 0))
 
     def process(self):
         self.format_document_name(self.get_document_name())
@@ -154,11 +166,12 @@ class FALDocumentHandler(BaseFALDocumentHandler):
 
     def update_total_base_dep(self):
         if type(self.fal.document_object) in [ReceiptRequestCoupon, Certificate]:
-            self.state['total_by_dep'][self.fal.document_object.destination[1:]
-                                       ] += self.fal.amount
+            self.state['total_by_dep'][self.fal.document_object.destination] = self.fal.amount + \
+                self.state['total_by_dep'].get(
+                    self.fal.document_object.destination, 0)
         else:
-            self.state['total_by_dep'][self.fal.document_object.sender[1:]
-                                       ] -= self.fal.amount
+            self.state['total_by_dep'][self.fal.document_object.sender] = self.state['total_by_dep'].get(
+                self.fal.document_object.sender, 0) - self.fal.amount
 
     def get_document_name(self):
         return self.fal.document_object._meta.verbose_name
@@ -221,7 +234,7 @@ def get_sorted_fals(fal_type):
 
 def format_rows(ws, fal_type):
     ws_state = {'total': 0,
-                'total_by_dep': {'4548': 0, '4635': 0}}
+                'total_by_dep': {}}
     fals = get_sorted_fals(fal_type)
     j = 3
     for i, fal in enumerate(fals):
@@ -264,29 +277,11 @@ def format_header(ws, fal_type, departments):
     cell_center_border(ws, 'f2', 'Вибуло').font = Font(bold=True)
     cell_center_border(ws, 'g2', 'Всього').font = Font(bold=True)
 
-    base_dep_cell = cell_center_border(ws, 'H1', 'A4548')
-    base_dep_cell.font = Font(bold=True)
-    base_dep_cell.fill = BASE_DEP_CELL_FILL
-    ws.merged_cells.ranges.add('H1:J1')
-    ws[f'H1'].alignment = Alignment(horizontal='center')
-
-    cell_center_border(ws, 'H2', 'Надійшло').font = Font(bold=True)
-    cell_center_border(ws, 'I2', 'Вибуло').font = Font(bold=True)
-    cell_center_border(ws, 'J2', 'Всього').font = Font(bold=True)
-
-    other_dep_cell = cell_center_border(ws, 'K1', 'A4635')
-    other_dep_cell.font = Font(bold=True)
-    other_dep_cell.fill = OTHER_DEP_CELL_FILL
-    ws.merged_cells.ranges.add('k1:m1')
-    cell_center_border(ws, 'K2', 'Надійшло').font = Font(bold=True)
-    cell_center_border(ws, 'L2', 'Вибуло').font = Font(bold=True)
-    cell_center_border(ws, 'M2', 'Всього').font = Font(bold=True)
-
     format_departments(ws, departments)
 
 
 def format_departments(ws, deps):
-    col_idx = 14
+    col_idx = 8
     for dep in deps:
         DEP_BY_INDEX[dep.name] = col_idx
         start_cell_name = f'{get_column_letter(col_idx)}1'
