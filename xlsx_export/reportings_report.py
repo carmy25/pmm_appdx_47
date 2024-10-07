@@ -56,14 +56,15 @@ def format_deps_reportings(ws, reportings):
         fal_kgs_str = ''
         for fal in report.fals.all():
             try:
-                old_fal = prev_reporting.fals.get(fal_type=fal.fal_type)
-                old_fal_all = round(old_fal.remains +
-                                    old_fal.income - old_fal.outcome, 1)
+                if fal.remains != 0:
+                    old_fal = prev_reporting.fals.get(fal_type=fal.fal_type)
+                    old_fal_all = round(old_fal.remains +
+                                        old_fal.income - old_fal.outcome, 1)
 
-                if fal.remains != old_fal_all:
-                    has_note = True
-                    cell_center_border(ws, f'{col_name}{row_idx}', f'{fal.fal_type.name} {
-                        fal.remains} <> {old_fal_all}')
+                    if fal.remains != old_fal_all:
+                        has_note = True
+                        cell_center_border(ws, f'{col_name}{row_idx}', f'{fal.fal_type.name} {
+                            fal.remains} <> {old_fal_all}')
                 fal_kgs_str += f'{fal.fal_type.name}({round(fal.remains * fal.density, 0)}/{round(
                     fal.income * fal.density, 1)}/{round(fal.outcome * fal.density, 1)})|'
             except Exception as e:
