@@ -1,5 +1,7 @@
 from datetime import timedelta
 from openpyxl.utils import get_column_letter
+from openpyxl.comments import Comment
+from django.core.exceptions import ObjectDoesNotExist
 
 from xlsx_export.utils import cell_center_border, month_iter
 
@@ -26,12 +28,12 @@ def export_reportings_report(ws, reportings):
     idx = 2
     for y, m in month_iter(oldest.month, oldest.year, newest.month, newest.year):
         col_name = get_column_letter(idx)
-        ws.column_dimensions[col_name].width = 40
         MONTH_BY_INDEX[(y, m)] = col_name
         idx += 1
         cell_center_border(ws, f'{col_name}1', f'{m}/{y}')
 
     format_deps_reportings(ws, reportings)
+    ws.freeze_panes = ws['B2']
 
 
 def get_prev_report(report, all_reports):
@@ -44,32 +46,36 @@ def get_prev_report(report, all_reports):
 
 def format_deps_reportings(ws, reportings):
     for report in reportings:
+        comment = ''
+        good = True
         end_date = report.end_date
         col_name = MONTH_BY_INDEX[(end_date.year, end_date.month)]
         row_idx = DEP_BY_INDEX[report.department.name]
 
         prev_reporting = get_prev_report(report, reportings)
         if prev_reporting is None:
-            cell_center_border(ws, f'{col_name}{row_idx}', '+(ПВ)')
-            continue
-        has_note = False
-        fal_kgs_str = ''
+            comment = 'Попереднє донесення відсутнє\n'
+        cell_addr = f'{col_name}{row_idx}'
         for fal in report.fals.all():
-            try:
-                if fal.remains != 0:
+            if fal.remains != 0:
+                try:
                     old_fal = prev_reporting.fals.get(fal_type=fal.fal_type)
                     old_fal_all = round(old_fal.remains +
                                         old_fal.income - old_fal.outcome, 1)
-
+                except AttributeError:
+                    pass
+                except ObjectDoesNotExist:
+                    good = False
+                    comment += f'{fal.fal_type.name} відсутнє\n'
+                else:
                     if fal.remains != old_fal_all:
-                        has_note = True
-                        cell_center_border(ws, f'{col_name}{row_idx}', f'{fal.fal_type.name} {
-                            fal.remains} <> {old_fal_all}')
-                fal_kgs_str += f'{fal.fal_type.name}({round(fal.remains * fal.density, 0)}/{round(
-                    fal.income * fal.density, 1)}/{round(fal.outcome * fal.density, 1)})|'
-            except Exception as e:
-                has_note = True
-                cell_center_border(ws, f'{col_name}{row_idx}', f'{
-                                   fal.fal_type.name} -')
-        if not has_note:
-            cell_center_border(ws, f'{col_name}{row_idx}', f'+[{fal_kgs_str}]')
+                        good = False
+                        comment += f'{fal.fal_type.name} {fal.remains} <> {old_fal_all}\n'
+            income_kgs = round(fal.income * fal.density)
+            remains_kgs = round(fal.remains * fal.density)
+            outcome_kgs = round(fal.outcome * fal.density)
+            comment += f'{fal.fal_type.name}({remains_kgs}/{income_kgs}/{
+                outcome_kgs}) - {remains_kgs+income_kgs-outcome_kgs}\n\n'
+            cell_center_border(ws, cell_addr, '+' if good else '-')
+            ws[cell_addr].comment = Comment(
+                comment, 'auth', height=100, width=300)
