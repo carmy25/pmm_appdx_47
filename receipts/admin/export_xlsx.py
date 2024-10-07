@@ -6,8 +6,8 @@ from django.http import HttpResponse
 from departments.models import Department
 from fals.models import FALType
 from receipts.models.reporting import Reporting
-from receipts.xlsx_export.reportings_report import export_reportings_report
-from ..xlsx_export import export_fal_type
+from xlsx_export.reportings_report import export_reportings_report
+from xlsx_export import export_fal_type
 
 import openpyxl
 

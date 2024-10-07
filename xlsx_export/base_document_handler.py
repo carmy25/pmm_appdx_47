@@ -4,7 +4,7 @@ from itertools import chain
 from fals.models import FAL
 from receipts.models.invoice import Invoice
 from receipts.models.reporting import FALReportEntry
-from ..models import ReceiptRequest, ReceiptRequestCoupon, Certificate
+from receipts.models import ReceiptRequest, ReceiptRequestCoupon, Certificate
 
 from .utils import CENTER_ALIGNMENT, cell_center_border, BASE_DEP_CELL_FILL, THIN_BORDER, OTHER_DEP_CELL_FILL
 

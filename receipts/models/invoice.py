@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from departments.models import Department
 
 from .base import BaseDocument
+from summary_reports.models import InvoiceSummaryReport
 
 
 class Invoice(BaseDocument):
@@ -27,3 +28,8 @@ class Invoice(BaseDocument):
         'fals.FAL',
         object_id_field='object_id',
         related_query_name='document')
+
+    summary_report = models.ForeignKey(
+        InvoiceSummaryReport, null=True,
+        related_name='invoices',
+        on_delete=models.SET_NULL)

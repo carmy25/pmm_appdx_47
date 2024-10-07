@@ -1,7 +1,8 @@
 from django import forms
 from admin_object_actions.forms import AdminObjectActionForm
 from django.http import HttpResponse
-from .models.summary_report import ReportingSummaryReport
+
+from .models import ReportingSummaryReport
 
 
 class MyActionForm(AdminObjectActionForm):

@@ -1,7 +1,7 @@
 
 from openpyxl.utils import get_column_letter
 
-from ..models.reporting import FALReportEntry
+from receipts.models.reporting import FALReportEntry
 from .utils import CENTER_ALIGNMENT, THIN_BORDER, cell_center_border
 from .base_document_handler import BaseFALDocumentHandler
 

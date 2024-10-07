@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib import messages
 
 from receipts.models.reporting import FALReportEntry, Reporting
-from receipts.models.summary_report import ReportingSummaryReport
+from summary_reports.models import ReportingSummaryReport
 
 from datetime import date
 

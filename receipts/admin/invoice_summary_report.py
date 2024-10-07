@@ -4,11 +4,11 @@ from summary_reports.forms import MyActionForm
 from django.contrib import admin
 from admin_object_actions.admin import ModelAdminObjectActionsMixin
 
-from ..models.reporting import Reporting
+from ..models.invoice import Invoice
 
 
-class ReportingInline(admin.TabularInline):
-    model = Reporting
+class InvoiceInline(admin.TabularInline):
+    model = Invoice
     show_change_link = True
     # readonly_fields = ['number', 'start_date', 'end_date',]
 
@@ -22,8 +22,8 @@ class ReportingInline(admin.TabularInline):
         return False
 
 
-class ReportingSummaryReportAdmin(ModelAdminObjectActionsMixin, admin.ModelAdmin):
-    inlines = [ReportingInline]
+class InvoiceSummaryReportAdmin(ModelAdminObjectActionsMixin, admin.ModelAdmin):
+    inlines = [InvoiceInline]
     search_fields = ['number']
     list_display = ['number', 'start_date',
                     'end_date', 'display_object_actions_list',]

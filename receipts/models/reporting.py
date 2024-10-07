@@ -3,7 +3,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.utils.translation import gettext_lazy as _
 from departments.models import Department
 from fals.models import FALType
-from receipts.models.summary_report import ReportingSummaryReport
+from summary_reports.models import ReportingSummaryReport
 
 from .base import BaseDocument
 
@@ -51,7 +51,7 @@ class FALReportEntry(models.Model):
         related_name='fal_report_entries')
 
     report = models.ForeignKey(Reporting,
-                               on_delete=models.CASCADE,)
+                               on_delete=models.CASCADE, related_name='fals')
 
     density = models.FloatField(verbose_name='густина')
     remains = models.FloatField(verbose_name='залишок')

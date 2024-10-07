@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'fals.apps.FalsConfig',
     'receipts.apps.ReceiptsConfig',
     'departments.apps.DepartmentsConfig',
+    'summary_reports.apps.SummaryReportsConfig',
 ]
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 CONSTANCE_CONFIG = {
