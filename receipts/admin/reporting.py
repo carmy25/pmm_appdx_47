@@ -36,7 +36,6 @@ class ReportingAdmin(admin.ModelAdmin):
         last_report_number = self.get_last_doc_number(Reporting)
 
         for reporting in queryset:
-            last_report_number += 1
             reporting_end_day = reporting.end_date.day
             if not reporting.document_date:
                 reporting.document_date = \
@@ -44,7 +43,9 @@ class ReportingAdmin(admin.ModelAdmin):
                          reporting.end_date.month,
                          reporting_end_day) if reporting_end_day > config.REPORTING_DOCUMENT_DATE_DAY \
                     else date(reporting.end_date.year, reporting.end_date.month, config.REPORTING_DOCUMENT_DATE_DAY)
-            reporting.number = str(last_report_number)
+            if not reporting.number:
+                last_report_number += 1
+                reporting.number = str(last_report_number)
             reporting.save()
 
     @admin.action(description="Створити зведену відомість")
