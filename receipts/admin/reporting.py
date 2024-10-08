@@ -27,6 +27,9 @@ class ReportingAdmin(admin.ModelAdmin):
     autocomplete_fields = ['department']
     list_filter = (('end_date', DateRangeFilterBuilder()),)
 
+    def get_ordering(self, request):
+        return ['-end_date']
+
     def get_last_doc_number(self, model):
         sorted_docs = list(sorted(model.objects.all(),
                                   key=lambda r: int(r.number) if r.number else 0))
