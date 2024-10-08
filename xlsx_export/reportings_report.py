@@ -81,4 +81,4 @@ def format_deps_reportings(ws, reportings):
             good = False
         cell_center_border(ws, cell_addr, '+' if good else '-')
         ws[cell_addr].comment = Comment(
-            comment + (report.note if report.note else ''), 'auth', height=100, width=300)
+            comment + (report.note if report.note else ''), 'auth', height=200, width=350)
