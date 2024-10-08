@@ -74,8 +74,9 @@ def format_deps_reportings(ws, reportings):
             income_kgs = round(fal.income * fal.density, 1)
             remains_kgs = round(fal.remains * fal.density, 1)
             outcome_kgs = round(fal.outcome * fal.density, 1)
-            comment += f'{fal.fal_type.name}({remains_kgs}/{income_kgs}/{
-                outcome_kgs}) - {remains_kgs+income_kgs-outcome_kgs}\n\n'
+            total_kgs = remains_kgs + income_kgs - outcome_kgs
+            comment += f'{fal.fal_type.name}({remains_kgs:.1f}/{income_kgs:.1f}/{
+                outcome_kgs:.1f}) - {total_kgs:.1f}\n\n'
         if report.fals.all().count() == 0:
             good = False
         cell_center_border(ws, cell_addr, '+' if good else '-')
