@@ -71,9 +71,9 @@ def format_deps_reportings(ws, reportings):
                     if fal.remains != old_fal_all:
                         good = False
                         comment += f'{fal.fal_type.name} {fal.remains} <> {old_fal_all}\n'
-            income_kgs = round(fal.income * fal.density)
-            remains_kgs = round(fal.remains * fal.density)
-            outcome_kgs = round(fal.outcome * fal.density)
+            income_kgs = round(fal.income * fal.density, 1)
+            remains_kgs = round(fal.remains * fal.density, 1)
+            outcome_kgs = round(fal.outcome * fal.density, 1)
             comment += f'{fal.fal_type.name}({remains_kgs}/{income_kgs}/{
                 outcome_kgs}) - {remains_kgs+income_kgs-outcome_kgs}\n\n'
         if report.fals.all().count() == 0:
