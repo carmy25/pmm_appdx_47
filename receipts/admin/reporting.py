@@ -3,6 +3,7 @@ from django.utils.safestring import mark_safe
 from django.urls import reverse
 from django.contrib import admin
 from django.contrib import messages
+from rangefilter.filters import DateRangeFilterBuilder
 
 from receipts.models.reporting import FALReportEntry, Reporting
 from summary_reports.models import ReportingSummaryReport
@@ -24,6 +25,7 @@ class ReportingAdmin(admin.ModelAdmin):
     actions = ['create_summary_report']
     exclude = ['summary_report']
     autocomplete_fields = ['department']
+    list_filter = (('end_date', DateRangeFilterBuilder()),)
 
     def get_last_doc_number(self, model):
         sorted_docs = list(sorted(model.objects.all(),
