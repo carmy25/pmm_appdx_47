@@ -78,4 +78,4 @@ def format_deps_reportings(ws, reportings):
                 outcome_kgs}) - {remains_kgs+income_kgs-outcome_kgs}\n\n'
             cell_center_border(ws, cell_addr, '+' if good else '-')
             ws[cell_addr].comment = Comment(
-                comment, 'auth', height=100, width=300)
+                comment+report.note, 'auth', height=100, width=300)
