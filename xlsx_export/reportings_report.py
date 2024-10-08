@@ -76,6 +76,6 @@ def format_deps_reportings(ws, reportings):
             outcome_kgs = round(fal.outcome * fal.density)
             comment += f'{fal.fal_type.name}({remains_kgs}/{income_kgs}/{
                 outcome_kgs}) - {remains_kgs+income_kgs-outcome_kgs}\n\n'
-            cell_center_border(ws, cell_addr, '+' if good else '-')
-            ws[cell_addr].comment = Comment(
-                comment + (report.note if report.note else ''), 'auth', height=100, width=300)
+        cell_center_border(ws, cell_addr, '+' if good else '-')
+        ws[cell_addr].comment = Comment(
+            comment + (report.note if report.note else ''), 'auth', height=100, width=300)
