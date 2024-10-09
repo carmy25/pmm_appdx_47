@@ -56,8 +56,6 @@ class FALReportEntry(models.Model):
     density = models.FloatField(verbose_name='густина')
     remains = models.FloatField(verbose_name='залишок')
     income = models.FloatField(verbose_name='надійшло')
-    outcome_own = models.FloatField(
-        verbose_name='вибуло(власна частина)', null=True, blank=True)
     outcome = models.FloatField(verbose_name='вибуло')
 
     class Meta:
