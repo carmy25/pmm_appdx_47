@@ -53,7 +53,6 @@ class FALReportEntry(models.Model):
     report = models.ForeignKey(Reporting,
                                on_delete=models.CASCADE, related_name='fals')
 
-    density = models.FloatField(verbose_name='густина')
     remains = models.FloatField(verbose_name='залишок')
     income = models.FloatField(verbose_name='надійшло')
     outcome = models.FloatField(verbose_name='вибуло')

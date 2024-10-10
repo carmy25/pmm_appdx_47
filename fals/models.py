@@ -19,6 +19,7 @@ class FALType(models.Model):
         default=Category.OIL,
         verbose_name='категорія',
     )
+    density = models.FloatField(default=0)
 
     class Meta:
         verbose_name = "Тип ПММ"

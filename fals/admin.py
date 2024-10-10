@@ -14,7 +14,7 @@ class FALAdmin(admin.ModelAdmin):
 
 class FALTypeAdmin(admin.ModelAdmin):
     search_fields = ['name', 'category']
-    list_display = ['name', 'category']
+    list_display = ['name', 'category', 'density']
 
 
 admin.site.register(FAL, FALAdmin)
