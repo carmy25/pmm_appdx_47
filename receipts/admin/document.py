@@ -85,7 +85,7 @@ class DocumentAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
-class InvoiceAdmin(DocumentAdmin):
+class HandoutListAdmin(DocumentAdmin):
     search_fields = ['number', 'sender__name',
                      'destination__name', 'fals__fal_type__name']
     autocomplete_fields = ['sender', 'destination']

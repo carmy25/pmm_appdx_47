@@ -1,29 +1,11 @@
-from django.http import HttpResponse
-from summary_reports.forms import MyActionForm
-
 from django.contrib import admin
 from admin_object_actions.admin import ModelAdminObjectActionsMixin
+from django.http import HttpResponse
 
-from ..models.invoice import Invoice
-
-
-class InvoiceInline(admin.TabularInline):
-    model = Invoice
-    show_change_link = True
-    # readonly_fields = ['number', 'start_date', 'end_date',]
-
-    def has_change_permission(self, request, obj):
-        return False
-
-    def has_add_permission(self, request, obj):
-        return False
-
-    def has_delete_permission(self, request, obj):
-        return False
+from summary_reports.forms import MyActionForm
 
 
-class InvoiceSummaryReportAdmin(ModelAdminObjectActionsMixin, admin.ModelAdmin):
-    inlines = [InvoiceInline]
+class BaseSummaryReportAdmin(ModelAdminObjectActionsMixin, admin.ModelAdmin):
     search_fields = ['number']
     list_display = ['number', 'start_date',
                     'end_date', 'display_object_actions_list',]
@@ -51,9 +33,26 @@ class InvoiceSummaryReportAdmin(ModelAdminObjectActionsMixin, admin.ModelAdmin):
 
     ]
 
+    def has_add_permission(self, request, obj=None):
+        return False
+
     def do_other_action(self, obj, form):
         return HttpResponse(content="ddd")
 
     def display_object_actions_detail(self, obj):
         return super().display_object_actions_detail(obj)
     display_object_actions_detail.short_description = 'Дії'
+
+
+class BaseDocumentInline(admin.TabularInline):
+    show_change_link = True
+    # readonly_fields = ['number', 'start_date', 'end_date',]
+
+    def has_change_permission(self, request, obj):
+        return False
+
+    def has_add_permission(self, request, obj):
+        return False
+
+    def has_delete_permission(self, request, obj):
+        return False

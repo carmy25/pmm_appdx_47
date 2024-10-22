@@ -30,6 +30,8 @@ class Invoice(BaseDocument):
         related_query_name='document')
 
     summary_report = models.ForeignKey(
-        InvoiceSummaryReport, null=True,
+        InvoiceSummaryReport,
+        null=True, blank=True,
         related_name='invoices',
-        on_delete=models.SET_NULL)
+        on_delete=models.SET_NULL,
+        verbose_name='Звередна відомість')
