@@ -4,6 +4,8 @@ from django.db import models
 from departments.models import Department
 from django.contrib.contenttypes.fields import GenericRelation
 
+from summary_reports.models import HandoutListSummaryReport
+
 from .base import BaseDocument
 
 
@@ -29,3 +31,8 @@ class HandoutList(BaseDocument):
         'fals.FAL',
         object_id_field='object_id',
         related_query_name='document')
+
+    summary_report = models.ForeignKey(
+        HandoutListSummaryReport, null=True,
+        related_name='handout_lists',
+        on_delete=models.SET_NULL)

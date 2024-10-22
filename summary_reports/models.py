@@ -25,3 +25,9 @@ class InvoiceSummaryReport(BaseSummaryReport):
     class Meta:
         verbose_name = 'Зведена відомість по накладних'
         verbose_name_plural = 'Зведені відомості по накладних'
+
+
+class HandoutListSummaryReport(BaseSummaryReport):
+    class Meta:
+        verbose_name = 'Зведена відомість по роздавальних'
+        verbose_name_plural = 'Зведені відомості по роздавальних'

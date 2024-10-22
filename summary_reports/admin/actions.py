@@ -7,10 +7,11 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
+from receipts.models.handout_list import HandoutList
 from receipts.models.reporting import Reporting
 
 
-from ..models import ReportingSummaryReport, InvoiceSummaryReport
+from ..models import HandoutListSummaryReport, ReportingSummaryReport, InvoiceSummaryReport
 
 
 def get_last_doc_number(models):
@@ -43,14 +44,15 @@ def prepear_documents(doc_model, queryset):
 def create_summary_report(modeladmin, request, queryset):
     last_summary_number = get_last_doc_number(
         [ReportingSummaryReport, InvoiceSummaryReport])
-    if (model := modeladmin.model) is Reporting:
+    if (model := modeladmin.model) in (Reporting, HandoutList):
         prepear_documents(model, queryset)
         start_date = queryset.order_by('start_date').first().start_date
         end_date = queryset.order_by('-end_date').first().end_date
         document_date =  \
             end_date if end_date.day > config.SUMMARY_REPORT_DOCUMENT_DATE_DAY \
             else date(end_date.year, end_date.month, config.SUMMARY_REPORT_DOCUMENT_DATE_DAY)
-        summary_report = ReportingSummaryReport(
+        summary_report_class = ReportingSummaryReport if model is Reporting else HandoutListSummaryReport
+        summary_report = summary_report_class(
             number=str(last_summary_number+1),
             document_date=document_date,
             start_date=start_date,
@@ -62,11 +64,12 @@ def create_summary_report(modeladmin, request, queryset):
         document_date =  \
             end_date if end_date.day > config.SUMMARY_REPORT_DOCUMENT_DATE_DAY \
             else date(end_date.year, end_date.month, config.SUMMARY_REPORT_DOCUMENT_DATE_DAY)
-        summary_report = InvoiceSummaryReport(
-            number=str(last_summary_number+1),
-            document_date=document_date,
-            start_date=start_date,
-            end_date=end_date)
+        summary_report_class = InvoiceSummaryReport
+    summary_report = summary_report_class(
+        number=str(last_summary_number+1),
+        document_date=document_date,
+        start_date=start_date,
+        end_date=end_date)
 
     summary_report.save()
 
