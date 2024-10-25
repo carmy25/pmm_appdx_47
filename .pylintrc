@@ -1,0 +1,3 @@
+[MASTER]
+load-plugins=pylint_django
+django-settings-module=pmm_appdx_47.settings
