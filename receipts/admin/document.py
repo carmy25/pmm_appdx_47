@@ -7,6 +7,7 @@ from rangefilter.filters import DateRangeFilterBuilder
 
 from departments.models import Department
 from fals.models import FAL
+from receipts.models.handout_list import HandoutList
 from receipts.models.invoice import Invoice
 
 
@@ -69,7 +70,7 @@ class DocumentAdmin(admin.ModelAdmin):
                     ]
 
     def book(self, obj):
-        if type(obj) in [Certificate, Invoice]:
+        if type(obj) in [Certificate, Invoice, HandoutList]:
             return ''
         return f'{obj.book_number}{obj.book_series.upper()}'
     book.short_description = 'Книга'

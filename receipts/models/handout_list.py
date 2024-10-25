@@ -33,6 +33,7 @@ class HandoutList(BaseDocument):
         related_query_name='document')
 
     summary_report = models.ForeignKey(
-        HandoutListSummaryReport, null=True,
+        HandoutListSummaryReport,
+        null=True, blank=True,
         related_name='handout_lists',
         on_delete=models.SET_NULL)

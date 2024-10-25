@@ -38,7 +38,8 @@ class ReportingSummaryReportDocumentHandler(BaseFALDocumentHandler):
         return sum([fal.outcome for fal in fals])
 
     def process(self):
-        if self.fal.report.summary_report in self.state.setdefault('reports_processed', []):
+        if (sr := self.fal.report.summary_report) and \
+                (sr in self.state.setdefault('reports_processed', [])):
             return False
         self.state['reports_processed'].append(
             self.fal.report.summary_report)
