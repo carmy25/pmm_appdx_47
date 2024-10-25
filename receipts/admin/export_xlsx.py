@@ -2,9 +2,13 @@
 from django.db.models import F
 from django.contrib import admin
 from django.http import HttpResponse
+from django.shortcuts import render
+from django.core.exceptions import MultipleObjectsReturned
+
 
 from departments.models import Department
 from fals.models import FALType
+from receipts.exceptions import DuplicateReportsError
 from receipts.models.reporting import Reporting
 from xlsx_export.reportings_report import export_reportings_report
 from xlsx_export import export_fal_type
@@ -49,6 +53,11 @@ def reportings_report(request):
     wb = openpyxl.Workbook()
     ws = wb.create_sheet('Звіт')
     if reportings.count() > 0:
-        export_reportings_report(ws, reportings)
+        try:
+            export_reportings_report(ws, reportings)
+        except DuplicateReportsError as e:
+            return render(request,
+                          'admin/reportings_report_error.html',
+                          context={'error_msg': e.args[0]})
     wb.save(response)
     return response

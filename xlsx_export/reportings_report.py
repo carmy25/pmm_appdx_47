@@ -1,8 +1,11 @@
 from datetime import timedelta
 from openpyxl.utils import get_column_letter
+from collections import Counter
 from openpyxl.comments import Comment
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import MultipleObjectsReturned
 
+from receipts.exceptions import DuplicateReportsError
 from xlsx_export.utils import cell_center_border, month_iter
 
 
@@ -67,6 +70,11 @@ def format_deps_reportings(ws, reportings):
                 except ObjectDoesNotExist:
                     good = False
                     comment += f'{fal.fal_type.name} відсутнє\n'
+                except MultipleObjectsReturned as e:
+                    duplicates = [item for item, count in Counter(
+                        [f.fal_type.name for f in prev_reporting.fals.all()]).items() if count > 1]
+                    raise DuplicateReportsError(
+                        f'В донесенні [{prev_reporting.department.name}] за [{prev_reporting.start_date} - {prev_reporting.end_date}] дублюється [{duplicates}]')
                 else:
                     if fal.remains != old_fal_all:
                         good = False

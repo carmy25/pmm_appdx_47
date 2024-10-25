@@ -34,6 +34,8 @@ class InvoiceDocumentHandler(BaseFALDocumentHandler):
         return 0
 
     def process(self):
+        if self.fal.document_object.summary_report:
+            return False
         super().process()
         self.format_departments()
         return True
