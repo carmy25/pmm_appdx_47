@@ -6,31 +6,32 @@ from summary_reports.forms import MyActionForm
 
 
 class BaseSummaryReportAdmin(ModelAdminObjectActionsMixin, admin.ModelAdmin):
-    search_fields = ['number']
-    list_display = ['number', 'start_date',
-                    'end_date', 'display_object_actions_list',]
-    readonly_fields = (
-        'display_object_actions_detail',
-    )
+    search_fields = ["number"]
+    list_display = [
+        "number",
+        "start_date",
+        "end_date",
+        "display_object_actions_list",
+    ]
+    readonly_fields = ("display_object_actions_detail",)
 
     object_actions = [
         {
-            'slug': 'gen-xlsx',
-            'verbose_name': 'Згенерувати XSLX',
-            'verbose_name_past': 'XSLX згенеровано',
-            'form_class': MyActionForm,
-            'fields': ('id', 'confirm'),
-            'readonly_fields': ('id',),
-            'permission': 'change',
+            "slug": "gen-xlsx",
+            "verbose_name": "Згенерувати XSLX",
+            "verbose_name_past": "XSLX згенеровано",
+            "form_class": MyActionForm,
+            "fields": ("id", "confirm"),
+            "readonly_fields": ("id",),
+            "permission": "change",
         },
         {
-            'slug': 'myotheraction',
-            'verbose_name': 'my other action',
-            'verbose_name_past': 'acted upon',
-            'form_method': 'GET',
-            'function': 'do_other_action',
+            "slug": "myotheraction",
+            "verbose_name": "my other action",
+            "verbose_name_past": "acted upon",
+            "form_method": "GET",
+            "function": "do_other_action",
         },
-
     ]
 
     def has_add_permission(self, request, obj=None):
@@ -41,7 +42,8 @@ class BaseSummaryReportAdmin(ModelAdminObjectActionsMixin, admin.ModelAdmin):
 
     def display_object_actions_detail(self, obj):
         return super().display_object_actions_detail(obj)
-    display_object_actions_detail.short_description = 'Дії'
+
+    display_object_actions_detail.short_description = "Дії"
 
 
 class BaseDocumentInline(admin.TabularInline):

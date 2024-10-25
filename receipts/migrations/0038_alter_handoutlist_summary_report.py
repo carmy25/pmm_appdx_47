@@ -7,14 +7,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('receipts', '0037_handoutlist_summary_report'),
-        ('summary_reports', '0002_handoutlistsummaryreport'),
+        ("receipts", "0037_handoutlist_summary_report"),
+        ("summary_reports", "0002_handoutlistsummaryreport"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='handoutlist',
-            name='summary_report',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='handout_lists', to='summary_reports.handoutlistsummaryreport'),
+            model_name="handoutlist",
+            name="summary_report",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="handout_lists",
+                to="summary_reports.handoutlistsummaryreport",
+            ),
         ),
     ]

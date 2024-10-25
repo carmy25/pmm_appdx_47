@@ -7,14 +7,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('departments', '0001_initial'),
-        ('receipts', '0009_rename_atestat_certificate_and_more'),
+        ("departments", "0001_initial"),
+        ("receipts", "0009_rename_atestat_certificate_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='summaryreport',
-            name='departments',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='departments.department', verbose_name='підрозділ'),
+            model_name="summaryreport",
+            name="departments",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="departments.department",
+                verbose_name="підрозділ",
+            ),
         ),
     ]

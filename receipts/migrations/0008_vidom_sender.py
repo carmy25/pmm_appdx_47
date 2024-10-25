@@ -6,14 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('receipts', '0007_atestat_vidom'),
+        ("receipts", "0007_atestat_vidom"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='vidom',
-            name='sender',
-            field=models.CharField(default='А4548', max_length=50, verbose_name='відправник'),
+            model_name="vidom",
+            name="sender",
+            field=models.CharField(
+                default="А4548", max_length=50, verbose_name="відправник"
+            ),
             preserve_default=False,
         ),
     ]

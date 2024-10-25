@@ -1,4 +1,4 @@
 class DuplicateReportsError(Exception):
-    def __init__(self, message='', details={}):
+    def __init__(self, message="", details={}):
         super().__init__(message)
         self.details = details

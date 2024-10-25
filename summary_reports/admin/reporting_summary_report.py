@@ -1,4 +1,3 @@
-
 from receipts.models.reporting import Reporting
 
 from .base_summary_report import BaseDocumentInline, BaseSummaryReportAdmin

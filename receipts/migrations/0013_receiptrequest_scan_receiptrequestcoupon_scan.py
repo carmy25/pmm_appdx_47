@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('receipts', '0012_remove_summaryreport_destination_and_more'),
+        ("receipts", "0012_remove_summaryreport_destination_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='receiptrequest',
-            name='scan',
-            field=models.FileField(blank=True, null=True, upload_to=''),
+            model_name="receiptrequest",
+            name="scan",
+            field=models.FileField(blank=True, null=True, upload_to=""),
         ),
         migrations.AddField(
-            model_name='receiptrequestcoupon',
-            name='scan',
-            field=models.FileField(blank=True, null=True, upload_to=''),
+            model_name="receiptrequestcoupon",
+            name="scan",
+            field=models.FileField(blank=True, null=True, upload_to=""),
         ),
     ]

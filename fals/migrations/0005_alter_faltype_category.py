@@ -6,13 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fals', '0004_rename_year_in_school_faltype_category'),
+        ("fals", "0004_rename_year_in_school_faltype_category"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='faltype',
-            name='category',
-            field=models.CharField(choices=[('OIL', 'мастило'), ('DIESEL', 'дизель'), ('PETROL', 'бензин'), ('POISON', 'отрута')], default='OIL', max_length=20, verbose_name='категорія'),
+            model_name="faltype",
+            name="category",
+            field=models.CharField(
+                choices=[
+                    ("OIL", "мастило"),
+                    ("DIESEL", "дизель"),
+                    ("PETROL", "бензин"),
+                    ("POISON", "отрута"),
+                ],
+                default="OIL",
+                max_length=20,
+                verbose_name="категорія",
+            ),
         ),
     ]

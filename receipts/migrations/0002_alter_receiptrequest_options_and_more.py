@@ -6,16 +6,22 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('receipts', '0001_initial'),
+        ("receipts", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='receiptrequest',
-            options={'verbose_name': 'чекова вимога', 'verbose_name_plural': 'чекові вимоги'},
+            name="receiptrequest",
+            options={
+                "verbose_name": "чекова вимога",
+                "verbose_name_plural": "чекові вимоги",
+            },
         ),
         migrations.AlterModelOptions(
-            name='receiptrequestcoupon',
-            options={'verbose_name': 'талон чекової вимоги', 'verbose_name_plural': 'талони чекових вимог'},
+            name="receiptrequestcoupon",
+            options={
+                "verbose_name": "талон чекової вимоги",
+                "verbose_name_plural": "талони чекових вимог",
+            },
         ),
     ]

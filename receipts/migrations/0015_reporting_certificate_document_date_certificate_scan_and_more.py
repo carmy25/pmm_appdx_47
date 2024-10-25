@@ -6,42 +6,68 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('receipts', '0014_alter_receiptrequest_scan_and_more'),
+        ("receipts", "0014_alter_receiptrequest_scan_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Reporting',
+            name="Reporting",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('number', models.CharField(max_length=50, verbose_name='номер')),
-                ('document_date', models.DateField(blank=True, null=True, verbose_name='дата документу')),
-                ('scan', models.FileField(blank=True, null=True, upload_to='', verbose_name='Скан')),
-                ('operation_date', models.DateField(verbose_name='дата операції')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("number", models.CharField(max_length=50, verbose_name="номер")),
+                (
+                    "document_date",
+                    models.DateField(
+                        blank=True, null=True, verbose_name="дата документу"
+                    ),
+                ),
+                (
+                    "scan",
+                    models.FileField(
+                        blank=True, null=True, upload_to="", verbose_name="Скан"
+                    ),
+                ),
+                ("operation_date", models.DateField(verbose_name="дата операції")),
             ],
             options={
-                'verbose_name': 'Донесення',
-                'verbose_name_plural': 'Донесення',
+                "verbose_name": "Донесення",
+                "verbose_name_plural": "Донесення",
             },
         ),
         migrations.AddField(
-            model_name='certificate',
-            name='document_date',
-            field=models.DateField(blank=True, null=True, verbose_name='дата документу'),
+            model_name="certificate",
+            name="document_date",
+            field=models.DateField(
+                blank=True, null=True, verbose_name="дата документу"
+            ),
         ),
         migrations.AddField(
-            model_name='certificate',
-            name='scan',
-            field=models.FileField(blank=True, null=True, upload_to='', verbose_name='Скан'),
+            model_name="certificate",
+            name="scan",
+            field=models.FileField(
+                blank=True, null=True, upload_to="", verbose_name="Скан"
+            ),
         ),
         migrations.AddField(
-            model_name='summaryreport',
-            name='document_date',
-            field=models.DateField(blank=True, null=True, verbose_name='дата документу'),
+            model_name="summaryreport",
+            name="document_date",
+            field=models.DateField(
+                blank=True, null=True, verbose_name="дата документу"
+            ),
         ),
         migrations.AddField(
-            model_name='summaryreport',
-            name='scan',
-            field=models.FileField(blank=True, null=True, upload_to='', verbose_name='Скан'),
+            model_name="summaryreport",
+            name="scan",
+            field=models.FileField(
+                blank=True, null=True, upload_to="", verbose_name="Скан"
+            ),
         ),
     ]

@@ -7,35 +7,57 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fals', '0006_alter_fal_fal_type'),
-        ('receipts', '0017_reporting_department_reporting_end_date_and_more'),
+        ("fals", "0006_alter_fal_fal_type"),
+        ("receipts", "0017_reporting_department_reporting_end_date_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='reporting',
-            name='end_date',
-            field=models.DateField(verbose_name='кінцева дата'),
+            model_name="reporting",
+            name="end_date",
+            field=models.DateField(verbose_name="кінцева дата"),
         ),
         migrations.AlterField(
-            model_name='reporting',
-            name='start_date',
-            field=models.DateField(verbose_name='початкова дата'),
+            model_name="reporting",
+            name="start_date",
+            field=models.DateField(verbose_name="початкова дата"),
         ),
         migrations.CreateModel(
-            name='FALReportEntry',
+            name="FALReportEntry",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('density', models.FloatField(verbose_name='густина')),
-                ('remains', models.FloatField(verbose_name='залишок')),
-                ('income', models.FloatField(verbose_name='надійшло')),
-                ('outcome', models.FloatField(verbose_name='вибуло')),
-                ('fal_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='fal_report_entries', to='fals.faltype', verbose_name='тип')),
-                ('report', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='receipts.reporting')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("density", models.FloatField(verbose_name="густина")),
+                ("remains", models.FloatField(verbose_name="залишок")),
+                ("income", models.FloatField(verbose_name="надійшло")),
+                ("outcome", models.FloatField(verbose_name="вибуло")),
+                (
+                    "fal_type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="fal_report_entries",
+                        to="fals.faltype",
+                        verbose_name="тип",
+                    ),
+                ),
+                (
+                    "report",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="receipts.reporting",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Пально-мастильний матеріал',
-                'verbose_name_plural': 'Пально-мастильнi матеріали',
+                "verbose_name": "Пально-мастильний матеріал",
+                "verbose_name_plural": "Пально-мастильнi матеріали",
             },
         ),
     ]

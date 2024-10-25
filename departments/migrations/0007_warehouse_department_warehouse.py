@@ -7,24 +7,41 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('departments', '0006_delete_departmententity'),
+        ("departments", "0006_delete_departmententity"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Warehouse',
+            name="Warehouse",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True, verbose_name="ім'я")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(max_length=100, unique=True, verbose_name="ім'я"),
+                ),
             ],
             options={
-                'verbose_name': 'Склад',
-                'verbose_name_plural': 'Склади',
+                "verbose_name": "Склад",
+                "verbose_name_plural": "Склади",
             },
         ),
         migrations.AddField(
-            model_name='department',
-            name='warehouse',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='departments', to='departments.warehouse', verbose_name='склад'),
+            model_name="department",
+            name="warehouse",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="departments",
+                to="departments.warehouse",
+                verbose_name="склад",
+            ),
         ),
     ]

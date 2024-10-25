@@ -6,23 +6,41 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('summary_reports', '0001_initial'),
+        ("summary_reports", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='HandoutListSummaryReport',
+            name="HandoutListSummaryReport",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('number', models.CharField(max_length=50, verbose_name='номер')),
-                ('document_date', models.DateField(blank=True, null=True, verbose_name='дата документу')),
-                ('scan', models.FileField(blank=True, null=True, upload_to='', verbose_name='Скан')),
-                ('start_date', models.DateField(verbose_name='початкова дата')),
-                ('end_date', models.DateField(verbose_name='кінцева дата')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("number", models.CharField(max_length=50, verbose_name="номер")),
+                (
+                    "document_date",
+                    models.DateField(
+                        blank=True, null=True, verbose_name="дата документу"
+                    ),
+                ),
+                (
+                    "scan",
+                    models.FileField(
+                        blank=True, null=True, upload_to="", verbose_name="Скан"
+                    ),
+                ),
+                ("start_date", models.DateField(verbose_name="початкова дата")),
+                ("end_date", models.DateField(verbose_name="кінцева дата")),
             ],
             options={
-                'verbose_name': 'Зведена відомість по роздавальних',
-                'verbose_name_plural': 'Зведені відомості по роздавальних',
+                "verbose_name": "Зведена відомість по роздавальних",
+                "verbose_name_plural": "Зведені відомості по роздавальних",
             },
         ),
     ]

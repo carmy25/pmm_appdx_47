@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('receipts', '0031_alter_falreportentry_report'),
+        ("receipts", "0031_alter_falreportentry_report"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='falreportentry',
-            name='outcome_own',
-            field=models.FloatField(blank=True, null=True, verbose_name='вибуло(власна частина)'),
+            model_name="falreportentry",
+            name="outcome_own",
+            field=models.FloatField(
+                blank=True, null=True, verbose_name="вибуло(власна частина)"
+            ),
         ),
     ]

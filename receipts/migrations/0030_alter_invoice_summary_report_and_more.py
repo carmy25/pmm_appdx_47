@@ -7,25 +7,35 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('receipts', '0029_invoicesummaryreport_invoice_summary_report'),
-        ('summary_reports', '0001_initial'),
+        ("receipts", "0029_invoicesummaryreport_invoice_summary_report"),
+        ("summary_reports", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='invoice',
-            name='summary_report',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='invoices', to='summary_reports.invoicesummaryreport'),
+            model_name="invoice",
+            name="summary_report",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="invoices",
+                to="summary_reports.invoicesummaryreport",
+            ),
         ),
         migrations.AlterField(
-            model_name='reporting',
-            name='summary_report',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='reportings', to='summary_reports.reportingsummaryreport'),
+            model_name="reporting",
+            name="summary_report",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="reportings",
+                to="summary_reports.reportingsummaryreport",
+            ),
         ),
         migrations.DeleteModel(
-            name='InvoiceSummaryReport',
+            name="InvoiceSummaryReport",
         ),
         migrations.DeleteModel(
-            name='ReportingSummaryReport',
+            name="ReportingSummaryReport",
         ),
     ]

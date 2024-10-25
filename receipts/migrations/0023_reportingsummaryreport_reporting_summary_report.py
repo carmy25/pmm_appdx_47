@@ -7,28 +7,50 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('receipts', '0022_remove_reporting_operation_date'),
+        ("receipts", "0022_remove_reporting_operation_date"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ReportingSummaryReport',
+            name="ReportingSummaryReport",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('number', models.CharField(max_length=50, verbose_name='номер')),
-                ('document_date', models.DateField(blank=True, null=True, verbose_name='дата документу')),
-                ('scan', models.FileField(blank=True, null=True, upload_to='', verbose_name='Скан')),
-                ('start_date', models.DateField(verbose_name='початкова дата')),
-                ('end_date', models.DateField(verbose_name='кінцева дата')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("number", models.CharField(max_length=50, verbose_name="номер")),
+                (
+                    "document_date",
+                    models.DateField(
+                        blank=True, null=True, verbose_name="дата документу"
+                    ),
+                ),
+                (
+                    "scan",
+                    models.FileField(
+                        blank=True, null=True, upload_to="", verbose_name="Скан"
+                    ),
+                ),
+                ("start_date", models.DateField(verbose_name="початкова дата")),
+                ("end_date", models.DateField(verbose_name="кінцева дата")),
             ],
             options={
-                'verbose_name': 'Зведена відомість по донесеннях',
-                'verbose_name_plural': 'Зведені відомості по донесеннях',
+                "verbose_name": "Зведена відомість по донесеннях",
+                "verbose_name_plural": "Зведені відомості по донесеннях",
             },
         ),
         migrations.AddField(
-            model_name='reporting',
-            name='summary_report',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='receipts.reportingsummaryreport'),
+            model_name="reporting",
+            name="summary_report",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="receipts.reportingsummaryreport",
+            ),
         ),
     ]

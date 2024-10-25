@@ -6,13 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('receipts', '0015_reporting_certificate_document_date_certificate_scan_and_more'),
+        (
+            "receipts",
+            "0015_reporting_certificate_document_date_certificate_scan_and_more",
+        ),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='reporting',
-            name='number',
-            field=models.CharField(blank=True, max_length=50, null=True, verbose_name='номер'),
+            model_name="reporting",
+            name="number",
+            field=models.CharField(
+                blank=True, max_length=50, null=True, verbose_name="номер"
+            ),
         ),
     ]

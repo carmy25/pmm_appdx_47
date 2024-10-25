@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('receipts', '0013_receiptrequest_scan_receiptrequestcoupon_scan'),
+        ("receipts", "0013_receiptrequest_scan_receiptrequestcoupon_scan"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='receiptrequest',
-            name='scan',
-            field=models.FileField(blank=True, null=True, upload_to='', verbose_name='Скан'),
+            model_name="receiptrequest",
+            name="scan",
+            field=models.FileField(
+                blank=True, null=True, upload_to="", verbose_name="Скан"
+            ),
         ),
         migrations.AlterField(
-            model_name='receiptrequestcoupon',
-            name='scan',
-            field=models.FileField(blank=True, null=True, upload_to='', verbose_name='Скан'),
+            model_name="receiptrequestcoupon",
+            name="scan",
+            field=models.FileField(
+                blank=True, null=True, upload_to="", verbose_name="Скан"
+            ),
         ),
     ]

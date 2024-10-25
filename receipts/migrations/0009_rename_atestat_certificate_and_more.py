@@ -6,16 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('receipts', '0008_vidom_sender'),
+        ("receipts", "0008_vidom_sender"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='Atestat',
-            new_name='Certificate',
+            old_name="Atestat",
+            new_name="Certificate",
         ),
         migrations.RenameModel(
-            old_name='Vidom',
-            new_name='SummaryReport',
+            old_name="Vidom",
+            new_name="SummaryReport",
         ),
     ]

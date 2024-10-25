@@ -1,4 +1,3 @@
-
 from receipts.models.handout_list import HandoutList
 
 from .base_summary_report import BaseDocumentInline, BaseSummaryReportAdmin

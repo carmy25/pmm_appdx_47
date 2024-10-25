@@ -7,24 +7,44 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('departments', '0003_rename_departments_departmententity_department'),
-        ('receipts', '0018_alter_reporting_end_date_alter_reporting_start_date_and_more'),
+        ("departments", "0003_rename_departments_departmententity_department"),
+        (
+            "receipts",
+            "0018_alter_reporting_end_date_alter_reporting_start_date_and_more",
+        ),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='reporting',
-            name='note',
-            field=models.CharField(blank=True, max_length=500, null=True, verbose_name='нотатка'),
+            model_name="reporting",
+            name="note",
+            field=models.CharField(
+                blank=True, max_length=500, null=True, verbose_name="нотатка"
+            ),
         ),
         migrations.AddField(
-            model_name='reporting',
-            name='state',
-            field=models.CharField(choices=[('NEW', 'нове'), ('WITH_ERROR', 'містить помилку'), ('CHECKED', 'перевірено'), ('GO_AWAY', 'здано'), ('COMPLETED', 'проведено')], default='NEW', max_length=20, verbose_name='стан'),
+            model_name="reporting",
+            name="state",
+            field=models.CharField(
+                choices=[
+                    ("NEW", "нове"),
+                    ("WITH_ERROR", "містить помилку"),
+                    ("CHECKED", "перевірено"),
+                    ("GO_AWAY", "здано"),
+                    ("COMPLETED", "проведено"),
+                ],
+                default="NEW",
+                max_length=20,
+                verbose_name="стан",
+            ),
         ),
         migrations.AlterField(
-            model_name='reporting',
-            name='department',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='departments.department', verbose_name='підрозділ'),
+            model_name="reporting",
+            name="department",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="departments.department",
+                verbose_name="підрозділ",
+            ),
         ),
     ]

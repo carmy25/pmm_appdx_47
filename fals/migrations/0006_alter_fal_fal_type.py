@@ -7,13 +7,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fals', '0005_alter_faltype_category'),
+        ("fals", "0005_alter_faltype_category"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='fal',
-            name='fal_type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='fals', to='fals.faltype', verbose_name='тип'),
+            model_name="fal",
+            name="fal_type",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="fals",
+                to="fals.faltype",
+                verbose_name="тип",
+            ),
         ),
     ]

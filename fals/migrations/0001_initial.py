@@ -8,32 +8,66 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='FALType',
+            name="FALType",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, verbose_name="ім'я")),
-                ('year_in_school', models.CharField(choices=[('OIL', 'мастило'), ('DIESEL', 'дизель'), ('PETROL', 'бензин'), ('POISON', 'отрута')], default='OIL', max_length=20)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, verbose_name="ім'я")),
+                (
+                    "year_in_school",
+                    models.CharField(
+                        choices=[
+                            ("OIL", "мастило"),
+                            ("DIESEL", "дизель"),
+                            ("PETROL", "бензин"),
+                            ("POISON", "отрута"),
+                        ],
+                        default="OIL",
+                        max_length=20,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Тип ПММ',
-                'verbose_name_plural': 'Типи ПММ',
+                "verbose_name": "Тип ПММ",
+                "verbose_name_plural": "Типи ПММ",
             },
         ),
         migrations.CreateModel(
-            name='FAL',
+            name="FAL",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('amount', models.FloatField(verbose_name='кількість')),
-                ('fal_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='fals.faltype', verbose_name='тип')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("amount", models.FloatField(verbose_name="кількість")),
+                (
+                    "fal_type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="fals.faltype",
+                        verbose_name="тип",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Пально-мастильний матеріал',
-                'verbose_name_plural': 'Пально-мастильнi матеріали',
+                "verbose_name": "Пально-мастильний матеріал",
+                "verbose_name_plural": "Пально-мастильнi матеріали",
             },
         ),
     ]

@@ -1,12 +1,6 @@
-from openpyxl.styles import PatternFill, Font, Alignment
 from openpyxl.utils import get_column_letter
-from itertools import chain
-from fals.models import FAL
-from receipts.models.invoice import Invoice
-from receipts.models.reporting import FALReportEntry
-from receipts.models import ReceiptRequest, ReceiptRequestCoupon, Certificate
 
-from .utils import CENTER_ALIGNMENT, cell_center_border, BASE_DEP_CELL_FILL, THIN_BORDER, OTHER_DEP_CELL_FILL
+from .utils import cell_center_border
 
 
 class BaseFALDocumentHandler:
@@ -19,61 +13,79 @@ class BaseFALDocumentHandler:
         return f"{col_name}{self.state['idx']}"
 
     def format_document_name(self, name):
-        cell_center_border(self.ws, self.add_idx('A'), name)
+        cell_center_border(self.ws, self.add_idx("A"), name)
 
     def format_document_number(self, number):
-        cell_center_border(self.ws, self.add_idx('B'), number)
+        cell_center_border(self.ws, self.add_idx("B"), number)
 
     def format_document_operation_date(self, date):
-        cell_center_border(self.ws, self.add_idx('C'), date)
+        cell_center_border(self.ws, self.add_idx("C"), date)
 
     def format_document_sender(self, sender):
-        cell_center_border(self.ws, self.add_idx('D'), sender)
+        cell_center_border(self.ws, self.add_idx("D"), sender)
 
     def format_fal_income(self, amount):
-        cell_center_border(self.ws, self.add_idx('E'), amount or '')
+        cell_center_border(self.ws, self.add_idx("E"), amount or "")
 
     def format_fal_income_dep(self, amount):
-        cell_center_border(self.ws, self.add_idx('E'), amount or '')
+        cell_center_border(self.ws, self.add_idx("E"), amount or "")
 
     def format_fal_outcome(self, amount):
-        cell_center_border(self.ws, self.add_idx('F'), amount or '')
+        cell_center_border(self.ws, self.add_idx("F"), amount or "")
 
     def format_fal_total(self):
-        cell_center_border(self.ws, self.add_idx('G'), self.state['total'])
+        cell_center_border(self.ws, self.add_idx("G"), self.state["total"])
 
     def format_fal_by_dep(self):
         income = self.get_fal_income()
         outcome = self.get_fal_outcome()
         dep = self.get_dep()
-        dep_index_base = self.state['DEP_BY_INDEX']['А4548']
-        dep_index_505 = self.state['DEP_BY_INDEX']['А4635']
-        if dep == 'А4548':
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index_base)), income or '')
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index_base+1)), outcome or '')
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index_505)), '')
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index_505+1)), '')
-        elif dep == 'А4635':
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index_base)), '')
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index_base+1)), '')
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index_505)), income or '')
-            cell_center_border(self.ws, self.add_idx(
-                get_column_letter(dep_index_505 + 1)), outcome or '')
+        dep_index_base = self.state["DEP_BY_INDEX"]["А4548"]
+        dep_index_505 = self.state["DEP_BY_INDEX"]["А4635"]
+        if dep == "А4548":
+            cell_center_border(
+                self.ws, self.add_idx(get_column_letter(dep_index_base)), income or ""
+            )
+            cell_center_border(
+                self.ws,
+                self.add_idx(get_column_letter(dep_index_base + 1)),
+                outcome or "",
+            )
+            cell_center_border(
+                self.ws, self.add_idx(get_column_letter(dep_index_505)), ""
+            )
+            cell_center_border(
+                self.ws, self.add_idx(get_column_letter(dep_index_505 + 1)), ""
+            )
+        elif dep == "А4635":
+            cell_center_border(
+                self.ws, self.add_idx(get_column_letter(dep_index_base)), ""
+            )
+            cell_center_border(
+                self.ws, self.add_idx(get_column_letter(dep_index_base + 1)), ""
+            )
+            cell_center_border(
+                self.ws, self.add_idx(get_column_letter(dep_index_505)), income or ""
+            )
+            cell_center_border(
+                self.ws,
+                self.add_idx(get_column_letter(dep_index_505 + 1)),
+                outcome or "",
+            )
 
     def format_fal_total_base_dep(self):
-        dep_index_base = self.state['DEP_BY_INDEX']['А4548']
-        dep_index_505 = self.state['DEP_BY_INDEX']['А4635']
-        cell_center_border(self.ws, self.add_idx(
-            get_column_letter(dep_index_base+2)), self.state['total_by_dep'].setdefault('А4548', 0))
-        cell_center_border(self.ws, self.add_idx(
-            get_column_letter(dep_index_505+2)), self.state['total_by_dep'].setdefault('А4635', 0))
+        dep_index_base = self.state["DEP_BY_INDEX"]["А4548"]
+        dep_index_505 = self.state["DEP_BY_INDEX"]["А4635"]
+        cell_center_border(
+            self.ws,
+            self.add_idx(get_column_letter(dep_index_base + 2)),
+            self.state["total_by_dep"].setdefault("А4548", 0),
+        )
+        cell_center_border(
+            self.ws,
+            self.add_idx(get_column_letter(dep_index_505 + 2)),
+            self.state["total_by_dep"].setdefault("А4635", 0),
+        )
 
     def process(self):
         self.format_document_name(self.get_document_name())
@@ -93,4 +105,4 @@ class BaseFALDocumentHandler:
     def update_total(self):
         income = self.get_fal_income() or 0
         outcome = self.get_fal_outcome() or 0
-        self.state['total'] = self.state['total'] - outcome + income
+        self.state["total"] = self.state["total"] - outcome + income

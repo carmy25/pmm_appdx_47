@@ -6,30 +6,38 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('receipts', '0002_alter_receiptrequest_options_and_more'),
+        ("receipts", "0002_alter_receiptrequest_options_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='receiptrequest',
-            name='destination',
-            field=models.CharField(default='А4548', max_length=50, verbose_name='отримувач'),
+            model_name="receiptrequest",
+            name="destination",
+            field=models.CharField(
+                default="А4548", max_length=50, verbose_name="отримувач"
+            ),
         ),
         migrations.AddField(
-            model_name='receiptrequest',
-            name='sender',
-            field=models.CharField(default='', max_length=50, verbose_name='відправник'),
+            model_name="receiptrequest",
+            name="sender",
+            field=models.CharField(
+                default="", max_length=50, verbose_name="відправник"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='receiptrequestcoupon',
-            name='destination',
-            field=models.CharField(default='А4548', max_length=50, verbose_name='отримувач'),
+            model_name="receiptrequestcoupon",
+            name="destination",
+            field=models.CharField(
+                default="А4548", max_length=50, verbose_name="отримувач"
+            ),
         ),
         migrations.AddField(
-            model_name='receiptrequestcoupon',
-            name='sender',
-            field=models.CharField(default='А1111', max_length=50, verbose_name='відправник'),
+            model_name="receiptrequestcoupon",
+            name="sender",
+            field=models.CharField(
+                default="А1111", max_length=50, verbose_name="відправник"
+            ),
             preserve_default=False,
         ),
     ]

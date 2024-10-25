@@ -8,9 +8,9 @@ def update_denisty_for_petrol_and_oil(apps, schema_editor):
     # version than this migration expects. We use the historical version.
     FALType = apps.get_model("fals", "FALType")
     for ft in FALType.objects.all():
-        if ft.category == 'OIL':
+        if ft.category == "OIL":
             ft.density = 0.9
-        elif ft.category == 'PETROL':
+        elif ft.category == "PETROL":
             ft.density = 0.75
         ft.save()
 
@@ -18,7 +18,7 @@ def update_denisty_for_petrol_and_oil(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fals', '0007_faltype_density'),
+        ("fals", "0007_faltype_density"),
     ]
 
     operations = [

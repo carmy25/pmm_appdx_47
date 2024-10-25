@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('receipts', '0004_receiptrequest_document_date_and_more'),
+        ("receipts", "0004_receiptrequest_document_date_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='receiptrequest',
-            name='document_date',
-            field=models.DateField(blank=True, null=True, verbose_name='дата документу'),
+            model_name="receiptrequest",
+            name="document_date",
+            field=models.DateField(
+                blank=True, null=True, verbose_name="дата документу"
+            ),
         ),
         migrations.AlterField(
-            model_name='receiptrequestcoupon',
-            name='document_date',
-            field=models.DateField(blank=True, null=True, verbose_name='дата документу'),
+            model_name="receiptrequestcoupon",
+            name="document_date",
+            field=models.DateField(
+                blank=True, null=True, verbose_name="дата документу"
+            ),
         ),
     ]

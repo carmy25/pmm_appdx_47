@@ -5,7 +5,6 @@ from django.contrib.contenttypes.admin import GenericTabularInline
 from rangefilter.filters import DateRangeFilterBuilder
 
 
-from departments.models import Department
 from fals.models import FAL
 from receipts.models.handout_list import HandoutList
 from receipts.models.invoice import Invoice
@@ -16,13 +15,13 @@ from ..models import Certificate
 
 class FALInline(GenericTabularInline):
     model = FAL
-    autocomplete_fields = ['fal_type']
+    autocomplete_fields = ["fal_type"]
 
 
 class ScanListFilter(admin.SimpleListFilter):
     # Human-readable title which will be displayed in the
     # right admin sidebar just above the filter options.
-    title = 'найвністю скану документу'
+    title = "найвністю скану документу"
 
     # Parameter for the filter that will be used in the URL query.
     parameter_name = "have_scan"
@@ -36,8 +35,8 @@ class ScanListFilter(admin.SimpleListFilter):
         in the right sidebar.
         """
         return [
-            ("scan_present", 'Cкан документа присутній'),
-            ("scan_absent", 'Без скану документа'),
+            ("scan_present", "Cкан документа присутній"),
+            ("scan_absent", "Без скану документа"),
         ]
 
     def queryset(self, request, queryset):
@@ -49,35 +48,41 @@ class ScanListFilter(admin.SimpleListFilter):
         if queryset.model is Certificate:
             # TODO: add scan to Certificate
             return queryset
-        scan_present_qs = queryset.exclude(
-            scan__isnull=True).exclude(scan__exact='')
+        scan_present_qs = queryset.exclude(scan__isnull=True).exclude(scan__exact="")
         if self.value() == "scan_present":
             return scan_present_qs
         if self.value() == "scan_absent":
-            return queryset.exclude(scan__isnull=False).exclude(scan__exact='')
+            return queryset.exclude(scan__isnull=False).exclude(scan__exact="")
 
 
 class DocumentAdmin(admin.ModelAdmin):
     inlines = [FALInline]
-    search_fields = ['number', 'sender', 'destination', 'fals__fal_type__name']
-    ordering = ['operation_date']
+    search_fields = ["number", "sender", "destination", "fals__fal_type__name"]
+    ordering = ["operation_date"]
     list_filter = (
         ScanListFilter,
-        ('operation_date', DateRangeFilterBuilder()),
+        ("operation_date", DateRangeFilterBuilder()),
     )
-    list_display = ['number', 'book', 'sender',
-                    'destination', 'operation_date', 'scan_present',
-                    ]
+    list_display = [
+        "number",
+        "book",
+        "sender",
+        "destination",
+        "operation_date",
+        "scan_present",
+    ]
 
     def book(self, obj):
         if type(obj) in [Certificate, Invoice, HandoutList]:
-            return ''
-        return f'{obj.book_number}{obj.book_series.upper()}'
-    book.short_description = 'Книга'
+            return ""
+        return f"{obj.book_number}{obj.book_series.upper()}"
+
+    book.short_description = "Книга"
 
     def scan_present(self, obj):
-        return 'Так' if obj.scan.name else 'Ні'
-    scan_present.short_description = 'Скан присутній'
+        return "Так" if obj.scan.name else "Ні"
+
+    scan_present.short_description = "Скан присутній"
 
     def save_model(self, request, obj, form, change):
         if type(obj.sender) is str and type(obj.destination) is str:
@@ -87,6 +92,10 @@ class DocumentAdmin(admin.ModelAdmin):
 
 
 class HandoutListAdmin(DocumentAdmin):
-    search_fields = ['number', 'sender__name',
-                     'destination__name', 'fals__fal_type__name']
-    autocomplete_fields = ['sender', 'destination']
+    search_fields = [
+        "number",
+        "sender__name",
+        "destination__name",
+        "fals__fal_type__name",
+    ]
+    autocomplete_fields = ["sender", "destination"]

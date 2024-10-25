@@ -4,13 +4,13 @@ from .models import Department, Warehouse
 
 
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ['name']
-    search_fields = ['name']
+    list_display = ["name"]
+    search_fields = ["name"]
 
 
 class WarehouseAdmin(admin.ModelAdmin):
-    list_display = ['name']
-    search_fields = ['name']
+    list_display = ["name"]
+    search_fields = ["name"]
 
 
 admin.site.register(Department, DepartmentAdmin)

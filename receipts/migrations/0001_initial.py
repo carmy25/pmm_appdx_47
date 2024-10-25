@@ -7,34 +7,61 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='ReceiptRequest',
+            name="ReceiptRequest",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('number', models.CharField(max_length=50, verbose_name='номер')),
-                ('book_number', models.CharField(max_length=50, verbose_name='номер книги')),
-                ('book_series', models.CharField(max_length=50, verbose_name='серія книги')),
-                ('operation_date', models.DateField(verbose_name='дата операції')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("number", models.CharField(max_length=50, verbose_name="номер")),
+                (
+                    "book_number",
+                    models.CharField(max_length=50, verbose_name="номер книги"),
+                ),
+                (
+                    "book_series",
+                    models.CharField(max_length=50, verbose_name="серія книги"),
+                ),
+                ("operation_date", models.DateField(verbose_name="дата операції")),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='ReceiptRequestCoupon',
+            name="ReceiptRequestCoupon",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('number', models.CharField(max_length=50, verbose_name='номер')),
-                ('book_number', models.CharField(max_length=50, verbose_name='номер книги')),
-                ('book_series', models.CharField(max_length=50, verbose_name='серія книги')),
-                ('operation_date', models.DateField(verbose_name='дата операції')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("number", models.CharField(max_length=50, verbose_name="номер")),
+                (
+                    "book_number",
+                    models.CharField(max_length=50, verbose_name="номер книги"),
+                ),
+                (
+                    "book_series",
+                    models.CharField(max_length=50, verbose_name="серія книги"),
+                ),
+                ("operation_date", models.DateField(verbose_name="дата операції")),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

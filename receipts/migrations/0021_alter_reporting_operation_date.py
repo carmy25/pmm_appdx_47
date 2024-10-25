@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('receipts', '0020_alter_reporting_unique_together'),
+        ("receipts", "0020_alter_reporting_unique_together"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='reporting',
-            name='operation_date',
-            field=models.DateField(blank=True, null=True, verbose_name='дата операції'),
+            model_name="reporting",
+            name="operation_date",
+            field=models.DateField(blank=True, null=True, verbose_name="дата операції"),
         ),
     ]
