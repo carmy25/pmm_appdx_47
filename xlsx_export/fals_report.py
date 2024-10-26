@@ -77,7 +77,7 @@ def export_fals_report(ws, fal_types):
                 value = round(value, 2)
                 cell_center_border(ws, cn, value)
 
-            total_by_category[fre.fal_type.category] -= value
+            total_by_category[fal_type.category] -= value
 
         cn = f'f{i}'
         cell_center_border(ws, cn, f'=b{i}+c{i}-d{i}-e{i}')
