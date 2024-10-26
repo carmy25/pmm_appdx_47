@@ -5,13 +5,15 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import gettext_lazy as _
 
 
-class FALType(models.Model):
-    class Category(models.TextChoices):
-        OIL = "OIL", _("мастило")
-        DIESEL = "DIESEL", _("дизель")
-        PETROL = "PETROL", _("бензин")
-        POISON = "POISON", _("отрута")
+class Category(models.TextChoices):
+    OIL = "OIL", _("мастило")
+    DIESEL = "DIESEL", _("дизель")
+    PETROL = "PETROL", _("бензин")
+    POISON = "POISON", _("отрута")
+    KEROSENE = "KEROSENE", _("керосин")
 
+
+class FALType(models.Model):
     name = models.CharField(max_length=100, verbose_name="ім'я")
     category = models.CharField(
         max_length=20,

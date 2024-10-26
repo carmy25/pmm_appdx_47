@@ -18,6 +18,10 @@ BASE_DEP_CELL_FILL = PatternFill(
 )
 
 
+def get_or_zero(ws, cn):
+    return ws[cn].value or 0
+
+
 def month_iter(start_month, start_year, end_month, end_year):
     start = datetime(start_year, start_month, 1)
     end = datetime(end_year, end_month, 1)
