@@ -69,3 +69,4 @@ def reportings_report(request):
             )
     wb.save(response)
     return response
+

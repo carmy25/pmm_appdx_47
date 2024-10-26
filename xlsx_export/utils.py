@@ -1,4 +1,4 @@
-from openpyxl.styles import Border, Side, PatternFill, Alignment
+from openpyxl.styles import Font, Border, Side, PatternFill, Alignment
 from dateutil.rrule import rrule, MONTHLY
 from datetime import datetime
 
@@ -30,3 +30,11 @@ def cell_center_border(ws, cell_name, value):
     ws[cell_name].alignment = CENTER_ALIGNMENT
     ws[cell_name].border = THIN_BORDER
     return ws[cell_name]
+
+
+def header_cell_center_border(ws, cell_name, value):
+    c = cell_center_border(ws, cell_name, value)
+    c.font = Font(bold=True)
+    c.fill = PatternFill(
+        start_color="c4d79b", end_color="c4d79b", fill_type="solid"
+    )

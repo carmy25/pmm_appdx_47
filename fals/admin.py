@@ -1,5 +1,9 @@
 from django.contrib import admin
 from django.http import HttpRequest
+import openpyxl
+
+from receipts.admin.export_xlsx import xlsx_response
+from xlsx_export.fals_report import export_fals_report
 
 from .models import FAL, FALType
 
@@ -19,3 +23,15 @@ class FALTypeAdmin(admin.ModelAdmin):
 
 admin.site.register(FAL, FALAdmin)
 admin.site.register(FALType, FALTypeAdmin)
+
+
+@admin.site.register_view(
+    "fals-report", "Звіт по паливу", urlname="fals_report"
+)
+def fal_report(request):
+    response = xlsx_response("fals_report")
+    wb = openpyxl.Workbook()
+    ws = wb.create_sheet("Звіт")
+    export_fals_report(ws, FALType.objects.all().order_by('category'))
+    wb.save(response)
+    return response
