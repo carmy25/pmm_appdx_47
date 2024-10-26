@@ -69,15 +69,13 @@ def export_fals_report(ws, fal_types):
                                      Category.PETROL,
                                      Category.KEROSENE]:
                 value = round(value)
-                cell_center_border(ws, cn, value)
             elif fal_type.category == Category.OIL:
                 value = round(value, 1)
-                cell_center_border(ws, cn, value)
             elif fal_type.category == Category.POISON:
                 value = round(value, 2)
-                cell_center_border(ws, cn, value)
+            cell_center_border(ws, cn, value)
 
-            total_by_category[fal_type.category] -= value
+            total_by_category[fal_type.category] -= round(outcome)
 
         cn = f'f{i}'
         cell_center_border(ws, cn, f'=b{i}+c{i}-d{i}-e{i}')
