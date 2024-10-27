@@ -57,7 +57,8 @@ def reportings_report(request):
     response = xlsx_response("reportings_report")
     reportings = Reporting.objects.all().order_by("end_date")
     wb = openpyxl.Workbook()
-    ws = wb.create_sheet("Звіт")
+    ws = wb['Sheet']
+    ws.title = 'Звіт по донесеннях'
     if reportings.count() > 0:
         try:
             export_reportings_report(ws, reportings)
@@ -69,4 +70,3 @@ def reportings_report(request):
             )
     wb.save(response)
     return response
-

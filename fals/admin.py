@@ -32,7 +32,7 @@ def fal_report(request):
     response = xlsx_response("fals_report")
     wb = openpyxl.Workbook()
     ws = wb['Sheet']
-    ws.tite = 'Звіт по паливу'
+    ws.title = 'Звіт по паливу'
     export_fals_report(ws, FALType.objects.all().order_by('category'))
     wb.save(response)
     return response
