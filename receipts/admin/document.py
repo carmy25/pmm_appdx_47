@@ -8,6 +8,7 @@ from rangefilter.filters import DateRangeFilterBuilder
 from fals.models import FAL
 from receipts.models.handout_list import HandoutList
 from receipts.models.invoice import Invoice
+from receipts.models.writing_off_act import WritingOffAct
 
 
 from ..models import Certificate
@@ -73,7 +74,7 @@ class DocumentAdmin(admin.ModelAdmin):
     ]
 
     def book(self, obj):
-        if type(obj) in [Certificate, Invoice, HandoutList]:
+        if type(obj) in [Certificate, Invoice, HandoutList, WritingOffAct]:
             return ""
         return f"{obj.book_number}{obj.book_series.upper()}"
 
@@ -85,7 +86,7 @@ class DocumentAdmin(admin.ModelAdmin):
     scan_present.short_description = "Скан присутній"
 
     def save_model(self, request, obj, form, change):
-        if type(obj.sender) is str and type(obj.destination) is str:
+        if type(getattr(obj, 'sender', None)) is str and type(obj.destination) is str:
             obj.sender = obj.sender.upper()
             obj.destination = obj.destination.upper()
         super().save_model(request, obj, form, change)

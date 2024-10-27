@@ -34,7 +34,7 @@ class ReportingSummaryReportDocumentHandler(BaseFALDocumentHandler):
             fal_type=self.fal.fal_type,
             report__summary_report=self.fal.report.summary_report,
         )
-        return sum([fal.outcome for fal in fals])
+        return sum([fal.outcome * fal.get_density() for fal in fals])
 
     def process(self):
         if (sr := self.fal.report.summary_report) and (
