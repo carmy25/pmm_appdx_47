@@ -25,7 +25,7 @@ from adminplus.sites import AdminSitePlus
 admin.site = AdminSitePlus()
 admin.autodiscover()
 
-admin.site.site_header = "ПММ Grok"
+admin.site.site_header = "ПММ GROK"
 admin.site.site_title = "ПММ Grok"
 admin.site.index_title = "Панель Адміністратора"
 
