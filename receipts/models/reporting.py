@@ -61,6 +61,8 @@ class FALReportEntry(models.Model):
 
     report = models.ForeignKey(Reporting, on_delete=models.CASCADE, related_name="fals")
 
+    density = models.FloatField(verbose_name="густина", null=True, blank=True)
+
     remains = models.FloatField(verbose_name="залишок")
     income = models.FloatField(verbose_name="надійшло")
     outcome = models.FloatField(verbose_name="вибуло")
@@ -68,3 +70,6 @@ class FALReportEntry(models.Model):
     class Meta:
         verbose_name = _("Пально-мастильний матеріал")
         verbose_name_plural = _("Пально-мастильнi матеріали")
+
+    def get_density(self):
+        return self.density or self.fal_type.density

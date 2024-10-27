@@ -63,7 +63,7 @@ def export_fals_report(ws, fal_types):
                 total_by_category[fal_type.category] -= fal.amount
         for fre in fal_type.fal_report_entries.all():
             cn = f'e{i}'
-            outcome = fre.outcome * fal_type.density
+            outcome = fre.outcome * fre.get_density()
             value = ws[cn].value + outcome if ws[cn].value else outcome
             if fal_type.category in [Category.DIESEL,
                                      Category.PETROL,
