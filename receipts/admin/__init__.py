@@ -1,6 +1,8 @@
 from django.contrib import admin
 
+from receipts.admin.inspection_certificate import InspectionCertificateAdmin
 from receipts.admin.reporting import ReportingAdmin
+from receipts.models.inspection_certificate import InspectionCertificate
 from receipts.models.invoice import Invoice
 from receipts.models.handout_list import HandoutList
 from receipts.models.reporting import Reporting
@@ -20,5 +22,6 @@ admin.site.register(Certificate, DocumentAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(HandoutList, HandoutListAdmin)
 admin.site.register(WritingOffAct, WritingOffAdmin)
+admin.site.register(InspectionCertificate, InspectionCertificateAdmin)
 
 __all__ = [export_xlsx]
