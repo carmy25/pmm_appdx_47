@@ -34,6 +34,6 @@ def fal_report(request):
     ws = wb['Sheet']
     ws.title = 'Звіт по паливу'
     export_fals_report(ws,
-                       FALType.objects.all().order_by('category').order_by('name'))
+                       FALType.objects.all().order_by('name').order_by('category'))
     wb.save(response)
     return response
