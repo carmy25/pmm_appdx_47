@@ -31,7 +31,8 @@ admin.site.register(FALType, FALTypeAdmin)
 def fal_report(request):
     response = xlsx_response("fals_report")
     wb = openpyxl.Workbook()
-    ws = wb.create_sheet("Звіт")
+    ws = wb['Sheet']
+    ws.tite = 'Звіт по паливу'
     export_fals_report(ws, FALType.objects.all().order_by('category'))
     wb.save(response)
     return response
