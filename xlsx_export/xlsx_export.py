@@ -3,6 +3,7 @@ from openpyxl.utils import get_column_letter
 from itertools import chain
 from fals.models import FAL
 from receipts.models.handout_list import HandoutList
+from receipts.models.inspection_certificate import InspectionCertificate
 from receipts.models.invoice import Invoice
 from receipts.models.reporting import FALReportEntry
 from receipts.models import ReceiptRequest, ReceiptRequestCoupon, Certificate
@@ -103,8 +104,8 @@ def format_rows(ws, fal_type):
         if type(fal) is FALReportEntry:
             if not ReportingSummaryReportDocumentHandler(fal, ws, ws_state).process():
                 j -= 1
-        elif type(fal.document_object) is HandoutList:
-            pass
+        elif type(fal.document_object) in [HandoutList, InspectionCertificate]:
+            j -= 1
         elif type(fal.document_object) is not Invoice:
             FALDocumentHandler(fal, ws, ws_state).process()
         elif type(fal.document_object) is Invoice:
