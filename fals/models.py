@@ -30,6 +30,9 @@ class FALType(models.Model):
     def __str__(self):
         return self.name
 
+    def get_name(self):
+        return self.name.split('::')[0].strip()
+
 
 class FAL(models.Model):
     fal_type = models.ForeignKey(

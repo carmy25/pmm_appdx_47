@@ -47,39 +47,42 @@ def format_summary(ws, total_by_category):
     cell_center_border(ws, 'l5', total_by_category['KEROSENE'])
 
 
+def fal_report_add_amount(ws, cn, amount):
+    value = ws[cn].value + amount if ws[cn].value else amount
+    cell_center_border(ws, cn, value)
+
+
 def export_fals_report(ws, fal_types):
     format_header(ws)
+    types_by_idx = {}
     total_by_category = {c[0]: 0 for c in Category.choices}
+    j = 0
     for i, fal_type in enumerate(fal_types, 2):
-        cell_center_border(ws, f"a{i}", fal_type.name)
+        name = fal_type.get_name()
+        if not types_by_idx.get(name):
+            types_by_idx[name] = i-j
+        else:
+            j += 1
+        idx = types_by_idx[name]
+        cell_center_border(ws, f"a{idx}", name)
         for fal in fal_type.fals.all():
             if isinstance(fal.document_object, Certificate):
-                cn = f'b{i}'
-                b_value = ws[cn].value + fal.amount if ws[cn].value else fal.amount
-                cell_center_border(ws, cn, b_value)
+                fal_report_add_amount(ws, f'b{idx}', fal.amount)
                 total_by_category[fal_type.category] += fal.amount
             elif isinstance(fal.document_object, ReceiptRequestCoupon):
-                cn = f'c{i}'
-                c_value = ws[cn].value + fal.amount if ws[cn].value else fal.amount
-                cell_center_border(ws, cn, c_value)
+                fal_report_add_amount(ws, f'c{idx}', fal.amount)
                 total_by_category[fal_type.category] += fal.amount
             elif isinstance(fal.document_object, ReceiptRequest):
-                cn = f'd{i}'
-                d_value = ws[cn].value + fal.amount if ws[cn].value else fal.amount
-                cell_center_border(ws, cn, d_value)
+                fal_report_add_amount(ws, f'd{idx}', fal.amount)
                 total_by_category[fal_type.category] -= fal.amount
             elif isinstance(fal.document_object, WritingOffAct):
-                cn = f'f{i}'
-                d_value = ws[cn].value + fal.amount if ws[cn].value else fal.amount
-                cell_center_border(ws, cn, d_value)
+                fal_report_add_amount(ws, f'f{idx}', fal.amount)
                 total_by_category[fal_type.category] -= fal.amount
             elif isinstance(fal.document_object, InspectionCertificate):
-                cn = f'G{i}'
-                d_value = ws[cn].value + fal.amount if ws[cn].value else fal.amount
-                cell_center_border(ws, cn, d_value)
+                fal_report_add_amount(ws, f'g{idx}', fal.amount)
                 total_by_category[fal_type.category] -= fal.amount
         for fre in fal_type.fal_report_entries.all():
-            cn = f'e{i}'
+            cn = f'e{idx}'
             outcome = fre.outcome * fre.get_density()
             value = ws[cn].value + outcome if ws[cn].value else outcome
             if fal_type.category in [Category.DIESEL,
@@ -94,8 +97,8 @@ def export_fals_report(ws, fal_types):
 
             total_by_category[fal_type.category] -= round(outcome)
 
-        cn = f'H{i}'
-        cell_center_border(ws, cn, f'=b{i}+c{i}-d{i}-e{i}-f{i}-g{i}')
+        cn = f'H{idx}'
+        cell_center_border(ws, cn, f'=b{idx}+c{idx}-d{idx}-e{idx}-f{idx}-g{idx}')
 
-        cell_center_border(ws, f'J{i}', f'=i{i}/h{i} * 100')
+        cell_center_border(ws, f'J{idx}', f'=i{idx}/h{idx} * 100')
     format_summary(ws, total_by_category)
