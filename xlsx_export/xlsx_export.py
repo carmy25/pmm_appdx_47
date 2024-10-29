@@ -93,7 +93,7 @@ def get_sorted_fals(fal_type):
     )
 
     sorted_fals = sorted(filter(lambda x: not isinstance(
-        x.document_object, (HandoutList, WritingOffAct, InspectionCertificate)), chain(fals, fal_report_entries)), key=get_fal_date)
+        getattr(x, 'document_object', None) or x.report, (HandoutList, WritingOffAct, InspectionCertificate)), chain(fals, fal_report_entries)), key=get_fal_date)
     return sorted_fals
 
 

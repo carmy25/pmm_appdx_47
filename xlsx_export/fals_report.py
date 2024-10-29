@@ -83,16 +83,8 @@ def export_fals_report(ws, fal_types):
                 total_by_category[fal_type.category] -= fal.amount
         for fre in fal_type.fal_report_entries.all():
             cn = f'e{idx}'
-            outcome = fre.outcome * fre.get_density()
+            outcome = fre.get_outcome_kgs()
             value = ws[cn].value + outcome if ws[cn].value else outcome
-            if fal_type.category in [Category.DIESEL,
-                                     Category.PETROL,
-                                     Category.KEROSENE]:
-                value = round(value)
-            elif fal_type.category == Category.OIL:
-                value = round(value, 1)
-            elif fal_type.category == Category.POISON:
-                value = round(value, 2)
             cell_center_border(ws, cn, value)
 
             total_by_category[fal_type.category] -= round(outcome)

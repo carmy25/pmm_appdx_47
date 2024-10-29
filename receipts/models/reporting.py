@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from departments.models import Department
-from fals.models import FALType
+from fals.models import Category, FALType
 from summary_reports.models import ReportingSummaryReport
 
 from .base import BaseDocument
@@ -73,3 +73,13 @@ class FALReportEntry(models.Model):
 
     def get_density(self):
         return self.density or self.fal_type.density
+
+    def get_outcome_kgs(self):
+        kgs = self.get_density() * self.outcome
+        if self.fal_type.category in [Category.PETROL,
+                                      Category.DIESEL,
+                                      Category.KEROSENE]:
+            return round(kgs)
+        elif self.fal_type.category == Category.OIL:
+            return round(kgs, 1)
+        return round(kgs, 2)

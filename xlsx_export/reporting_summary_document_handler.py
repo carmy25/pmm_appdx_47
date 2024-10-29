@@ -34,7 +34,7 @@ class ReportingSummaryReportDocumentHandler(BaseFALDocumentHandler):
             fal_type=self.fal.fal_type,
             report__summary_report=self.fal.report.summary_report,
         )
-        return sum([fal.outcome * fal.get_density() for fal in fals])
+        return sum([fal.get_outcome_kgs() for fal in fals])
 
     def process(self):
         if (sr := self.fal.report.summary_report) and (
@@ -54,13 +54,15 @@ class ReportingSummaryReportDocumentHandler(BaseFALDocumentHandler):
         for fal in fals:
             dep_index = self.state["DEP_BY_INDEX"][fal.report.department.name]
             cell_center_border(
-                self.ws, self.add_idx(get_column_letter(dep_index + 1)), fal.outcome
+                self.ws,
+                self.add_idx(get_column_letter(dep_index + 1)),
+                fal.get_outcome_kgs()
             )
             col_letter = get_column_letter(dep_index + 2)
             total_cell = self.add_idx(col_letter)
             self.ws[total_cell].value = (
                 f'=SUM({get_column_letter(dep_index)}$3:{get_column_letter(dep_index)}{self.state["idx"]})-SUM({
-                get_column_letter(dep_index+1)}$3:{get_column_letter(dep_index+1)}{self.state["idx"]})'
+                    get_column_letter(dep_index+1)}$3:{get_column_letter(dep_index+1)}{self.state["idx"]})'
             )
             self.ws[total_cell].alignment = CENTER_ALIGNMENT
             self.ws[total_cell].border = THIN_BORDER
