@@ -38,7 +38,7 @@ def export_xlsx(request):
         .order_by(F("warehouse__order").asc(nulls_last=True))
     )
     for fal_type in fal_types:
-        ws = wb.create_sheet(fal_type.name.replace("/", " ")[:30])
+        ws = wb.create_sheet(fal_type.name.replace("/", " ").replace(':', '')[:30])
         export_fal_type(fal_type, ws, departments)
         ws.freeze_panes = ws["B3"]
 

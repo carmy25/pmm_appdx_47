@@ -7,6 +7,7 @@ from receipts.models.inspection_certificate import InspectionCertificate
 from receipts.models.invoice import Invoice
 from receipts.models.reporting import FALReportEntry
 from receipts.models import ReceiptRequest, ReceiptRequestCoupon, Certificate
+from receipts.models.writing_off_act import WritingOffAct
 
 from .utils import cell_center_border, THIN_BORDER
 from .reporting_summary_document_handler import ReportingSummaryReportDocumentHandler
@@ -91,7 +92,8 @@ def get_sorted_fals(fal_type):
         .exclude(report__summary_report__isnull=True)
     )
 
-    sorted_fals = sorted(chain(fals, fal_report_entries), key=get_fal_date)
+    sorted_fals = sorted(filter(lambda x: not isinstance(
+        x.document_object, (HandoutList, WritingOffAct, InspectionCertificate)), chain(fals, fal_report_entries)), key=get_fal_date)
     return sorted_fals
 
 
@@ -104,7 +106,7 @@ def format_rows(ws, fal_type):
         if type(fal) is FALReportEntry:
             if not ReportingSummaryReportDocumentHandler(fal, ws, ws_state).process():
                 j -= 1
-        elif type(fal.document_object) in [HandoutList, InspectionCertificate]:
+        elif type(fal.document_object) in [WritingOffAct, HandoutList, InspectionCertificate]:
             j -= 1
         elif type(fal.document_object) is not Invoice:
             FALDocumentHandler(fal, ws, ws_state).process()
