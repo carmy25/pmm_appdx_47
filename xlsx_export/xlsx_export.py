@@ -8,6 +8,7 @@ from receipts.models.invoice import Invoice
 from receipts.models.reporting import FALReportEntry
 from receipts.models import ReceiptRequest, ReceiptRequestCoupon, Certificate
 from receipts.models.writing_off_act import WritingOffAct
+from xlsx_export.invoice_summary_document_handler import InvoiceSummaryReportDocumentHandler
 
 from .utils import cell_center_border, THIN_BORDER
 from .reporting_summary_document_handler import ReportingSummaryReportDocumentHandler
@@ -111,8 +112,11 @@ def format_rows(ws, fal_type):
         elif type(fal.document_object) is not Invoice:
             FALDocumentHandler(fal, ws, ws_state).process()
         elif type(fal.document_object) is Invoice:
-            if not InvoiceDocumentHandler(fal, ws, ws_state).process():
-                j -= 1
+            if fal.document_object.summary_report:
+                if not InvoiceSummaryReportDocumentHandler(fal, ws, ws_state).process():
+                    j -= 1
+            else:
+                InvoiceDocumentHandler(fal, ws, ws_state).process()
 
 
 def format_header(ws, fal_type, departments):
