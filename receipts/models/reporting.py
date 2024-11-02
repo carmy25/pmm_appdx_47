@@ -34,7 +34,7 @@ class Reporting(BaseDocument):
         NEW = "NEW", _("нове")
         WITH_ERROR = "WITH_ERROR", _("містить помилку")
         CHECKED = "CHECKED", _("перевірено")
-        GO_AWAY = "GO_AWAY", _("здано")
+        GO_AWAY = "GO_AWAY", _("здано в ФЕС")
         COMPLETED = "COMPLETED", _("проведено")
 
     state = models.CharField(
@@ -43,6 +43,7 @@ class Reporting(BaseDocument):
         verbose_name="стан",
         choices=Category.choices,
     )
+    waybills_count = models.FloatField(verbose_name="кількість шляхових", null=True, blank=True)
     note = models.CharField(
         max_length=500, verbose_name="нотатка", blank=True, null=True
     )

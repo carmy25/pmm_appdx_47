@@ -9,6 +9,7 @@ from fals.models import FAL
 from receipts.models.handout_list import HandoutList
 from receipts.models.invoice import Invoice
 from receipts.models.writing_off_act import WritingOffAct
+from summary_reports.admin.actions import create_summary_report
 
 
 from ..models import Certificate
@@ -100,3 +101,4 @@ class HandoutListAdmin(DocumentAdmin):
         "fals__fal_type__name",
     ]
     autocomplete_fields = ["sender", "destination"]
+    actions = [create_summary_report]

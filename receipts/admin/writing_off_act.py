@@ -1,3 +1,4 @@
+from summary_reports.admin.actions import create_summary_report
 from .document import DocumentAdmin
 
 
