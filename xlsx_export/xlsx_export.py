@@ -76,6 +76,57 @@ def export_fal_type(fal_type, ws, departments):
     format_rows(ws, fal_type)
 
 
+def registry_fes_format_header(ws, date):
+    ws.column_dimensions["A"].width = 40
+    ws.column_dimensions["B"].width = 30
+    ws.column_dimensions["C"].width = 30
+    ws.row_dimensions[1].height = 30
+    ws.merged_cells.ranges.add('A1:C1')
+    year, month = date
+    c = cell_center_border(ws, 'A1', f'Реєстр ФЕС за {month}-{year}')
+    c.font = Font(bold=True, size=20)
+
+    c = cell_center_border(ws, 'A2', f'Підрозділ')
+    c.font = Font(bold=True)
+
+    c = cell_center_border(ws, 'B2', f'Кількість донесень')
+    c.font = Font(bold=True)
+
+    c = cell_center_border(ws, 'C2', f'Кількість шляхових')
+    c.font = Font(bold=True)
+
+
+def registry_fes_format_rows(ws, reportings):
+    for i, reporting in enumerate(reportings, 3):
+        cell_center_border(ws, f'A{i}', reporting.department.name)
+        cell_center_border(ws, f'B{i}', 1)
+        cell_center_border(ws, f'C{i}', reporting.waybills_count)
+    return i
+
+
+def registry_fes_format_footer(ws, last_idx):
+    idx = last_idx + 1
+    cell_center_border(ws, f'A{idx}', 'Усього')
+    cell_center_border(ws, f'B{idx}', f'=SUM(B3:B{last_idx})')
+    cell_center_border(ws, f'C{idx}', f'=SUM(C3:C{last_idx})')
+
+    idx += 3
+    ws[f'A{idx}'] = 'Здав    ____________________'
+    ws[f'A{idx}'].font = Font(bold=True, size=14)
+    ws.merged_cells.ranges.add(f'A{idx}:B{idx}')
+
+    idx += 3
+    ws[f'A{idx}'] = 'Прийняв    ____________________'
+    ws[f'A{idx}'].font = Font(bold=True, size=14)
+    ws.merged_cells.ranges.add(f'A{idx}:B{idx}')
+
+
+def export_reportings_fes_registry(ws, reportings, date):
+    registry_fes_format_header(ws, date)
+    last_idx = registry_fes_format_rows(ws, reportings)
+    registry_fes_format_footer(ws, last_idx)
+
+
 def get_fal_date(obj):
     if isinstance(obj, FALReportEntry):
         return obj.report.summary_report.end_date

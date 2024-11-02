@@ -10,8 +10,11 @@ from receipts.exceptions import DuplicateReportsError
 from receipts.models.reporting import Reporting
 from xlsx_export.reportings_report import export_reportings_report
 from xlsx_export import export_fal_type
+from xlsx_export.utils import month_iter
 
 import openpyxl
+
+from xlsx_export.xlsx_export import export_reportings_fes_registry
 
 
 def xlsx_response(filename):
@@ -22,7 +25,7 @@ def xlsx_response(filename):
     return response
 
 
-@admin.site.register_view("export-xlsx", "Експортувати в Excel", urlname="export_xlsx")
+@admin.site.register_view("export-xlsx", "47 Додаток", urlname="export_xlsx")
 def export_xlsx(request):
     import time
 
@@ -68,5 +71,38 @@ def reportings_report(request):
                 "admin/reportings_report_error.html",
                 context={"error_msg": e.args[0]},
             )
+    wb.save(response)
+    return response
+
+
+@admin.site.register_view(
+    "fes-registry", "Реєстр ФЕС", urlname="fes_registry"
+)
+def reportings_report(request):
+    response = xlsx_response("fes_registry")
+    reportings = Reporting.objects.filter(
+        state=Reporting.Category.GO_AWAY).order_by("end_date")
+    wb = openpyxl.Workbook()
+    if (fr := reportings.first()) is None:
+        return response
+    lr = reportings.last()
+
+    for d in month_iter(
+            fr.end_date.month, fr.end_date.year,
+            lr.end_date.month, lr.end_date.year):
+        year, month = d
+        ws = wb.create_sheet(f'{month}.{year}')
+        export_reportings_fes_registry(ws, reportings, d)
+        ws.freeze_panes = ws['A3']
+    '''if reportings.count() > 0:
+        try:
+            export_reportings_report(ws, reportings)
+        except DuplicateReportsError as e:
+            return render(
+                request,
+                "admin/reportings_report_error.html",
+                context={"error_msg": e.args[0]},
+            )
+    '''
     wb.save(response)
     return response

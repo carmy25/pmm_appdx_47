@@ -11,11 +11,11 @@
         {% url 'admin:export_xlsx' as view_url %}
         {% for path, name in custom_list %}
           {% if '/admin/'|add:path == view_url %}
-            <tr><th><a href="{{ path }}?category=PETROL">АБ: &ensp;{{ name }}</a></th></tr>
-            <tr><th><a href="{{ path }}?category=DIESEL">ДП: &ensp;{{ name }}</a></th></tr>
-            <tr><th><a href="{{ path }}?category=OIL">Масла: {{ name }}</a></th></tr>
-            <tr><th><a href="{{ path }}?category=POISON">Отрути: {{ name }}</a></th></tr>
-            <tr><th><a href="{{ path }}">Всі ПММ: {{ name }}</a></th></tr>
+            <tr><th><a href="{{ path }}?category=PETROL">{{ name }}: АБ</a></th></tr>
+            <tr><th><a href="{{ path }}?category=DIESEL">{{ name }}: ДП</a></th></tr>
+            <tr><th><a href="{{ path }}?category=OIL">{{ name }}: МіМ</a></th></tr>
+            <tr><th><a href="{{ path }}?category=POISON">{{ name }}: ОТРУТИ</a></th></tr>
+            <tr><th><a href="{{ path }}">{{ name }}: Всі ПММ </a></th></tr>
           {% else %}
             <tr><th><a href="{{ path }}">{{ name }}</a></th></tr>
           {% endif %}
