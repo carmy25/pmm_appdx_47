@@ -54,7 +54,7 @@ def format_deps_reportings(ws, reportings):
     for report in reportings:
         state_field = report._meta.get_field('state')
         display_value = report._get_FIELD_display(state_field)
-        comment = f"Стан: {display_value}]\n"
+        comment = f"Стан: {display_value}\n"
         good = True
         end_date = report.end_date
         col_name = MONTH_BY_INDEX[(end_date.year, end_date.month)]
