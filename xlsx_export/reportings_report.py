@@ -53,7 +53,7 @@ def get_prev_report(report, all_reports):
 def format_deps_reportings(ws, reportings):
     for report in reportings:
         state_field = report._meta.get_field('state')
-        display_value = my_object._get_FIELD_display(state_field)
+        display_value = report._get_FIELD_display(state_field)
         comment = f"Стан: {display_value}]n"
         good = True
         end_date = report.end_date
