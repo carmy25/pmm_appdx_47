@@ -4,7 +4,7 @@ from django.contrib.contenttypes.admin import GenericTabularInline
 
 from rangefilter.filters import DateRangeFilterBuilder
 
-
+from nested_admin import NestedModelAdmin, NestedGenericTabularInline
 from fals.models import FAL
 from receipts.models.handout_list import HandoutList
 from receipts.models.invoice import Invoice
@@ -15,7 +15,7 @@ from summary_reports.admin.actions import create_summary_report
 from ..models import Certificate
 
 
-class FALInline(GenericTabularInline):
+class FALInline(NestedGenericTabularInline):
     model = FAL
     autocomplete_fields = ["fal_type"]
 
@@ -57,7 +57,7 @@ class ScanListFilter(admin.SimpleListFilter):
             return queryset.exclude(scan__isnull=False).exclude(scan__exact="")
 
 
-class DocumentAdmin(admin.ModelAdmin):
+class DocumentAdmin(NestedModelAdmin):
     inlines = [FALInline]
     search_fields = ["number", "sender", "destination", "fals__fal_type__name"]
     ordering = ["operation_date"]

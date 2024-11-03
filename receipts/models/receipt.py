@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 
+from fals.models import FALType
+
 from .base import BaseDocument
 
 
@@ -39,3 +41,27 @@ class ReceiptRequestCoupon(BaseReceiptRequest):
         verbose_name = "талон чекової вимоги"
         verbose_name_plural = "талони чекових вимог"
         unique_together = ("number", "book_number", "book_series")
+
+
+class InvoiceForRRC(BaseDocument):
+    class Meta:
+        verbose_name = 'Накладна для талон. чек. вимог.'
+        verbose_name_plural = 'Накладні для талон. чек. вимог.'
+    rrc = models.ForeignKey(
+        ReceiptRequestCoupon, on_delete=models.CASCADE, related_name="fals")
+
+
+class InvoiceForRRCEntry(models.Model):
+    class Meta:
+        verbose_name = "Пально-мастильний матеріал"
+        verbose_name_plural = "Пально-мастильнi матеріали"
+    fal_type = models.ForeignKey(
+        FALType,
+        verbose_name="тип",
+        on_delete=models.CASCADE,
+        related_name="fal_rrc_entries",
+    )
+    invoice_for_rrc = models.ForeignKey(
+        InvoiceForRRC, on_delete=models.CASCADE, related_name="fals")
+    amount = models.FloatField(verbose_name="видано")
+    price = models.FloatField(verbose_name="сума (в грн)")
