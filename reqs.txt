@@ -5,3 +5,4 @@ django-admin-rangefilter
 django-admin-object-actions
 django-constance[redis]
 python-dateutil
+pandas

@@ -1,3 +1,4 @@
+from collections import defaultdict
 from openpyxl.styles import PatternFill, Font, Alignment
 from openpyxl.utils import get_column_letter
 from itertools import chain
@@ -10,6 +11,7 @@ from receipts.models import ReceiptRequest, ReceiptRequestCoupon, Certificate
 from receipts.models.writing_off_act import WritingOffAct
 from xlsx_export.handout_list_summary_document_handler import HandoutSummaryDocumentHandler
 from xlsx_export.invoice_summary_document_handler import InvoiceSummaryReportDocumentHandler
+from xlsx_export.invoices_for_rrc import report_price_format_fals, report_price_format_header
 
 from .utils import cell_center_border, THIN_BORDER
 from .reporting_summary_document_handler import ReportingSummaryReportDocumentHandler
@@ -244,3 +246,34 @@ def format_departments(ws, deps):
             "Всього",
         ).font = Font(bold=True)
         col_idx += 3
+
+
+def export_reportings_price_report(ws, reportings, date, invoices, start_date):
+    # fal_types_by_idx = {ft: i for i, ft in enumerate({r.fal_type for r in reportings})}
+    fal_types_amount = defaultdict(float)
+    fal_types_price = defaultdict(float)
+    for report in reportings:
+        next_fre = False
+        for fre in report.fals.all():
+            # decrement outcome from invoices
+            # accumulated sum
+            outcome = fre.get_outcome_kgs()
+            write_off_total = 0
+            write_off_price = 0
+            invoices_range = invoices.loc[start_date:report.end_date]
+            next_fre = False
+            for invoice in reversed(invoices_range['invoices'].tolist()):
+                if next_fre:
+                    break
+                for fal in invoice.fals:
+                    if fal.fal_type == fre.fal_type:
+                        write_off = fal.write_off(outcome-write_off_total)
+                        write_off_total += write_off['amount']
+                        write_off_price += write_off['price']
+                        if write_off_total >= outcome:
+                            next_fre = True
+                            break
+            fal_types_amount[fre.fal_type.name] += write_off_total
+            fal_types_price[fre.fal_type.name] += write_off_price
+    report_price_format_header(ws, date)
+    report_price_format_fals(ws, fal_types_amount, fal_types_price)

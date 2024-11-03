@@ -48,7 +48,7 @@ class InvoiceForRRC(BaseDocument):
         verbose_name = 'Накладна для талон. чек. вимог.'
         verbose_name_plural = 'Накладні для талон. чек. вимог.'
     rrc = models.ForeignKey(
-        ReceiptRequestCoupon, on_delete=models.CASCADE, related_name="fals")
+        ReceiptRequestCoupon, on_delete=models.CASCADE, related_name="invoices")
 
 
 class InvoiceForRRCEntry(models.Model):

@@ -23,4 +23,4 @@ class InvoiceForRRCAdmin(NestedTabularInline):
 
 
 class ReceiptRequestCouponAdmin(DocumentAdmin):
-    inlines = [*DocumentAdmin.inlines, InvoiceForRRCAdmin]
+    inlines = DocumentAdmin.inlines + [InvoiceForRRCAdmin]
