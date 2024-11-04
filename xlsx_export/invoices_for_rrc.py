@@ -69,8 +69,9 @@ def report_price_format_header(ws, date):
     ws.column_dimensions["A"].width = 40
     ws.column_dimensions["B"].width = 30
     ws.column_dimensions["C"].width = 30
+    ws.column_dimensions["D"].width = 30
     ws.row_dimensions[1].height = 30
-    ws.merged_cells.ranges.add('A1:C1')
+    ws.merged_cells.ranges.add('A1:D1')
     year, month = date
     c = cell_center_border(ws, 'A1', f'Списано по донесеннях за {month}-{year}')
     c.font = Font(bold=True, size=20)
@@ -81,12 +82,16 @@ def report_price_format_header(ws, date):
     c = cell_center_border(ws, 'B2', 'Кількість(кг)')
     c.font = Font(bold=True)
 
-    c = cell_center_border(ws, 'C2', 'Сума (грн)')
+    c = cell_center_border(ws, 'C2', 'Всього(кг)')
+    c.font = Font(bold=True)
+
+    c = cell_center_border(ws, 'D2', 'Сума (грн)')
     c.font = Font(bold=True)
 
 
-def report_price_format_fals(ws, amounts, prices):
+def report_price_format_fals(ws, amounts, prices, totals):
     for idx, (name, amount) in enumerate(amounts.items(), 3):
         cell_center_border(ws, f'A{idx}', name)
         cell_center_border(ws, f'B{idx}', amount)
-        cell_center_border(ws, f'C{idx}', prices[name])
+        cell_center_border(ws, f'C{idx}', totals['name'])
+        cell_center_border(ws, f'D{idx}', prices[name])

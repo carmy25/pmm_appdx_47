@@ -251,6 +251,7 @@ def format_departments(ws, deps):
 def export_reportings_price_report(ws, reportings, date, invoices, start_date):
     # fal_types_by_idx = {ft: i for i, ft in enumerate({r.fal_type for r in reportings})}
     fal_types_amount = defaultdict(float)
+    fal_types_total_amount = defaultdict(float)
     fal_types_price = defaultdict(float)
     for report in reportings:
         next_fre = False
@@ -262,6 +263,7 @@ def export_reportings_price_report(ws, reportings, date, invoices, start_date):
             write_off_price = 0
             invoices_range = invoices.loc[start_date:report.end_date]
             next_fre = False
+            fal_types_total_amount[fre.fal_type] += outcome
             for invoice in reversed(invoices_range['invoices'].tolist()):
                 if next_fre:
                     break
@@ -270,10 +272,12 @@ def export_reportings_price_report(ws, reportings, date, invoices, start_date):
                         write_off = fal.write_off(outcome-write_off_total)
                         write_off_total += write_off['amount']
                         write_off_price += write_off['price']
+                        if write_off['amount']/write_off['price'] > 60:
+                            print(f'Invoice({fal.fal_type}) {fal.doc.number} looks incorrect')
                         if write_off_total >= outcome:
                             next_fre = True
                             break
             fal_types_amount[fre.fal_type.name] += write_off_total
             fal_types_price[fre.fal_type.name] += write_off_price
     report_price_format_header(ws, date)
-    report_price_format_fals(ws, fal_types_amount, fal_types_price)
+    report_price_format_fals(ws, fal_types_amount, fal_types_price, fal_types_total_amount)
