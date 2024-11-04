@@ -275,7 +275,7 @@ def export_reportings_price_report(ws, reportings, date, invoices, start_date):
                         write_off_price += write_off['price']
                         if write_off['price'] and (write_off['price']/write_off['amount'] > 60):
                             logger.warning(f'Invoice({fal.fal_type}) {
-                                           fal.doc.number} looks incorrect')
+                                           fal.doc.invoice_for_rrc.number} looks incorrect')
                         if write_off_total >= outcome:
                             next_fre = True
                             break
