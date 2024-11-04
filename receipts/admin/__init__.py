@@ -13,6 +13,7 @@ from receipts.models.writing_off_act import WritingOffAct
 from ..models import ReceiptRequest, ReceiptRequestCoupon, Certificate
 from .document import DocumentAdmin, HandoutListAdmin
 from .invoice import InvoiceAdmin
+from .certificate import CertificateAdmin
 from .writing_off_act import WritingOffAdmin
 from .export_xlsx import export_xlsx
 
@@ -20,11 +21,10 @@ from .export_xlsx import export_xlsx
 admin.site.register(Reporting, ReportingAdmin)
 admin.site.register(ReceiptRequest, DocumentAdmin)
 admin.site.register(ReceiptRequestCoupon, ReceiptRequestCouponAdmin)
-admin.site.register(Certificate, DocumentAdmin)
+admin.site.register(Certificate, CertificateAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(HandoutList, HandoutListAdmin)
 admin.site.register(WritingOffAct, WritingOffAdmin)
 admin.site.register(InspectionCertificate, InspectionCertificateAdmin)
-# admin.site.register(InvoiceForRRC, InvoiceForRRCAdmin)
 
 __all__ = [export_xlsx]

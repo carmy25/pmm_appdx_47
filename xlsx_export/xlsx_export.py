@@ -264,7 +264,6 @@ def export_reportings_price_report(ws, reportings, date, invoices, start_date):
             write_off_price = 0
             invoices_range = invoices.loc[start_date:report.end_date]
             next_fre = False
-            fal_types_total_amount[fre.fal_type] += outcome
             for invoice in reversed(invoices_range['invoices'].tolist()):
                 if next_fre:
                     break
@@ -282,5 +281,6 @@ def export_reportings_price_report(ws, reportings, date, invoices, start_date):
                             break
             fal_types_amount[fre.fal_type.name] += write_off_total
             fal_types_price[fre.fal_type.name] += write_off_price
+            fal_types_total_amount[fre.fal_type.name] += outcome
     report_price_format_header(ws, date)
     report_price_format_fals(ws, fal_types_amount, fal_types_price, fal_types_total_amount)

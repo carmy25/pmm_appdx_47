@@ -101,5 +101,5 @@ def report_price_format_fals(ws, amounts, prices, totals):
     for idx, (name, amount) in enumerate(amounts.items(), 3):
         cell_center_border(ws, f'A{idx}', name)
         cell_center_border(ws, f'B{idx}', amount)
-        cell_center_border(ws, f'C{idx}', totals['name'])
+        cell_center_border(ws, f'C{idx}', totals[name])
         cell_center_border(ws, f'D{idx}', prices[name])

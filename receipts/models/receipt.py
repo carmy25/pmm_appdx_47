@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 
 from fals.models import FALType
+from receipts.models.certificate import Certificate
 
 from .base import BaseDocument
 
@@ -48,7 +49,12 @@ class InvoiceForRRC(BaseDocument):
         verbose_name = 'Накладна для талон. чек. вимог.'
         verbose_name_plural = 'Накладні для талон. чек. вимог.'
     rrc = models.ForeignKey(
-        ReceiptRequestCoupon, on_delete=models.CASCADE, related_name="invoices")
+        ReceiptRequestCoupon, on_delete=models.CASCADE, related_name="invoices",
+        blank=True, null=True)
+
+    certificate = models.ForeignKey(
+        Certificate, on_delete=models.CASCADE, related_name="invoices",
+        blank=True, null=True)
 
 
 class InvoiceForRRCEntry(models.Model):
