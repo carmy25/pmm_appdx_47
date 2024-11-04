@@ -1,8 +1,11 @@
 from openpyxl.styles import Font
+from fals.models import FALType
 from xlsx_export.utils import cell_center_border
 
 import logging
 logger = logging.getLogger(__name__)
+
+PRICE_FAL_TYPE_BY_INDEX = {}
 
 
 class InvoiceForRRCMut:
@@ -79,6 +82,9 @@ def report_price_format_header(ws, date):
     ws.column_dimensions["B"].width = 30
     ws.column_dimensions["C"].width = 30
     ws.column_dimensions["D"].width = 30
+    ws.column_dimensions["E"].width = 30
+    ws.column_dimensions["F"].width = 30
+    ws.column_dimensions["G"].width = 30
     ws.row_dimensions[1].height = 30
     ws.merged_cells.ranges.add('A1:D1')
     year, month = date
@@ -91,16 +97,35 @@ def report_price_format_header(ws, date):
     c = cell_center_border(ws, 'B2', 'Кількість(кг)')
     c.font = Font(bold=True)
 
-    c = cell_center_border(ws, 'C2', 'Всього(кг)')
+    c = cell_center_border(ws, 'C2', 'Недостача(кг)')
     c.font = Font(bold=True)
 
-    c = cell_center_border(ws, 'D2', 'Сума (грн)')
+    c = cell_center_border(ws, 'D2', 'Всього(кг)')
     c.font = Font(bold=True)
+
+    c = cell_center_border(ws, 'E2', 'Сума (грн)')
+    c.font = Font(bold=True)
+
+    c = cell_center_border(ws, 'F2', 'Ціна різниці за кг(грн)')
+    c.font = Font(bold=True)
+
+    c = cell_center_border(ws, 'G2', 'Сума з різницею(грн)')
+    c.font = Font(bold=True)
+
+
+def prepear_fal_type_index():
+    global PRICE_FAL_TYPE_BY_INDEX
+    if len(PRICE_FAL_TYPE_BY_INDEX.keys()) == 0:
+        PRICE_FAL_TYPE_BY_INDEX = {f.name: i for i, f in enumerate(FALType.objects.all(), 3)}
 
 
 def report_price_format_fals(ws, amounts, prices, totals):
-    for idx, (name, amount) in enumerate(amounts.items(), 3):
-        cell_center_border(ws, f'A{idx}', name)
-        cell_center_border(ws, f'B{idx}', amount)
-        cell_center_border(ws, f'C{idx}', totals[name])
-        cell_center_border(ws, f'D{idx}', prices[name])
+    prepear_fal_type_index()
+    for name, i in PRICE_FAL_TYPE_BY_INDEX.items():
+        cell_center_border(ws, f'A{i}', name)
+        cell_center_border(ws, f'B{i}', amounts[name])
+        cell_center_border(ws, f'C{i}', f'=D{i}-B{i}')
+        cell_center_border(ws, f'D{i}', totals[name])
+        cell_center_border(ws, f'E{i}', prices[name])
+        cell_center_border(ws, f'F{i}', 0)
+        cell_center_border(ws, f'G{i}', f'=E{i}+C{i}*F{i}')
