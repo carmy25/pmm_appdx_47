@@ -12,12 +12,13 @@ class InvoiceForRRCMut:
 
     @property
     def operation_date(self):
-        return self.doc.rrc.operation_date
+        return self.doc.operation_date
 
     @property
     def fals(self):
         if self._fals is None:
             self._fals = [InvoiceForRRCEntry(e) for e in self.doc.fals.all()]
+            self._fals += [InvoiceForRRCEntry(e) for e in self.doc.fals.all()]
         return self._fals
 
 
@@ -31,7 +32,7 @@ class InvoiceForRRCEntry:
             self.doc.amount}:{
                 self.doc.price} - {
                     self.price_per_kg()}. RRC: {
-                        self.doc.invoice_for_rrc.rrc.number}')
+                        self.doc.invoice_for_rrc.base_document_number}')
 
     @property
     def fal_type(self):

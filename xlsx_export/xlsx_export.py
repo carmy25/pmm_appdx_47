@@ -268,7 +268,7 @@ def export_reportings_price_report(ws, reportings, date, invoices, start_date):
                 if next_fre:
                     break
                 for fal in invoice.fals:
-                    if fal.fal_type == fre.fal_type:
+                    if fal.fal_type.get_name() == fre.fal_type.get_name():
                         write_off = fal.write_off(outcome-write_off_total)
                         write_off_total += write_off['amount']
                         write_off_price += write_off['price']

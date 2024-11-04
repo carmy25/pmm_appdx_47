@@ -56,6 +56,16 @@ class InvoiceForRRC(BaseDocument):
         Certificate, on_delete=models.CASCADE, related_name="invoices",
         blank=True, null=True)
 
+    @property
+    def operation_date(self):
+        return (self.rrc and self.rrc.operation_date) or self.certificate.operation_date
+
+    @property
+    def base_document_number(self):
+        if self.rrc:
+            return self.rrc.number
+        return self.certificate.number
+
 
 class InvoiceForRRCEntry(models.Model):
     class Meta:

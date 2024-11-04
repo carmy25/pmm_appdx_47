@@ -116,7 +116,10 @@ def reporting_price_report(request):
         return response
     lr = reportings.last()
     # Get all rrc invoices and sort by date
-    invoices = InvoiceForRRC.objects.all().order_by('rrc__operation_date')
+    invoices = sorted(InvoiceForRRC.objects.all(),
+                      key=lambda x:
+                          (x.rrc and x.rrc.operation_date) or
+                          (x.certificate and x.certificate.operation_date))
     # convert to InvoiceForRRCMut
     invoices_for_rrc_mut = [InvoiceForRRCMut(inv) for inv in invoices]
     # put date to pandas DataFrame
@@ -126,9 +129,10 @@ def reporting_price_report(request):
     })
     df['date'] = pd.to_datetime(df['date'])
     invoices_df = df.set_index('date')
-    if not (inv := invoices.first()):
+    if len(invoices) == 0:
         return response
-    start_date = inv.rrc.operation_date
+    inv = invoices[0]
+    start_date = inv.operation_date
 
     for d in month_iter(
             fr.end_date.month, fr.end_date.year,
