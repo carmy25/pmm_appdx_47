@@ -139,6 +139,8 @@ def reporting_price_report(request):
 
     for d in months:
         year, month = d
+        if year == 2023 and month < 6:
+            continue
         ws = wb.create_sheet(f'{month}.{year}')
         export_reportings_price_report(
             ws,
