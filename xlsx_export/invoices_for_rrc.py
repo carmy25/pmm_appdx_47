@@ -1,6 +1,9 @@
 from openpyxl.styles import Font
 from xlsx_export.utils import cell_center_border
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class InvoiceForRRCMut:
     def __init__(self, invoice_for_rrc):
@@ -20,8 +23,9 @@ class InvoiceForRRCMut:
 
 class InvoiceForRRCEntry:
     def __init__(self, invoice_for_rrc_entry):
-        print(invoice_for_rrc_entry)
         self.doc = invoice_for_rrc_entry
+        logger.info(f'Invoice Entry Created({self.doc.fal_type}): {
+                    self.doc.amount}:{self.doc.price}')
         self._amount = self.doc.amount
         self._price = self.doc.price
 

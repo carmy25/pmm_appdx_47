@@ -175,4 +175,16 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGGING = {
     "version": 1,  # the dictConfig format version
     "disable_existing_loggers": False,  # retain the default loggers
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        }
+    },
+    'loggers': {
+        'xlsx_export.invoices_for_rrc': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        }
+    }
 }
