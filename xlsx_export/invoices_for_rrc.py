@@ -167,6 +167,8 @@ def format_price_summary(ws, months):
         cell_center_border(ws, f'A{i}', name)
         cells = []
         for y, m in months:
+            if y == 2023 and m < 6:
+                continue
             cells.append(f"'{m}.{y}'!%s{i}")
         formula = '+'.join([c % 'B' for c in cells])
         cell_center_border(ws, f'B{i}', f"={formula}")
