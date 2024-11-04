@@ -26,8 +26,12 @@ class InvoiceForRRCEntry:
         self.doc = invoice_for_rrc_entry
         self._amount = self.doc.amount
         self._price = self.doc.price
-        logger.info(f'Invoice Entry Created({self.doc.fal_type}): {
-                    self.doc.amount}:{self.doc.price} - {self.price_per_kg()}')
+        logger.info(f'Invoice Entry Created({
+            self.doc.fal_type}): {
+            self.doc.amount}:{
+                self.doc.price} - {
+                    self.price_per_kg()}. RRC: {
+                        self.doc.invoice_for_rrc.rrc.number}')
 
     @property
     def fal_type(self):
@@ -64,8 +68,8 @@ class InvoiceForRRCEntry:
 
         res['amount'] = amount
         res['price'] = amount * self.price_per_kg()
+        self.price = diff * self.price_per_kg()
         self.amount = diff
-        self.price = self.amount * self.price_per_kg()
         return res
 
 
