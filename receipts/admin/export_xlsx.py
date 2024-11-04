@@ -11,7 +11,7 @@ from fals.models import FALType
 from receipts.exceptions import DuplicateReportsError
 from receipts.models.receipt import InvoiceForRRC
 from receipts.models.reporting import Reporting
-from xlsx_export.invoices_for_rrc import InvoiceForRRCMut
+from xlsx_export.invoices_for_rrc import InvoiceForRRCMut, format_price_summary
 from xlsx_export.reportings_report import export_reportings_report
 from xlsx_export import export_fal_type
 from xlsx_export.utils import month_iter
@@ -133,10 +133,11 @@ def reporting_price_report(request):
         return response
     inv = invoices[0]
     start_date = inv.operation_date
+    months = list(month_iter(
+        fr.end_date.month, fr.end_date.year,
+        lr.end_date.month, lr.end_date.year))
 
-    for d in month_iter(
-            fr.end_date.month, fr.end_date.year,
-            lr.end_date.month, lr.end_date.year):
+    for d in months:
         year, month = d
         ws = wb.create_sheet(f'{month}.{year}')
         export_reportings_price_report(
@@ -146,5 +147,9 @@ def reporting_price_report(request):
             invoices_df,
             start_date)
         ws.freeze_panes = ws['A3']
+
+    ws = wb.create_sheet('Підсумок')
+    format_price_summary(ws, months)
+
     wb.save(response)
     return response

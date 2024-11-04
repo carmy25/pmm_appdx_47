@@ -129,3 +129,57 @@ def report_price_format_fals(ws, amounts, prices, totals):
         cell_center_border(ws, f'E{i}', prices[name])
         cell_center_border(ws, f'F{i}', 0)
         cell_center_border(ws, f'G{i}', f'=E{i}+C{i}*F{i}')
+
+
+def format_price_summary(ws, months):
+    ws.column_dimensions["A"].width = 40
+    ws.column_dimensions["B"].width = 30
+    ws.column_dimensions["C"].width = 30
+    ws.column_dimensions["D"].width = 30
+    ws.column_dimensions["E"].width = 30
+    ws.column_dimensions["F"].width = 30
+    ws.column_dimensions["G"].width = 30
+
+    ws.row_dimensions[1].height = 30
+    ws.merged_cells.ranges.add('A1:G1')
+    c = cell_center_border(ws, 'A1', f'Підсумок')
+    c.font = Font(bold=True, size=20)
+
+    c = cell_center_border(ws, 'A2', 'Тип ПММ')
+    c.font = Font(bold=True)
+
+    c = cell_center_border(ws, 'B2', 'Кількість(кг)')
+    c.font = Font(bold=True)
+
+    c = cell_center_border(ws, 'C2', 'Недостача(кг)')
+    c.font = Font(bold=True)
+
+    c = cell_center_border(ws, 'D2', 'Всього(кг)')
+    c.font = Font(bold=True)
+
+    c = cell_center_border(ws, 'E2', 'Сума (грн)')
+    c.font = Font(bold=True)
+
+    c = cell_center_border(ws, 'F2', 'Сума з різницею(грн)')
+    c.font = Font(bold=True)
+
+    for name, i in PRICE_FAL_TYPE_BY_INDEX.items():
+        cell_center_border(ws, f'A{i}', name)
+        cells = []
+        for y, m in months:
+            cells.append(f"'{m}.{y}'!%s{i}")
+        formula = '+'.join([c % 'B' for c in cells])
+        cell_center_border(ws, f'B{i}', f"={formula}")
+
+        cell_center_border(ws, f'C{i}', f'=D{i}-B{i}')
+
+        formula = '+'.join([c % 'D' for c in cells])
+        cell_center_border(ws, f'D{i}', f"={formula}")
+
+        formula = '+'.join([c % 'E' for c in cells])
+        cell_center_border(ws, f'E{i}', f"={formula}")
+
+        formula = '+'.join([c % 'E' for c in cells])
+        cell_center_border(ws, f'F{i}', f"={formula}")
+
+        # cell_center_border(ws, f'B{i}', f"='10.2024'!B3")
