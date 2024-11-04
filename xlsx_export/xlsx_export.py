@@ -18,7 +18,8 @@ from .reporting_summary_document_handler import ReportingSummaryReportDocumentHa
 from .base_document_handler import BaseFALDocumentHandler
 from .invoice_document_handler import InvoiceDocumentHandler
 
-
+import logging
+logger = logging.getLogger(__name__)
 DEP_BY_INDEX = {}
 
 
@@ -272,8 +273,9 @@ def export_reportings_price_report(ws, reportings, date, invoices, start_date):
                         write_off = fal.write_off(outcome-write_off_total)
                         write_off_total += write_off['amount']
                         write_off_price += write_off['price']
-                        if write_off['price'] and (write_off['amount']/write_off['price'] > 60):
-                            print(f'Invoice({fal.fal_type}) {fal.doc.number} looks incorrect')
+                        if write_off['price'] and (write_off['prince']/write_off['amount'] > 60):
+                            logger.warning(f'Invoice({fal.fal_type}) {
+                                           fal.doc.number} looks incorrect')
                         if write_off_total >= outcome:
                             next_fre = True
                             break

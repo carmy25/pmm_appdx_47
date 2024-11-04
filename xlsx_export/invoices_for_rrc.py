@@ -24,10 +24,10 @@ class InvoiceForRRCMut:
 class InvoiceForRRCEntry:
     def __init__(self, invoice_for_rrc_entry):
         self.doc = invoice_for_rrc_entry
-        logger.info(f'Invoice Entry Created({self.doc.fal_type}): {
-                    self.doc.amount}:{self.doc.price}')
         self._amount = self.doc.amount
         self._price = self.doc.price
+        logger.info(f'Invoice Entry Created({self.doc.fal_type}): {
+                    self.doc.amount}:{self.doc.price} - {self.price_per_kg()}')
 
     @property
     def fal_type(self):

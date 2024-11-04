@@ -185,6 +185,11 @@ LOGGING = {
         'xlsx_export.invoices_for_rrc': {
             'level': 'DEBUG',
             'handlers': ['console'],
+        },
+
+        'xlsx_export.xlsx_export': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
         }
     }
 }
