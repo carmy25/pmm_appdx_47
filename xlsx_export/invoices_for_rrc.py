@@ -129,6 +129,8 @@ def report_price_format_fals(ws, amounts, prices, totals):
         cell_center_border(ws, f'E{i}', prices[name])
         cell_center_border(ws, f'F{i}', 0)
         cell_center_border(ws, f'G{i}', f'=E{i}+C{i}*F{i}')
+    cell_center_border(ws, f'G{i+1}', f'=sum(G3:G{i})')
+    cell_center_border(ws, f'D{i+1}', f'=sum(D3:D{i})')
 
 
 def format_price_summary(ws, months):
