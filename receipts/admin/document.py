@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import Q
 from django.contrib.contenttypes.admin import GenericTabularInline
 
 
@@ -54,7 +55,7 @@ class ScanListFilter(admin.SimpleListFilter):
         if self.value() == "scan_present":
             return scan_present_qs
         if self.value() == "scan_absent":
-            return queryset.exclude(scan__isnull=False).exclude(scan__exact="")
+            return queryset.filter(Q(scan__isnull=True) | Q(scan__exact=""))
 
 
 class DocumentAdmin(NestedModelAdmin):
