@@ -38,5 +38,5 @@ class Invoice(BaseDocument):
         blank=True,
         related_name="invoices",
         on_delete=models.SET_NULL,
-        verbose_name="Звередна відомість",
+        verbose_name="зведена відомість",
     )

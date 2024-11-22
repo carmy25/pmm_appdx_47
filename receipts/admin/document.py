@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.db.models import Q
-from django.contrib.contenttypes.admin import GenericTabularInline
 
 
 from rangefilter.filters import DateRangeFilterBuilder
