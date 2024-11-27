@@ -43,7 +43,9 @@ class Reporting(BaseDocument):
         verbose_name="стан",
         choices=Category.choices,
     )
-    waybills_count = models.FloatField(verbose_name="кількість шляхових", null=True, blank=True)
+    waybills_numbers = models.TextField(verbose_name="номера шляхових", null=True, blank=True)
+    handout_numbers = models.TextField(
+        verbose_name="номера роздавальних відомостей", null=True, blank=True)
     note = models.CharField(
         max_length=500, verbose_name="нотатка", blank=True, null=True
     )

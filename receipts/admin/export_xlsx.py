@@ -84,8 +84,7 @@ def reportings_report(request):
 )
 def reportings_report(request):
     response = xlsx_response("fes_registry")
-    reportings = Reporting.objects.filter(
-        state=Reporting.Category.GO_AWAY).order_by("end_date")
+    reportings = Reporting.objects.all().order_by("end_date")
     wb = openpyxl.Workbook()
     if (fr := reportings.first()) is None:
         return response

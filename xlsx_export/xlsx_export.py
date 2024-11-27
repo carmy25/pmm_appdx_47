@@ -84,9 +84,9 @@ def registry_fes_format_header(ws, date):
     ws.column_dimensions["B"].width = 30
     ws.column_dimensions["C"].width = 30
     ws.row_dimensions[1].height = 30
-    ws.merged_cells.ranges.add('A1:C1')
+    ws.merged_cells.ranges.add('A1:E1')
     year, month = date
-    c = cell_center_border(ws, 'A1', f'Реєстр ФЕС за {month}-{year}')
+    c = cell_center_border(ws, 'A1', f'Реєстр документів для ФЕС за {month}-{year}')
     c.font = Font(bold=True, size=20)
 
     c = cell_center_border(ws, 'A2', f'Підрозділ')
