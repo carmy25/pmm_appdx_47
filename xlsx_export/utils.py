@@ -8,7 +8,7 @@ THIN_BORDER = Border(
     top=Side(style="thin"),
     bottom=Side(style="thin"),
 )
-CENTER_ALIGNMENT = Alignment(horizontal="center")
+CENTER_ALIGNMENT = Alignment(horizontal="center", vertical='center', wrap_text=True)
 
 OTHER_DEP_CELL_FILL = PatternFill(
     start_color="dce6f1", end_color="dce6f1", fill_type="solid"

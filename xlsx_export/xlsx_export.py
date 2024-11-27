@@ -80,48 +80,85 @@ def export_fal_type(fal_type, ws, departments):
 
 
 def registry_fes_format_header(ws, date):
-    ws.column_dimensions["A"].width = 40
+    ws.column_dimensions["A"].width = 20
     ws.column_dimensions["B"].width = 30
-    ws.column_dimensions["C"].width = 30
+    ws.column_dimensions["C"].width = 40
+    ws.column_dimensions["D"].width = 30
+    ws.column_dimensions["E"].width = 50
+    ws.column_dimensions["f"].width = 30
     ws.row_dimensions[1].height = 30
-    ws.merged_cells.ranges.add('A1:E1')
+    ws.merged_cells.ranges.add('A1:f1')
     year, month = date
     c = cell_center_border(ws, 'A1', f'Реєстр документів для ФЕС за {month}-{year}')
     c.font = Font(bold=True, size=20)
+    c.alignment = Alignment(vertical='center', horizontal='center')
 
-    c = cell_center_border(ws, 'A2', f'Підрозділ')
+    c = cell_center_border(ws, 'A2', f'номери зведених')
+    c.font = Font(bold=True)
+    ws.merged_cells.ranges.add('b2:f2')
+    c = cell_center_border(ws, 'B2', f'')
+    c = cell_center_border(ws, 'c2', f'')
+    c = cell_center_border(ws, 'd2', f'')
+    c = cell_center_border(ws, 'e2', f'')
+    c = cell_center_border(ws, 'f2', f'')
+
+    c = cell_center_border(ws, 'A3', f'номери накладних')
+    c.font = Font(bold=True)
+    ws.merged_cells.ranges.add('b3:f3')
+    c = cell_center_border(ws, 'B3', f'')
+    c = cell_center_border(ws, 'c3', f'')
+    c = cell_center_border(ws, 'd3', f'')
+    c = cell_center_border(ws, 'e3', f'')
+    c = cell_center_border(ws, 'f3', f'')
+
+    c = cell_center_border(ws, 'A4', f'№')
     c.font = Font(bold=True)
 
-    c = cell_center_border(ws, 'B2', f'Кількість донесень')
+    c = cell_center_border(ws, 'b4', f'номер донесення')
+    c.font = Font(bold=True)
+    c = cell_center_border(ws, 'c4', f'назва підрозділу')
+    c.font = Font(bold=True)
+    c = cell_center_border(ws, 'd4', f'дата')
+    c.font = Font(bold=True)
+    c = cell_center_border(ws, 'e4', f'номери шляхових')
+    c.font = Font(bold=True)
+    c = cell_center_border(ws, 'f4', f'номери роздавалних відомостей')
     c.font = Font(bold=True)
 
-    c = cell_center_border(ws, 'C2', f'Кількість шляхових')
-    c.font = Font(bold=True)
+
+def comma_join(s):
+    if s is None:
+        return ''
+    return ', '.join(s.split())
 
 
 def registry_fes_format_rows(ws, reportings):
-    for i, reporting in enumerate(reportings, 3):
-        cell_center_border(ws, f'A{i}', reporting.department.name)
-        cell_center_border(ws, f'B{i}', 1)
-        cell_center_border(ws, f'C{i}', reporting.waybills_count)
+    for i, reporting in enumerate(reportings, 5):
+        cell_center_border(ws, f'a{i}', i - 4)
+        cell_center_border(ws, f'b{i}', reporting.number)
+        cell_center_border(ws, f'C{i}', reporting.department.name)
+        c = cell_center_border(ws, f'd{i}', reporting.end_date)
+        c.number_format = 'DD/MM/YY'
+        cell_center_border(ws, f'e{i}', comma_join(reporting.waybills_numbers))
+        cell_center_border(ws, f'f{i}', comma_join(reporting.handout_numbers))
+
     return i
 
 
 def registry_fes_format_footer(ws, last_idx):
     idx = last_idx + 1
-    cell_center_border(ws, f'A{idx}', 'Усього')
-    cell_center_border(ws, f'B{idx}', f'=SUM(B3:B{last_idx})')
-    cell_center_border(ws, f'C{idx}', f'=SUM(C3:C{last_idx})')
 
-    idx += 3
-    ws[f'A{idx}'] = 'Здав    ____________________'
-    ws[f'A{idx}'].font = Font(bold=True, size=14)
-    ws.merged_cells.ranges.add(f'A{idx}:B{idx}')
+    idx += 4
+    ws[f'A{idx}'] = 'Здав:'
+    ws[f'A{idx}'].font = Font(bold=True, size=16)
+    ws[f'B{idx}'] = '__________________________' * 3
+    ws.merged_cells.ranges.add(f'B{idx}:D{idx}')
 
-    idx += 3
-    ws[f'A{idx}'] = 'Прийняв    ____________________'
+    idx += 4
+    ws[f'A{idx}'] = 'Прийняв:'
     ws[f'A{idx}'].font = Font(bold=True, size=14)
-    ws.merged_cells.ranges.add(f'A{idx}:B{idx}')
+    ws[f'B{idx}'] = '__________________________' * 3
+    ws.merged_cells.ranges.add(f'B{idx}:D{idx}')
 
 
 def export_reportings_fes_registry(ws, reportings, date):
