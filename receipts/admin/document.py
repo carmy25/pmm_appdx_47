@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.db.models import Q
+from django.contrib.admin.models import LogEntry
+from django.contrib.contenttypes.models import ContentType
 
 
 from rangefilter.filters import DateRangeFilterBuilder
@@ -72,6 +74,7 @@ class DocumentAdmin(NestedModelAdmin):
         "destination",
         "operation_date",
         "scan_present",
+        "last_updated",
     ]
 
     def book(self, obj):
@@ -80,6 +83,16 @@ class DocumentAdmin(NestedModelAdmin):
         return f"{obj.book_number}{obj.book_series.upper()}"
 
     book.short_description = "Книга"
+
+    def last_updated(self, obj):
+        le_obj = LogEntry.objects.filter(
+            object_id=obj.id,
+            content_type=ContentType.objects.get(
+                model=obj._meta.object_name.lower(),
+                app_label=obj._meta.app_label)).order_by('-action_time').first()
+        return le_obj.action_time
+
+    last_updated.short_description = 'Востаннє Оновлено'
 
     def scan_present(self, obj):
         return "Так" if obj.scan.name else "Ні"
