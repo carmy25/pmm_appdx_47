@@ -13,6 +13,8 @@ class HandoutList(BaseDocument):
         verbose_name = "Роздавальна відомість"
         verbose_name_plural = "Роздавальні відомості"
 
+    number = models.CharField(verbose_name="номер", max_length=50, null=True, blank=True)
+
     operation_date = models.DateField(verbose_name="дата операції")
 
     start_date = models.DateField(verbose_name="початкова дата")
