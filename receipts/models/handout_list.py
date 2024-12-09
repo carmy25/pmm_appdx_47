@@ -17,8 +17,8 @@ class HandoutList(BaseDocument):
 
     operation_date = models.DateField(verbose_name="дата операції")
 
-    start_date = models.DateField(verbose_name="початкова дата")
-    end_date = models.DateField(verbose_name="кінцева дата")
+    start_date = models.DateField(verbose_name="початкова дата", blank=True, null=True)
+    end_date = models.DateField(verbose_name="кінцева дата", blank=True, null=True)
 
     sender = models.ForeignKey(
         Department,
