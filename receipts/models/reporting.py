@@ -18,7 +18,8 @@ class Reporting(BaseDocument):
     )
 
     department = models.ForeignKey(
-        Department, on_delete=models.CASCADE, verbose_name="підрозділ"
+        Department, on_delete=models.CASCADE, verbose_name="підрозділ",
+        related_name='reportings'
     )
     summary_report = models.ForeignKey(
         ReportingSummaryReport,
@@ -78,6 +79,9 @@ class FALReportEntry(models.Model):
         return self.density or self.fal_type.density
 
     def get_outcome_kgs(self):
+        return self.get_kgs(self.outcome)
+
+    def get_kgs(self, val):
         kgs = self.get_density() * self.outcome
         if self.fal_type.category in [Category.PETROL,
                                       Category.DIESEL,
@@ -86,3 +90,6 @@ class FALReportEntry(models.Model):
         elif self.fal_type.category == Category.OIL:
             return round(kgs, 1)
         return round(kgs, 2)
+
+    def get_remains_after_kgs(self):
+        return self.get_kgs(self.income) + self.get_kgs(self.remains) - self.get_outcome_kgs()

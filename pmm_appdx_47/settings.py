@@ -141,7 +141,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -193,3 +192,7 @@ LOGGING = {
         }
     }
 }
+
+# App specific settingsa.
+
+STOCKTAKING_TEMPLATE = BASE_DIR / 'static' / 'inv_tmpl.xlsx'

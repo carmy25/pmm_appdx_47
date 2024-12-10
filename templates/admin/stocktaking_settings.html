@@ -1,0 +1,10 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h1 align="center" style="color:green">Звіт по інвентаризації</h1>
+<form action="{% url 'admin:stocktaking_report' %}" method="post">
+  {% csrf_token %}
+  {{ form }}
+  <input type="submit" value="Отримати звіт">
+</form>
+{% endblock %}

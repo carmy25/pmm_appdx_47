@@ -1,19 +1,26 @@
+from time import ctime
+from django.urls import reverse
 import pandas as pd
 
 from django.db.models import F
 from django.contrib import admin
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.utils.safestring import mark_safe
+from django.contrib import messages
+from django.conf import settings
 
 
 from departments.models import Department
 from fals.models import FALType
 from receipts.exceptions import DuplicateReportsError
+from receipts.forms import StocktakingSettingsForm
 from receipts.models.receipt import InvoiceForRRC
 from receipts.models.reporting import Reporting
 from xlsx_export.invoices_for_rrc import InvoiceForRRCMut, format_price_summary
 from xlsx_export.reportings_report import export_reportings_report
 from xlsx_export import export_fal_type
+from xlsx_export.stocktracking_report import export_stocktaking_report
 from xlsx_export.utils import month_iter
 
 import openpyxl
@@ -154,3 +161,42 @@ def reporting_price_report(request):
 
     wb.save(response)
     return response
+
+
+@admin.site.register_view(
+    'stocktaking-report', 'Інвентиризація',
+    urlname='stocktaking_report'
+)
+def stocktaking_report(request):
+    if request.method == "POST":
+        # create a form instance and populate it with data from the request:
+        form = StocktakingSettingsForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            wb = openpyxl.Workbook()
+            departments = (
+                Department.objects.all()
+                .order_by("-name")
+                .order_by(F("warehouse__order").asc(nulls_last=True))
+            )
+            export_stocktaking_report(wb, departments)
+            file_path = settings.MEDIA_ROOT / f'stocktaking-{ctime()}.xlsx'
+            wb.save(filename=file_path)
+            file_url = settings.MEDIA_URL + file_path.name
+
+            messages.add_message(request,
+                                 messages.INFO,
+                                 mark_safe(
+                                     f'<a href="{file_url}">Звіт по інвентаризації</a> створено. <a href="{file_url}">ЗАВАНТАЖИТИ</a>'))
+
+            return HttpResponseRedirect(reverse('admin:index'))
+
+            # if a GET (or any other method) we'll create a blank form
+    else:
+        form = StocktakingSettingsForm()
+
+    return render(
+        request,
+        "admin/stocktaking_settings.html",
+        {"form": form},
+    )

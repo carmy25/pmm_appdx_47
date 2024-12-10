@@ -23,3 +23,9 @@ class InvoiceForRRCAdmin(NestedTabularInline):
 
 class ReceiptRequestCouponAdmin(DocumentAdmin):
     inlines = DocumentAdmin.inlines + [InvoiceForRRCAdmin]
+    list_display = DocumentAdmin.list_display + ['invoices_count']
+
+    def invoices_count(self, ob):
+        return ob.invoices.count()
+
+    invoices_count.short_description = 'К-сть накладних'
