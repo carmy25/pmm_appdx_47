@@ -14,7 +14,7 @@ class FALReportEntry(admin.TabularInline):
 
 class ReportingAdmin(admin.ModelAdmin):
     inlines = [FALReportEntry]
-    search_fields = ["number", "department__name"]
+    search_fields = ["number", "department__name", 'fals__fal_type__name']
     list_display = [
         "number",
         "department__name",

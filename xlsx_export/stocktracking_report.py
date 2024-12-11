@@ -11,10 +11,10 @@ def export_stocktaking_report(wb, deps):
                 ws[f'C{i}'] = fe.fal_type.name
                 ws[f'F{i}'] = remains_after_kgs
                 rrc = (fe.fal_type
-                       .fal_rrc_entries.invoice_for_rrc
+                       .fal_rrc_entries
                        .order_by('invoice_for_rrc__rrc__operation_date')
                        .last())
                 if rrc is None or rrc.invoice_for_rrc.rrc is None:
-                    print(f'HHH {fe.fal_type.fal_rrc_entries}')
+                    print(f'HHH {fe.fal_type.name}')
                     continue
                 print(f'{fe.fal_type.name} {rrc.invoice_for_rrc.rrc.operation_date}')
