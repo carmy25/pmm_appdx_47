@@ -23,13 +23,13 @@ class HandoutList(BaseDocument):
     sender = models.ForeignKey(
         Department,
         on_delete=models.CASCADE,
-        related_name="hadout_sender",
+        related_name="sent_handouts",
         verbose_name="відправник",
     )
     destination = models.ForeignKey(
         Department,
         on_delete=models.CASCADE,
-        related_name="handout_receiver",
+        related_name="received_handouts",
         verbose_name="отримувач",
     )
 

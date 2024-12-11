@@ -76,6 +76,7 @@ class InvoiceForRRCEntry(models.Model):
         verbose_name="тип",
         on_delete=models.CASCADE,
         related_name="fal_rrc_entries",
+        related_query_name="fal_rrc_entries",
     )
     invoice_for_rrc = models.ForeignKey(
         InvoiceForRRC, on_delete=models.CASCADE, related_name="fals")
