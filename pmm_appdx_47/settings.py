@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+from openpyxl import load_workbook
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -196,3 +198,4 @@ LOGGING = {
 # App specific settingsa.
 
 STOCKTAKING_TEMPLATE = BASE_DIR / 'static' / 'inv_tmpl.xlsx'
+WB_TMPL = load_workbook(STOCKTAKING_TEMPLATE)

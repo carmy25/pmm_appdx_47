@@ -50,3 +50,6 @@ class Department(models.Model):
 
     def __str__(self):
         return self.name
+
+    def chief_position_verbose(self):
+        return self.ChiefPosition(self.chief_position).label

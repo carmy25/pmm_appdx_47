@@ -179,7 +179,7 @@ def stocktaking_report(request):
                 .order_by("-name")
                 .order_by(F("warehouse__order").asc(nulls_last=True))
             )
-            export_stocktaking_report(wb, departments)
+            export_stocktaking_report(wb, departments, form.cleaned_data)
             file_path = settings.MEDIA_ROOT / f'stocktaking-{ctime()}.xlsx'
             wb.save(filename=file_path)
             file_url = settings.MEDIA_URL + file_path.name
