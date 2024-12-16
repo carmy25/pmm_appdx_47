@@ -3,6 +3,8 @@ from datetime import datetime
 from django.conf import settings
 import openpyxl as xl
 
+from receipts.models.certificate import Certificate
+from receipts.models.receipt import ReceiptRequest, ReceiptRequestCoupon
 from xlsx_export.utils import cell_center_border
 from .number_to_text import num2text
 
@@ -63,6 +65,7 @@ def export_stocktaking_report(wb, deps, form_data):
     for dep in deps:
         data[dep.name] = {}
         update_reporting_dep_data(dep, data[dep.name])
+        update_receipts_dep_data(dep, data[dep.name])
         update_invoice_dep_data(dep, data[dep.name])
         update_handout_dep_data(dep, data[dep.name])
         update_price_dep_data(dep, data[dep.name])
@@ -156,6 +159,43 @@ def format_dep_header(ws, dep, data, form_data):
     ws['C28'].value = f'закінчена {form_data["end_date"]}'
     ws.column_dimensions['c'].width = 50
     ws['c16'].value = dep.name
+
+
+def update_receipts_dep_data(dep, data):
+    if dep.name not in ['А4548', 'А4635']:
+        return
+    receipt_requests = ReceiptRequest.objects.filter(sender=dep.name)
+    receipt_coupons = ReceiptRequestCoupon.objects.filter(destination=dep.name)
+    certificates = Certificate.objects.filter(destination=dep.name)
+    idx = 36
+    for rc in receipt_coupons:
+        print(f'Processing {str(rc)}')
+        for fal in rc.fals.all():
+            fal_data = data['fals'].setdefault(fal.fal_type, {})
+            fal_data.setdefault('invoices_kgs', 0)
+            if not fal_data.get('idx'):
+                fal_data['idx'] = idx
+                idx += 1
+            fal_data['invoices_kgs'] += fal.amount
+    for c in certificates:
+        print(f'Processing {str(c)}')
+        for fal in c.fals.all():
+            fal_data = data['fals'].setdefault(fal.fal_type, {})
+            fal_data.setdefault('invoices_kgs', 0)
+            if not fal_data.get('idx'):
+                fal_data['idx'] = idx
+                idx += 1
+            fal_data['invoices_kgs'] += fal.amount
+
+    for rr in receipt_requests:
+        print(f'Processing {str(rr)}')
+        for fal in rr.fals.all():
+            fal_data = data['fals'].setdefault(fal.fal_type, {})
+            fal_data.setdefault('invoices_kgs', 0)
+            if not fal_data.get('idx'):
+                fal_data['idx'] = idx
+                idx += 1
+            fal_data['invoices_kgs'] -= fal.amount
 
 
 def update_reporting_dep_data(dep, data):
