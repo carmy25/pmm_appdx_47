@@ -162,8 +162,8 @@ def format_dep_header(ws, dep, data, form_data):
 
 
 def update_receipts_dep_data(dep, data):
-    if dep.name not in ['А4548', 'А4635']:
-        return
+    # if dep.name not in ['А4548', 'А4635']:
+    #    return
     receipt_requests = ReceiptRequest.objects.filter(sender=dep.name)
     receipt_coupons = ReceiptRequestCoupon.objects.filter(destination=dep.name)
     certificates = Certificate.objects.filter(destination=dep.name)
