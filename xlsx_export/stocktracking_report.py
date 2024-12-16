@@ -91,8 +91,11 @@ def update_price_dep_data(dep, data):
 def update_invoice_dep_data(dep, data):
     report_end_date = data.get('end_date')
     invoices = dep.invoices_receiver.all()
+    invoices_outcome = dep.invoices_sender.all()
     if report_end_date:
         invoices = invoices.filter(
+            operation_date__gt=report_end_date).order_by('operation_date')
+        invoices_outcome = invoices_outcome.filter(
             operation_date__gt=report_end_date).order_by('operation_date')
     idx = 36
     for invoice in invoices:
@@ -103,6 +106,14 @@ def update_invoice_dep_data(dep, data):
                 fal_data['idx'] = idx
                 idx += 1
             fal_data['invoices_kgs'] += fal.amount
+
+    for invoice in invoices_outcome:
+        for fal in invoice.fals.all():
+            fal_data = data['fals'].setdefault(fal.fal_type, {})
+            fal_data.setdefault('invoices_kgs', 0)
+
+        fal_data['invoices_kgs'] -= fal.amount
+
     if invoices.count() > 0:
         data['end_date'] = invoice.operation_date
 
