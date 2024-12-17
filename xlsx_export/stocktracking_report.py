@@ -38,7 +38,7 @@ def format_dep_fals(ws, dep, data):
     return kgs_total
 
 
-def format_dep_footer(ws, dep, data, kgs_total):
+def format_dep_footer(ws, dep, data, kgs_total, form_data):
     ws_tmpl = settings.WB_TMPL.active
     entries_num = len(data['fals'].keys())
     idx = entries_num + 36 + 3
@@ -48,8 +48,8 @@ def format_dep_footer(ws, dep, data, kgs_total):
             tc = ws_tmpl.cell(row=i+39, column=j)
             c.value = tc.value
             c.font = copy(tc.font)
-            c.fill = copy(tc.fill)
             c.border = copy(tc.border)
+            c.fill = copy(tc.fill)
             c.alignment = copy(tc.alignment)
     ws[f'c{idx}'].value = f'а) кількість порядкових номерів - {num2text(entries_num)}'
     ws[f'c{
@@ -58,6 +58,17 @@ def format_dep_footer(ws, dep, data, kgs_total):
         idx+4}'].value = f'в) загальна кількість кілограм,  за даними бухгалтерського обліку - {num2text(round(kgs_total))}'
     # ws.row_dimensions[idx].height = 30
     ws.merged_cells.ranges.add(f'a{idx+15}:m{idx+16}')
+    chief_pos, chief_name = get_position_and_name(form_data['committee_chief'])
+    ws[f'C{idx+7}'].value = chief_pos
+    ws[f'K{idx+7}'].value = chief_name
+    for i, member in enumerate(form_data['committee_members'].split('\n')):
+        pos, name = get_position_and_name(member)
+        ws[f'C{idx+9 + i * 2}'].value = pos
+        ws[f'K{idx+9 + i * 2}'].value = name
+
+
+def get_position_and_name(rec):
+    return map(lambda x: x.strip(), rec.split(';;'))
 
 
 def export_stocktaking_report(wb, deps, form_data):
@@ -73,7 +84,7 @@ def export_stocktaking_report(wb, deps, form_data):
         ws = wb.create_sheet(dep.name)
         format_dep_header(ws, dep, data[dep.name], form_data)
         kgs_total = format_dep_fals(ws, dep, data[dep.name])
-        format_dep_footer(ws, dep, data[dep.name], kgs_total)
+        format_dep_footer(ws, dep, data[dep.name], kgs_total, form_data)
 
     from pprint import pprint
     pprint(data)
@@ -150,7 +161,8 @@ def format_dep_header(ws, dep, data, form_data):
             c.alignment = copy(tc.alignment)
     ws['A3'].value = form_data['department_name']
     ws['A4'].value = f'Ідентифікаційний кол за ЄДРПО: {form_data['edrpo_code']}'
-    ws['A10'].value = form_data['document_date_number']
+    ws['A10'].value = form_data['date']
+    ws['A12'].value = form_data['document_date_number']
     ws['A18'].value = f"станом на {form_data['date_remains']}"
     ws['C27'].value = f'розпочата {form_data["start_date"]}'
     chief_verbose = dep.chief_position_verbose()
