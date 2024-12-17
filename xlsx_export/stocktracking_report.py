@@ -124,13 +124,12 @@ def update_invoice_dep_data(dep, data):
     for invoice in invoices_outcome:
         for fal in invoice.fals.all():
             fal_data = data['fals'].setdefault(fal.fal_type, {})
+            fal_data.setdefault('invoices_kgs', 0)
             if not fal_data.get('idx'):
                 fal_data['idx'] = idx
                 idx += 1
 
-            fal_data.setdefault('invoices_kgs', 0)
-
-        fal_data['invoices_kgs'] -= fal.amount
+            fal_data['invoices_kgs'] -= fal.amount
 
     if invoices.count() > 0:
         data['end_date'] = invoice.operation_date
