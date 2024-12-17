@@ -16,7 +16,7 @@ def format_dep_fals(ws, dep, data):
         idx = value['idx']
         amount = value.setdefault('invoices_kgs', 0) + value.setdefault('handout_kgs',
                                                                         0) + value.setdefault('reporting_remains', 0)
-        cell_center_border(ws, f'A{value["idx"]}', i)
+        cell_center_border(ws, f'A{value["idx"]}', '=ROW()-35')
         cell_center_border(ws, f'B{value["idx"]}', '')
         cell_center_border(ws, f'C{value["idx"]}', fal_type.name)
         cell_center_border(ws, f'D{value["idx"]}', '')
