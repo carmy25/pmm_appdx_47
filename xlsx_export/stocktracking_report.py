@@ -29,6 +29,8 @@ def format_dep_fals(ws, dep, data):
         cell_center_border(ws, f'I{value["idx"]}', amount)
         cell_center_border(ws, f'J{value["idx"]}', value['price'])
         cell_center_border(ws, f'K{value["idx"]}', f'=G{idx}*F{idx}')
+        cell_center_border(ws, f'L{value["idx"]}', '')
+        cell_center_border(ws, f'm{value["idx"]}', '')
     if i == 0:
         return kgs_total
     cell_center_border(ws, f'F{36+i}', f'=sum(F36:F{35+i})')
