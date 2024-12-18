@@ -113,7 +113,8 @@ def update_invoice_dep_data(dep, data):
             operation_date__gt=report_end_date).order_by('operation_date')
         invoices_outcome = invoices_outcome.filter(
             operation_date__gt=report_end_date).order_by('operation_date')
-    idx = 36
+    indexes = map(lambda k: data['fals'][k].get('idx', 0), data['fals'].keys())
+    idx = max(35, *(list(indexes) + [0])) + 1
     for invoice in invoices:
         for fal in invoice.fals.all():
             fal_data = data['fals'].setdefault(fal.fal_type, {})
@@ -133,19 +134,34 @@ def update_invoice_dep_data(dep, data):
 
             fal_data['invoices_kgs'] -= fal.amount
 
-    if invoices.count() > 0:
-        data['end_date'] = invoice.operation_date
-
 
 def update_handout_dep_data(dep, data):
-    handouts = dep.received_handouts.filter(
-        operation_date__lt=(data.get('end_date') or datetime.now()))
+    handouts = dep.received_handouts.all()
+    sent_handouts = dep.sent_handouts.all()
+    if data.get('end_date'):
+        handouts = dep.received_handouts.filter(
+            operation_date__gte=data.get('end_date'))
+        sent_handouts = dep.sent_handouts.filter(
+            operation_date__gte=data.get('end_date'))
+    indexes = map(lambda k: data['fals'][k].get('idx', 0), data['fals'].keys())
+    idx = max(35, *(list(indexes) + [0])) + 1
     for handout in handouts:
-        for i, fal in enumerate(handout.fals.all(), 36):
+        for fal in handout.fals.all():
             fal_data = data['fals'].setdefault(fal.fal_type, {})
             fal_data.setdefault('handout_kgs', 0)
-            fal_data.setdefault('idx', i)
+            if not fal_data.get('idx'):
+                fal_data['idx'] = idx
+                idx += 1
             fal_data['handout_kgs'] += fal.amount
+
+    for handout in sent_handouts:
+        for fal in handout.fals.all():
+            fal_data = data['fals'].setdefault(fal.fal_type, {})
+            fal_data.setdefault('handout_kgs', 0)
+            if not fal_data.get('idx'):
+                fal_data['idx'] = idx
+                idx += 1
+            fal_data['handout_kgs'] -= fal.amount
 
 
 def format_dep_header(ws, dep, data, form_data):
@@ -180,7 +196,8 @@ def update_receipts_dep_data(dep, data):
     receipt_requests = ReceiptRequest.objects.filter(sender=dep.name)
     receipt_coupons = ReceiptRequestCoupon.objects.filter(destination=dep.name)
     certificates = Certificate.objects.filter(destination=dep.name)
-    idx = 36
+    indexes = map(lambda k: data['fals'][k].get('idx', 0), data['fals'].keys())
+    idx = max(35, *(list(indexes) + [0])) + 1
     for rc in receipt_coupons:
         print(f'Processing {str(rc)}')
         for fal in rc.fals.all():
