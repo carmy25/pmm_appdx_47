@@ -59,7 +59,7 @@ def format_dep_footer(ws, dep, data, kgs_total, form_data):
     ws[f'c{
         idx+4}'].value = f'в) загальна кількість кілограм,  за даними бухгалтерського обліку - {num2text(round(kgs_total))}'
     # ws.row_dimensions[idx].height = 30
-    ws.merged_cells.ranges.add(f'a{idx+15}:m{idx+16}')
+    ws.merged_cells.ranges.add(f'a{idx+17}:m{idx+18}')
     chief_pos, chief_name = get_position_and_name(form_data['committee_chief'])
     ws[f'C{idx+7}'].value = chief_pos
     ws[f'K{idx+7}'].value = chief_name
@@ -88,9 +88,6 @@ def export_stocktaking_report(wb, deps, form_data):
         kgs_total = format_dep_fals(ws, dep, data[dep.name])
         format_dep_footer(ws, dep, data[dep.name], kgs_total, form_data)
 
-    from pprint import pprint
-    pprint(data)
-
 
 def update_price_dep_data(dep, data):
     for fal_type, d in data['fals'].items():
@@ -100,8 +97,17 @@ def update_price_dep_data(dep, data):
         if rrc is None:
             print(f'FAL not found: {fal_type.name}')
             rrc = fal_type.fal_rrc_entries.filter().last()
+            if rrc is None:
+                price = 15
+                amount = 1
+            else:
+                price = rrc.price
+                amount = rrc.amount
+        else:
+            price = rrc.price
+            amount = rrc.amount
 
-        data['fals'][fal_type]['price'] = rrc.price / rrc.amount
+        data['fals'][fal_type]['price'] = price / amount
 
 
 def update_invoice_dep_data(dep, data):
