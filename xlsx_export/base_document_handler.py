@@ -34,7 +34,9 @@ class BaseFALDocumentHandler:
         cell_center_border(self.ws, self.add_idx("F"), amount or "")
 
     def format_fal_total(self):
-        cell_center_border(self.ws, self.add_idx("G"), self.state["total"])
+        sum_str = f'=sum(e$3:e{
+            self.state["idx"]})-sum(f$3:f{self.state["idx"]})'
+        cell_center_border(self.ws, self.add_idx("G"), sum_str)
 
     def format_fal_by_dep(self):
         income = self.get_fal_income()
