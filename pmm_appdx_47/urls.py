@@ -35,7 +35,6 @@ apps.get_app_config("constance").verbose_name = "Налаштування"
 # admin.site.unregister(Group)
 
 urlpatterns = [
-    re_path(r'^admin/shell/', include('django_admin_shell.urls')),
     path("admin/", admin.site.urls),
     path("_nested_admin/", include('nested_admin.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
