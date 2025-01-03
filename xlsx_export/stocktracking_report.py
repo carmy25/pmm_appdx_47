@@ -1,9 +1,12 @@
 from copy import copy
-from datetime import datetime
+from datetime import date, datetime
 from django.conf import settings
 import openpyxl as xl
 
+from fals.models import FAL, FALType
 from receipts.models.certificate import Certificate
+from receipts.models.handout_list import HandoutList
+from receipts.models.invoice import Invoice
 from receipts.models.receipt import ReceiptRequest, ReceiptRequestCoupon
 from xlsx_export.utils import cell_center_border
 from .number_to_text import num2text
@@ -77,6 +80,8 @@ def export_stocktaking_report(wb, deps, form_data):
     data = {}
     for dep in deps:
         data[dep.name] = {}
+        # if dep.name == 'А4548':
+        #    breakpoint()
         update_reporting_dep_data(dep, data[dep.name])
         update_receipts_dep_data(dep, data[dep.name])
         update_invoice_dep_data(dep, data[dep.name])
@@ -87,6 +92,106 @@ def export_stocktaking_report(wb, deps, form_data):
         format_dep_header(ws, dep, data[dep.name], form_data)
         kgs_total = format_dep_fals(ws, dep, data[dep.name])
         format_dep_footer(ws, dep, data[dep.name], kgs_total, form_data)
+
+    ws = wb.create_sheet('total')
+    format_total_sheet(ws, data)
+
+
+def format_total_sheet(ws, data):
+    idx = 1
+    cell_center_border(ws, f'A{idx}', 'Вид ПММ')
+    cell_center_border(ws, f'B{idx}', 'К-сть(кг)')
+    totals = {}
+    idx += 1
+    for fal_type in FALType.objects.all():
+        for certificate in Certificate.objects.all():
+            try:
+                fal = certificate.fals.get(fal_type=fal_type)
+                if totals.get(fal_type.name):
+                    totals[fal_type.name] += fal.amount
+                else:
+                    totals[fal_type.name] = fal.amount
+            except FAL.DoesNotExist:
+                pass
+        try:
+            cell_center_border(ws, f"C{idx}", totals[fal_type.name])
+        except:
+            print(f'Not found: {fal_type.name}')
+
+        for rrc in ReceiptRequestCoupon.objects.all():
+            try:
+                fal = rrc.fals.get(fal_type=fal_type)
+                if totals.get(fal_type.name):
+                    totals[fal_type.name] += fal.amount
+                else:
+                    totals[fal_type.name] = fal.amount
+            except FAL.DoesNotExist:
+                pass
+
+        try:
+            cell_center_border(ws, f"D{idx}", totals[fal_type.name])
+        except:
+            print(f'Not found: {fal_type.name}')
+
+        for rr in ReceiptRequest.objects.all():
+            try:
+                fal = rr.fals.get(fal_type=fal_type)
+                totals[fal_type.name] -= fal.amount
+            except FAL.DoesNotExist:
+                pass
+
+        try:
+            cell_center_border(ws, f"E{idx}", totals[fal_type.name])
+        except:
+            print(f'Not found: {fal_type.name}')
+
+        for invoice in Invoice.objects.filter(sender__name__in=['А4548', 'А4635']):
+            try:
+                fal = invoice.fals.get(fal_type=fal_type)
+                totals[fal_type.name] -= fal.amount
+            except FAL.DoesNotExist:
+                pass
+            except KeyError:
+                pass
+
+        try:
+            cell_center_border(ws, f"F{idx}", totals[fal_type.name])
+        except:
+            print(f'Not found: {fal_type.name}')
+
+        for h in HandoutList.objects.filter(sender__name__in=['А4548', 'А4635'], fals__fal_type=fal_type):
+            try:
+                fal = h.fals.get(fal_type=fal_type)
+                totals[fal_type.name] -= fal.amount
+                print(f'H: {h.id}')
+            except FAL.DoesNotExist:
+                pass
+            except KeyError:
+                print('NF: {fal_type.name}')
+
+        cell_center_border(ws, f"A{idx}", fal_type.name)
+        try:
+            cell_center_border(ws, f"B{idx}", totals[fal_type.name])
+        except:
+            print(f'Not found: {fal_type.name}')
+        idx += 1
+
+    '''
+    for dep_name, values in data.items():
+        for fal_type, amounts in values.setdefault('fals', {}).items():
+            if not totals.get(fal_type):
+                totals[fal_type.name] = {'idx': 0, 'amount': 0}
+    for dep_name, values in data.items():
+        for fal_type, amounts in values['fals'].items():
+            if totals[fal_type.name]['idx'] == 0:
+                totals[fal_type.name]['amount'] += amounts['reporting_remains'] + \
+                    amounts['invoices_kgs'] + amounts['handout_kgs']
+                totals[fal_type.name]['idx'] = idx
+                idx += 1
+            cell_center_border(ws, f"A{totals[fal_type.name]['idx']}", fal_type.name)
+            cell_center_border(ws, f"B{totals[fal_type.name]['idx']}",
+                               totals[fal_type.name]['amount'])
+    '''
 
 
 def update_price_dep_data(dep, data):

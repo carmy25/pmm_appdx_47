@@ -6,3 +6,4 @@ django-admin-object-actions
 django-constance[redis]
 python-dateutil
 pandas
+django-admin-shell

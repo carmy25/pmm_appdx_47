@@ -43,4 +43,5 @@ class HandoutList(BaseDocument):
         blank=True,
         related_name="handout_lists",
         on_delete=models.SET_NULL,
+        verbose_name="зведена відомість",
     )

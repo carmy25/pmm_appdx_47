@@ -54,7 +54,7 @@ def create_summary_report(modeladmin, request, queryset):
     last_summary_number = get_last_doc_number(
         [ReportingSummaryReport, InvoiceSummaryReport]
     )
-    if (model := modeladmin.model) in (Reporting, HandoutList):
+    if (model := modeladmin.model) in (Reporting,):
         prepear_documents(model, queryset)
         start_date = queryset.order_by("start_date").first().start_date
         end_date = queryset.order_by("-end_date").first().end_date
@@ -86,6 +86,8 @@ def create_summary_report(modeladmin, request, queryset):
             )
         )
         summary_report_class = InvoiceSummaryReport
+        if modeladmin.model == HandoutList:
+            summary_report_class = HandoutListSummaryReport
     summary_report = summary_report_class(
         number=str(last_summary_number + 1),
         document_date=document_date,
@@ -104,7 +106,8 @@ def create_summary_report(modeladmin, request, queryset):
     modeladmin.message_user(
         request,
         mark_safe(
-            f'Зведену відомість <a href="{summary_report_url}">#{summary_report.number}</a> створено'
+            f'Зведену відомість <a href="{summary_report_url}">#{
+                summary_report.number}</a> створено'
         ),
         messages.SUCCESS,
     )

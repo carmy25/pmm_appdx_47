@@ -185,13 +185,15 @@ def get_sorted_fals(fal_type):
         .exclude(report__summary_report__isnull=True)
     )
 
-    sorted_fals = sorted(filter(lambda x: not isinstance(
-        getattr(x, 'document_object', None) or x.report, (HandoutList, WritingOffAct, InspectionCertificate)), chain(fals, fal_report_entries)), key=get_fal_date)
+    fals = filter(lambda x: not isinstance(
+        getattr(x, 'document_object', None) or x.report, (WritingOffAct, InspectionCertificate)), chain(fals, fal_report_entries))
+    sorted_fals = sorted(fals, key=get_fal_date)
     return sorted_fals
 
 
 def format_rows(ws, fal_type):
-    ws_state = {"total": 0, "total_by_dep": {}, "DEP_BY_INDEX": DEP_BY_INDEX}
+    ws_state = {"total": 0, 'reports_processed': [],
+                "total_by_dep": {}, "DEP_BY_INDEX": DEP_BY_INDEX}
     fals = get_sorted_fals(fal_type)
     j = 3
     for i, fal in enumerate(fals):
@@ -202,8 +204,12 @@ def format_rows(ws, fal_type):
         elif isinstance(fal.document_object, WritingOffAct):
             if not HandoutSummaryDocumentHandler(fal, ws, ws_state).process():
                 j -= 1
-        elif type(fal.document_object) in [HandoutList, InspectionCertificate]:
-            j -= 1
+        elif isinstance(fal.document_object, HandoutList):
+            if fal.document_object.summary_report is None:
+                j -= 1
+                continue
+            if not HandoutSummaryDocumentHandler(fal, ws, ws_state).process():
+                j -= 1
         elif type(fal.document_object) is not Invoice:
             FALDocumentHandler(fal, ws, ws_state).process()
         elif type(fal.document_object) is Invoice:
