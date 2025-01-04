@@ -81,12 +81,14 @@ class BaseFALDocumentHandler:
         cell_center_border(
             self.ws,
             self.add_idx(get_column_letter(dep_index_base + 2)),
-            self.state["total_by_dep"].setdefault("А4548", 0),
+            f'=sum({get_column_letter(dep_index_base)}$3:{get_column_letter(dep_index_base)+str(self.state["idx"])})-sum({
+                get_column_letter(dep_index_base+1)}$3:{get_column_letter(dep_index_base + 1)+str(self.state["idx"])})',
         )
         cell_center_border(
             self.ws,
             self.add_idx(get_column_letter(dep_index_505 + 2)),
-            self.state["total_by_dep"].setdefault("А4635", 0),
+            f'=sum({get_column_letter(dep_index_505)}$3:{get_column_letter(dep_index_505)+str(self.state["idx"])})-sum({
+                get_column_letter(dep_index_505+1)}$3:{get_column_letter(dep_index_505 + 1)+str(self.state["idx"])})',
         )
 
     def process(self):
