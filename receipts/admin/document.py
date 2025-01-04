@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib import admin
 from django.db.models import Q
 from django.contrib.admin.models import LogEntry
@@ -90,7 +91,7 @@ class DocumentAdmin(NestedModelAdmin):
             content_type=ContentType.objects.get(
                 model=obj._meta.object_name.lower(),
                 app_label=obj._meta.app_label)).order_by('-action_time').first()
-        return le_obj.action_time
+        return le_obj.action_time if le_obj else None
 
     last_updated.short_description = 'Востаннє Оновлено'
 
