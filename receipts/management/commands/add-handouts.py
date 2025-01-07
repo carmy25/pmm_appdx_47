@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand
-import openpyxl
 import csv
 from departments.models import Department
 from fals.models import FAL, FALType
@@ -16,7 +15,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         records = csv.reader(open(options['file']), delimiter='\t')
         fal_name = options['fal']
-        breakpoint()
         for record in records:
             print(record)
             number, date_str, dep_name, _, amount = record

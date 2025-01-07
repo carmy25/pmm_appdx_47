@@ -6,6 +6,9 @@ class BaseDocument(models.Model):
     document_date = models.DateField(
         verbose_name="дата документу", null=True, blank=True
     )
+    record_date = models.DateField(
+        verbose_name="дата запису", null=True, blank=True
+    )
     scan = models.FileField(null=True, blank=True, verbose_name="Скан")
 
     class Meta:

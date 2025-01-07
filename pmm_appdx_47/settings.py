@@ -50,6 +50,12 @@ INSTALLED_APPS = [
     "summary_reports.apps.SummaryReportsConfig",
 ]
 CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
+CONSTANCE_ADDITIONAL_FIELDS = {
+    'yes_no_null_select': ['django.forms.fields.ChoiceField', {
+        'widget': 'django.forms.Select',
+        'choices': (("yes", "Так"), ("no", "Ні"))
+    }],
+}
 CONSTANCE_CONFIG = {
     "CHIEF_RANK": ("", "Звання начальника ПММ"),
     "CHIEF_NAME": ("", "Ініціали Прізвище начальника ПММ"),
@@ -58,6 +64,7 @@ CONSTANCE_CONFIG = {
         21,
         "День для дати документу зведеної відомості",
     ),
+    'APPNDX_47_USE_RECORD_DATE': ('no', 'Використовувати дату запису для документів', 'yes_no_null_select'),
 }
 
 
