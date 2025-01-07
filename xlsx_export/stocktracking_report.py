@@ -8,6 +8,7 @@ from receipts.models.certificate import Certificate
 from receipts.models.handout_list import HandoutList
 from receipts.models.invoice import Invoice
 from receipts.models.receipt import ReceiptRequest, ReceiptRequestCoupon
+from receipts.models.reporting import FALReportEntry, Reporting
 from xlsx_export.utils import cell_center_border
 from .number_to_text import num2text
 
@@ -80,8 +81,6 @@ def export_stocktaking_report(wb, deps, form_data):
     data = {}
     for dep in deps:
         data[dep.name] = {}
-        # if dep.name == 'А4548':
-        #    breakpoint()
         update_reporting_dep_data(dep, data[dep.name])
         update_receipts_dep_data(dep, data[dep.name])
         update_invoice_dep_data(dep, data[dep.name])
@@ -101,6 +100,10 @@ def format_total_sheet(ws, data):
     idx = 1
     cell_center_border(ws, f'A{idx}', 'Вид ПММ')
     cell_center_border(ws, f'B{idx}', 'К-сть(кг)')
+    cell_center_border(ws, f'C{idx}', 'Після Атестату')
+    cell_center_border(ws, f'D{idx}', 'Після ТЧВ')
+    cell_center_border(ws, f'E{idx}', 'Після ЧВ')
+    cell_center_border(ws, f'F{idx}', 'Після Донесень')
     totals = {}
     idx += 1
     for fal_type in FALType.objects.all():
@@ -145,30 +148,14 @@ def format_total_sheet(ws, data):
         except:
             print(f'Not found: {fal_type.name}')
 
-        for invoice in Invoice.objects.filter(sender__name__in=['А4548', 'А4635']):
+        for reporting in Reporting.objects.all():
             try:
-                fal = invoice.fals.get(fal_type=fal_type)
-                totals[fal_type.name] -= fal.amount
-            except FAL.DoesNotExist:
+                fal = reporting.fals.get(fal_type=fal_type)
+                totals[fal_type.name.split('::')[0].strip()] -= fal.get_outcome_kgs()
+            except FALReportEntry.DoesNotExist:
                 pass
-            except KeyError:
-                pass
-
-        try:
-            cell_center_border(ws, f"F{idx}", totals[fal_type.name])
-        except:
-            print(f'Not found: {fal_type.name}')
-
-        for h in HandoutList.objects.filter(sender__name__in=['А4548', 'А4635'], fals__fal_type=fal_type):
-            try:
-                fal = h.fals.get(fal_type=fal_type)
-                totals[fal_type.name] -= fal.amount
-                print(f'H: {h.id}')
-            except FAL.DoesNotExist:
-                pass
-            except KeyError:
-                print('NF: {fal_type.name}')
-
+            except Exception as e:
+                print(e)
         cell_center_border(ws, f"A{idx}", fal_type.name)
         try:
             cell_center_border(ws, f"B{idx}", totals[fal_type.name])
@@ -307,6 +294,10 @@ def update_receipts_dep_data(dep, data):
     receipt_requests = ReceiptRequest.objects.filter(sender=dep.name)
     receipt_coupons = ReceiptRequestCoupon.objects.filter(destination=dep.name)
     certificates = Certificate.objects.filter(destination=dep.name)
+    if (ed := data.get('end_date')):
+        receipt_requests = receipt_requests.filter(operation_date__gt=ed)
+        receipt_coupons = receipt_coupons.filter(operation_date__gt=ed)
+        certificates = certificates.filter(operation_date__gt=ed)
     indexes = map(lambda k: data['fals'][k].get('idx', 0), data['fals'].keys())
     idx = max(35, *(list(indexes) + [0])) + 1
     for rc in receipt_coupons:
