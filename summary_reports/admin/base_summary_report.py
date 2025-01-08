@@ -2,6 +2,7 @@ from django.contrib import admin
 from admin_object_actions.admin import ModelAdminObjectActionsMixin
 from django.http import HttpResponse
 
+from receipts.admin.export_xlsx import xlsx_response
 from summary_reports.forms import MyActionForm
 
 
@@ -17,28 +18,21 @@ class BaseSummaryReportAdmin(ModelAdminObjectActionsMixin, admin.ModelAdmin):
 
     object_actions = [
         {
-            "slug": "gen-xlsx",
-            "verbose_name": "Згенерувати XSLX",
-            "verbose_name_past": "XSLX згенеровано",
-            "form_class": MyActionForm,
-            "fields": ("id", "confirm"),
-            "readonly_fields": ("id",),
-            "permission": "change",
-        },
-        {
-            "slug": "myotheraction",
-            "verbose_name": "my other action",
-            "verbose_name_past": "acted upon",
+            "slug": "generate-xlsx",
+            "verbose_name": "Завантажити XLSX",
             "form_method": "GET",
-            "function": "do_other_action",
         },
     ]
 
     def has_add_permission(self, request, obj=None):
         return False
 
-    def do_other_action(self, obj, form):
-        return HttpResponse(content="ddd")
+    def object_action_view(self, request, action, object_id):
+        response = HttpResponse(
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        response["Content-Disposition"] = f"attachment; filename=ddd.xlsx"
+        return response
 
     def display_object_actions_detail(self, obj):
         return super().display_object_actions_detail(obj)

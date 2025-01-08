@@ -50,3 +50,13 @@ class FAL(models.Model):
 
     def __str__(self):
         return f"{self.fal_type.name}: {self.amount}"
+
+    def get_amount_rounded(self):
+        kgs = self.amount
+        if self.fal_type.category in [Category.PETROL,
+                                      Category.DIESEL,
+                                      Category.KEROSENE]:
+            return round(kgs)
+        elif self.fal_type.category == Category.OIL:
+            return round(kgs, 1)
+        return round(kgs, 2)
