@@ -107,60 +107,61 @@ def format_total_sheet(ws, data):
     totals = {}
     idx += 1
     for fal_type in FALType.objects.all():
+        name = fal_type.get_name()
         for certificate in Certificate.objects.all():
             try:
-                fal = certificate.fals.get(fal_type=fal_type)
-                if totals.get(fal_type.name):
-                    totals[fal_type.name] += fal.amount
+                fal = certificate.fals.get(fal_type__name=name)
+                if totals.get(name):
+                    totals[name] += fal.amount
                 else:
-                    totals[fal_type.name] = fal.amount
+                    totals[name] = fal.amount
             except FAL.DoesNotExist:
                 pass
         try:
-            cell_center_border(ws, f"C{idx}", totals[fal_type.name])
+            cell_center_border(ws, f"C{idx}", totals[name])
         except:
-            print(f'Not found: {fal_type.name}')
+            print(f'Not found: {name}')
 
         for rrc in ReceiptRequestCoupon.objects.all():
             try:
-                fal = rrc.fals.get(fal_type=fal_type)
-                if totals.get(fal_type.name):
-                    totals[fal_type.name] += fal.amount
+                fal = rrc.fals.get(fal_type__name=name)
+                if totals.get(name):
+                    totals[name] += fal.amount
                 else:
-                    totals[fal_type.name] = fal.amount
+                    totals[name] = fal.amount
             except FAL.DoesNotExist:
                 pass
 
         try:
-            cell_center_border(ws, f"D{idx}", totals[fal_type.name])
+            cell_center_border(ws, f"D{idx}", totals[name])
         except:
-            print(f'Not found: {fal_type.name}')
+            print(f'Not found: {name}')
 
         for rr in ReceiptRequest.objects.all():
             try:
-                fal = rr.fals.get(fal_type=fal_type)
-                totals[fal_type.name] -= fal.amount
+                fal = rr.fals.get(fal_type__name=name)
+                totals[name] -= fal.amount
             except FAL.DoesNotExist:
                 pass
 
         try:
-            cell_center_border(ws, f"E{idx}", totals[fal_type.name])
+            cell_center_border(ws, f"E{idx}", totals[name])
         except:
-            print(f'Not found: {fal_type.name}')
+            print(f'Not found: {name}')
 
         for reporting in Reporting.objects.all():
             try:
-                fal = reporting.fals.get(fal_type=fal_type)
-                totals[fal_type.name.split('::')[0].strip()] -= fal.get_outcome_kgs()
+                fal = reporting.fals.get(fal_type__name=name)
+                totals[name] -= fal.get_outcome_kgs()
             except FALReportEntry.DoesNotExist:
                 pass
             except Exception as e:
                 print(e)
-        cell_center_border(ws, f"A{idx}", fal_type.name)
+        cell_center_border(ws, f"A{idx}", name)
         try:
-            cell_center_border(ws, f"B{idx}", totals[fal_type.name])
+            cell_center_border(ws, f"B{idx}", totals[name])
         except:
-            print(f'Not found: {fal_type.name}')
+            print(f'Not found: {name}')
         idx += 1
 
     '''
