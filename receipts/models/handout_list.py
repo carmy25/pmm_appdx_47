@@ -41,7 +41,7 @@ class HandoutList(BaseDocument):
         HandoutListSummaryReport,
         null=True,
         blank=True,
-        related_name="handout_lists",
+        related_name="documents",
         on_delete=models.SET_NULL,
         verbose_name="зведена відомість",
     )

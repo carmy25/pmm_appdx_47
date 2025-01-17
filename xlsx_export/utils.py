@@ -9,6 +9,10 @@ THIN_BORDER = Border(
     bottom=Side(style="thin"),
 )
 CENTER_ALIGNMENT = Alignment(horizontal="center", vertical='center', wrap_text=True)
+LEFT_ALIGNMENT = Alignment(vertical='center', wrap_text=True)
+VERTICAL_ALIGNMENT = Alignment(
+    textRotation=90,
+    horizontal="center", vertical='center', wrap_text=True)
 
 OTHER_DEP_CELL_FILL = PatternFill(
     start_color="dce6f1", end_color="dce6f1", fill_type="solid"
@@ -29,11 +33,22 @@ def month_iter(start_month, start_year, end_month, end_year):
     return ((d.year, d.month) for d in rrule(MONTHLY, dtstart=start, until=end))
 
 
-def cell_center_border(ws, cell_name, value):
+def cell_center(ws, cell_name, value):
     ws[cell_name] = value
     ws[cell_name].alignment = CENTER_ALIGNMENT
-    ws[cell_name].border = THIN_BORDER
     return ws[cell_name]
+
+
+def cell_center_border(ws, cell_name, value):
+    c = cell_center(ws, cell_name, value)
+    c.border = THIN_BORDER
+    return c
+
+
+def cell_vertical_border(ws, cell_name, value):
+    c = cell_center_border(ws, cell_name, value)
+    c.alignment = VERTICAL_ALIGNMENT
+    return c
 
 
 def header_cell_center_border(ws, cell_name, value):
@@ -42,3 +57,16 @@ def header_cell_center_border(ws, cell_name, value):
     c.fill = PatternFill(
         start_color="c4d79b", end_color="c4d79b", fill_type="solid"
     )
+
+
+def merge_rows(ws, col_start, col_end, idx):
+    ws.merged_cells.ranges.add(f'{col_start}{idx}:{col_end}{idx}')
+
+
+def fill_empty_border(ws, rng, value=''):
+    for cell in ws[rng]:
+        for obj in cell:
+            obj.border = THIN_BORDER
+            if obj.value is None:
+                obj.value = value
+                obj.alignment = CENTER_ALIGNMENT

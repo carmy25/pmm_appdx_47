@@ -24,7 +24,7 @@ class Reporting(BaseDocument):
     summary_report = models.ForeignKey(
         ReportingSummaryReport,
         null=True,
-        related_name="reportings",
+        related_name="documents",
         on_delete=models.SET_NULL,
     )
 

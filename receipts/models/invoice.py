@@ -36,7 +36,7 @@ class Invoice(BaseDocument):
         InvoiceSummaryReport,
         null=True,
         blank=True,
-        related_name="invoices",
+        related_name="documents",
         on_delete=models.SET_NULL,
         verbose_name="зведена відомість",
     )
