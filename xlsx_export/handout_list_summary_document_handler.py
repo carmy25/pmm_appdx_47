@@ -68,7 +68,7 @@ class HandoutSummaryDocumentHandler(BaseFALDocumentHandler):
 
     def format_departments(self):
         sr = self.fal.document_object.summary_report
-        docs = sr.handout_lists.filter(fals__fal_type=self.fal.fal_type)
+        docs = sr.documents.filter(fals__fal_type=self.fal.fal_type)
         sender_amounts = defaultdict(int)
         dst_amounts = defaultdict(int)
         for doc in docs:

@@ -81,6 +81,9 @@ class FALReportEntry(models.Model):
     def get_outcome_kgs(self):
         return self.get_kgs(self.outcome)
 
+    def get_income_kgs(self):
+        return self.get_kgs(self.income)
+
     def get_kgs(self, val):
         kgs = self.get_density() * val
         if self.fal_type.category in [Category.PETROL,
