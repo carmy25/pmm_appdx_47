@@ -167,10 +167,23 @@ def export_reportings_fes_registry(ws, reportings, date):
     registry_fes_format_footer(ws, last_idx)
 
 
-def get_fal_date(obj):
+def get_fal_date_and_prio(obj):
     if isinstance(obj, FALReportEntry):
-        return obj.report.summary_report.end_date
-    return obj.document_object.operation_date
+        month = obj.report.summary_report.end_date.month
+        year = obj.report.summary_report.end_date.year
+    else:
+        month = obj.document_object.operation_date.month
+        year = obj.document_object.operation_date.year
+        if obj.document_object.record_date is not None:
+            month = obj.document_object.record_date.month
+            year = obj.document_object.record_date.year
+    priority = 10
+    match obj:
+        case Certificate():
+            priority = 1
+        case ReceiptRequestCoupon():
+            priority = 2
+    return year, month, priority
 
 
 def get_sorted_fals(fal_type):
@@ -187,7 +200,7 @@ def get_sorted_fals(fal_type):
 
     fals = filter(lambda x: not isinstance(
         getattr(x, 'document_object', None) or x.report, (WritingOffAct, InspectionCertificate)), chain(fals, fal_report_entries))
-    sorted_fals = sorted(fals, key=get_fal_date)
+    sorted_fals = sorted(fals, key=get_fal_date_and_prio)
     return sorted_fals
 
 
