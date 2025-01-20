@@ -58,13 +58,15 @@ def create_summary_report(modeladmin, request, queryset):
         prepear_documents(model, queryset)
         start_date = queryset.order_by("start_date").first().start_date
         end_date = queryset.order_by("-end_date").first().end_date
-        document_date = (
+        '''document_date = (
             end_date
             if end_date.day > config.SUMMARY_REPORT_DOCUMENT_DATE_DAY
             else date(
                 end_date.year, end_date.month, config.SUMMARY_REPORT_DOCUMENT_DATE_DAY
             )
         )
+        '''
+        document_date = end_date
         summary_report_class = (
             ReportingSummaryReport if model is Reporting else HandoutListSummaryReport
         )
