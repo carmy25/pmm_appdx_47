@@ -169,8 +169,8 @@ def export_reportings_fes_registry(ws, reportings, date):
 
 def get_fal_date_and_prio(obj):
     if isinstance(obj, FALReportEntry):
-        month = obj.report.summary_report.end_date.month
-        year = obj.report.summary_report.end_date.year
+        month = obj.report.summary_report.start_date.month
+        year = obj.report.summary_report.start_date.year
     else:
         month = obj.document_object.operation_date.month
         year = obj.document_object.operation_date.year

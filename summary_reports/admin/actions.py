@@ -56,8 +56,9 @@ def create_summary_report(modeladmin, request, queryset):
     )
     if (model := modeladmin.model) in (Reporting,):
         prepear_documents(model, queryset)
-        start_date = queryset.order_by("start_date").first().start_date
-        end_date = queryset.order_by("-end_date").first().end_date
+        queryset = queryset.order_by('start_date')
+        start_date = queryset.first().start_date
+        end_date = queryset.last().end_date
         '''document_date = (
             end_date
             if end_date.day > config.SUMMARY_REPORT_DOCUMENT_DATE_DAY
