@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "admin_object_actions",
     "constance",
     "fals.apps.FalsConfig",
+    "garbage.apps.GarbageConfig",
     "receipts.apps.ReceiptsConfig",
     "departments.apps.DepartmentsConfig",
     "summary_reports.apps.SummaryReportsConfig",
