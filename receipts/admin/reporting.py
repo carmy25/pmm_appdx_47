@@ -21,7 +21,8 @@ class ReportingAdmin(admin.ModelAdmin):
         "start_date",
         "end_date",
         "summary_report",
-        'last_updated'
+        'last_updated',
+        'note',
     ]
     actions = [create_summary_report]
     exclude = ["summary_report"]
