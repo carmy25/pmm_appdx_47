@@ -74,9 +74,9 @@ class FALDocumentHandler(BaseFALDocumentHandler):
         return self.fal.document_object.operation_date
 
 
-def export_fal_type(fal_type, ws, departments):
+def export_fal_type(fal_type, ws, departments, end_date):
     format_header(ws, fal_type, departments)
-    format_rows(ws, fal_type)
+    format_rows(ws, fal_type, end_date)
 
 
 def registry_fes_format_header(ws, date):
@@ -186,7 +186,19 @@ def get_fal_date_and_prio(obj):
     return year, month, priority
 
 
-def get_sorted_fals(fal_type):
+def get_document_date(obj):
+    if isinstance(obj, FALReportEntry):
+        return obj.report.summary_report.start_date
+    if obj.document_object.record_date is not None:
+        return obj.document_object.record_date
+    return obj.document_object.operation_date
+
+
+def strip_fals_by_date(fals, end_date):
+    return filter(lambda x: get_document_date(x) <= end_date, fals)
+
+
+def get_sorted_fals(fal_type, end_date):
     fals = (
         FAL.objects.filter(fal_type=fal_type)
         .exclude(object_id__isnull=True)
@@ -201,13 +213,13 @@ def get_sorted_fals(fal_type):
     fals = filter(lambda x: not isinstance(
         getattr(x, 'document_object', None) or x.report, (WritingOffAct, InspectionCertificate)), chain(fals, fal_report_entries))
     sorted_fals = sorted(fals, key=get_fal_date_and_prio)
-    return sorted_fals
+    return strip_fals_by_date(sorted_fals, end_date)
 
 
-def format_rows(ws, fal_type):
+def format_rows(ws, fal_type, end_date):
     ws_state = {"total": 0, 'reports_processed': [],
                 "total_by_dep": {}, "DEP_BY_INDEX": DEP_BY_INDEX}
-    fals = get_sorted_fals(fal_type)
+    fals = get_sorted_fals(fal_type, end_date)
     j = 3
     for i, fal in enumerate(fals):
         ws_state["idx"] = i + j

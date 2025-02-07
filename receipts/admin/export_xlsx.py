@@ -1,3 +1,4 @@
+import datetime
 from time import ctime
 from django.urls import reverse
 import pandas as pd
@@ -14,7 +15,7 @@ from django.conf import settings
 from departments.models import Department
 from fals.models import FALType
 from receipts.exceptions import DuplicateReportsError
-from receipts.forms import StocktakingSettingsForm
+from receipts.forms import Appdx47SettingsForm, StocktakingSettingsForm
 from receipts.models.receipt import InvoiceForRRC
 from receipts.models.reporting import Reporting
 from xlsx_export.invoices_for_rrc import InvoiceForRRCMut, format_price_summary
@@ -36,15 +37,30 @@ def xlsx_response(filename):
     return response
 
 
-@admin.site.register_view("export-xlsx", "47 Додаток", urlname="export_xlsx")
+@admin.site.register_view("export-47-appdx", "47 Додаток", urlname="export_47_appdx")
+def export_47_appdx_action(request):
+    form = Appdx47SettingsForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        return render(
+            request=request,
+            template_name="admin/export_47_appdx_final.html",
+            context={"end_date": form.cleaned_data["end_date"].strftime("%d.%m.%Y")},)
+    elif request.GET.get('end_date'):
+        return export_xlsx(request)
+    return render(request, "admin/export_47_appdx.html", {"form": form})
+
+
 def export_xlsx(request):
     import time
 
     start = time.time()
     wb = openpyxl.Workbook()
     category = request.GET.get("category")
+    end_datetime = datetime.datetime.strptime(request.GET.get("end_date"), '%d.%m.%Y')
+    end_date = datetime.date(end_datetime.year, end_datetime.month, end_datetime.day)
     fal_types = (
-        FALType.objects.filter(category=category) if category else FALType.objects.all()
+        FALType.objects.filter(
+            category=category) if category else FALType.objects.all()
     )
     departments = (
         Department.objects.all()
@@ -53,7 +69,7 @@ def export_xlsx(request):
     )
     for fal_type in fal_types:
         ws = wb.create_sheet(fal_type.name.replace("/", " ").replace(':', '')[:30])
-        export_fal_type(fal_type, ws, departments)
+        export_fal_type(fal_type, ws, departments, end_date)
         ws.freeze_panes = ws["B3"]
 
     end = time.time()

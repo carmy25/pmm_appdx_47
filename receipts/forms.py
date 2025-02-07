@@ -1,4 +1,5 @@
 from django import forms
+import datetime
 
 
 class StocktakingSettingsForm(forms.Form):
@@ -18,3 +19,8 @@ class StocktakingSettingsForm(forms.Form):
                                initial='22 грудня 2024 року')
     committee_chief = forms.CharField(label="Голова комісії", max_length=200)
     committee_members = forms.CharField(label="Члени комісії", widget=forms.Textarea())
+
+
+class Appdx47SettingsForm(forms.Form):
+    end_date = forms.DateField(label="Кінцева дата",
+                               initial=datetime.date.today)

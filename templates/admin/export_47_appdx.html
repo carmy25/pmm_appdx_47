@@ -1,0 +1,10 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h1 align="center" style="color:green">47 Додаток</h1>
+<form action="{% url 'admin:export_47_appdx' %}" method="post">
+  {% csrf_token %}
+  {{ form }}
+  <input type="submit" value="Далі">
+</form>
+{% endblock %}

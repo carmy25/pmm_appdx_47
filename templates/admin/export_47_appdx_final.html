@@ -1,0 +1,10 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h1 align="center" style="color:green">47 Додаток</h1>
+{% url 'admin:export_xlsx' as view_url %}
+<p><a href="{{ view_url }}?category=PETROL&end_date={{ end_date }}">Звіт по АБ</a></p>
+<p><a href="{{ view_url }}?category=DIESEL&end_date={{ end_date }}">Звіт по ДП</a></p>
+<p><a href="{{ view_url }}?category=OIL&end_date={{ end_date }}">Звіт по мастилах</a></p>
+<p><a href="{{ view_url }}?category=POISON&end_date={{ end_date }}">Звіт по отрутах</a></p>
+{% endblock %}
