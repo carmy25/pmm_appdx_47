@@ -77,6 +77,33 @@ class FALDocumentHandler(BaseFALDocumentHandler):
 def export_fal_type(fal_type, ws, departments, end_date):
     format_header(ws, fal_type, departments)
     format_rows(ws, fal_type, end_date)
+    split_by_month(ws)
+
+
+def is_next_month(prev_date, new_date):
+    if prev_date.month < new_date.month:
+        # if prev_date month is bigger, then record_date specified
+        return True
+    if prev_date.month == new_date.month and prev_date.year < new_date.year:
+        return True
+
+    if prev_date.month == new_date.month and (prev_date.day < 25 and new_date.day >= 25):
+        return True
+    return False
+
+
+def split_by_month(ws):
+    return
+    prev_date = None
+    for cells in ws.iter_rows(min_row=3):
+        date_row = cells[2].value
+        if prev_date is None:
+            prev_date = date_row
+            continue
+        if is_next_month(prev_date, date_row):
+            ws.insert_rows(cells[0].row)
+            ws[cells[0].row-1][0].value = date_row.strftime("%m.%Y")
+            prev_date = date_row
 
 
 def registry_fes_format_header(ws, date):
@@ -188,7 +215,7 @@ def get_fal_date_and_prio(obj):
 
 def get_document_date(obj):
     if isinstance(obj, FALReportEntry):
-        return obj.report.summary_report.start_date
+        return obj.report.summary_report.end_date
     if obj.document_object.record_date is not None:
         return obj.document_object.record_date
     return obj.document_object.operation_date
@@ -222,6 +249,7 @@ def format_rows(ws, fal_type, end_date):
     fals = get_sorted_fals(fal_type, end_date)
     j = 3
     for i, fal in enumerate(fals):
+
         ws_state["idx"] = i + j
         if type(fal) is FALReportEntry:
             if not ReportingSummaryReportDocumentHandler(fal, ws, ws_state).process():

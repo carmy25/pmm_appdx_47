@@ -22,7 +22,8 @@ def format_departments_column(ws, deps):
 
 
 def export_reportings_report(ws, reportings):
-    departments = [r.department for r in reportings]
+    departments = sorted([r.department for r in reportings],
+                         key=lambda x: x.warehouse.name if x.warehouse else '')
     ws.column_dimensions["A"].width = 40
     format_departments_column(ws, departments)
     oldest = reportings.first().end_date

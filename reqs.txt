@@ -7,3 +7,4 @@ django-constance[redis]
 python-dateutil
 pandas
 django-admin-shell
+fabric2
