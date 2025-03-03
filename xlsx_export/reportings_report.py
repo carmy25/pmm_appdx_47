@@ -28,7 +28,6 @@ def export_reportings_report(ws, reportings):
     format_departments_column(ws, departments)
     oldest = reportings.first().end_date
     newest = reportings.last().end_date
-    breakpoint()
 
     idx = 2
     for y, m in month_iter(oldest.month, oldest.year, newest.month, newest.year):
