@@ -15,19 +15,20 @@ DEP_BY_INDEX = {}
 
 def format_departments_column(ws, deps):
     idx = 2
-    for dep in set(deps):
+    for dep in deps:
         DEP_BY_INDEX[dep.name] = idx
         cell_center_border(ws, f"A{idx}", dep.name)
         idx += 1
 
 
 def export_reportings_report(ws, reportings):
-    departments = sorted([r.department for r in reportings],
+    departments = sorted({r.department for r in reportings},
                          key=lambda x: x.warehouse.name if x.warehouse else '')
     ws.column_dimensions["A"].width = 40
     format_departments_column(ws, departments)
     oldest = reportings.first().end_date
     newest = reportings.last().end_date
+    breakpoint()
 
     idx = 2
     for y, m in month_iter(oldest.month, oldest.year, newest.month, newest.year):
