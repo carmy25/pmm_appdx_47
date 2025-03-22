@@ -69,7 +69,7 @@ class InvoiceSummaryReportDocumentHandler(BaseFALDocumentHandler):
 
     def format_departments(self):
         sr = self.fal.document_object.summary_report
-        docs = sr.invoices.filter(fals__fal_type=self.fal.fal_type)
+        docs = sr.documents.filter(fals__fal_type=self.fal.fal_type)
         sender_amounts = {}
         dst_amounts = {}
         for doc in docs:

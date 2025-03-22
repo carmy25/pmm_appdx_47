@@ -270,7 +270,8 @@ def format_rows(ws, fal_type, end_date):
                 if not InvoiceSummaryReportDocumentHandler(fal, ws, ws_state).process():
                     j -= 1
             else:
-                InvoiceDocumentHandler(fal, ws, ws_state).process()
+                j -= 1
+                # InvoiceDocumentHandler(fal, ws, ws_state).process()
 
 
 def format_header(ws, fal_type, departments):

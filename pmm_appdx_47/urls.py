@@ -18,7 +18,7 @@ Including another URLconf
 from django.apps import apps
 from django.conf import settings
 from django.contrib import admin
-from django.urls import include, path, re_path
+from django.urls import include, path
 from django.conf.urls.static import static
 from adminplus.sites import AdminSitePlus
 
