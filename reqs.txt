@@ -8,3 +8,4 @@ python-dateutil
 pandas
 django-admin-shell
 fabric2
+django-auditlog

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "rangefilter",
     "admin_object_actions",
     "constance",
+    "auditlog",
     "fals.apps.FalsConfig",
     "garbage.apps.GarbageConfig",
     "receipts.apps.ReceiptsConfig",

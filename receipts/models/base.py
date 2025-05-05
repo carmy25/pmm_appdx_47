@@ -2,7 +2,7 @@ from django.db import models
 
 
 class BaseDocument(models.Model):
-    number = models.CharField(verbose_name="номер", max_length=50)
+    number = models.CharField(verbose_name="номер", max_length=50, unique=False)
     document_date = models.DateField(
         verbose_name="дата документу", null=True, blank=True
     )

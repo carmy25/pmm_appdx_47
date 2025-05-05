@@ -14,7 +14,7 @@ class Reporting(BaseDocument):
         unique_together = ("department", "start_date", "end_date")
 
     number = models.CharField(
-        verbose_name="номер", null=True, blank=True, max_length=50, unique=True
+        verbose_name="номер", null=True, blank=True, max_length=50, unique=False
     )
 
     department = models.ForeignKey(
