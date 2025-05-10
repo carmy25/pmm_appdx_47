@@ -28,12 +28,12 @@ def collect_data(obj):
             fal_type = fal.fal_type.get_name()
             push_fal_with_priority(fal, fal_types)
             if (ft := docs_data[doc.number]['fals'].get(fal_type)) is not None:
-                ft['ltrs'] += fal.outcome
-                ft['kgs'] += fal.get_outcome_kgs()
+                ft['ltrs'] += fal.outcome_burned_ltr
+                ft['kgs'] += fal.get_burned_kgs()
             else:
                 docs_data[doc.number]['fals'][fal_type] = {
-                    'ltrs': fal.outcome,
-                    'kgs': fal.get_outcome_kgs(),
+                    'ltrs': fal.outcome_burned_ltr,
+                    'kgs': fal.get_burned_kgs(),
                 }
     return docs_data, sorted(fal_types)
 

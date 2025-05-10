@@ -67,8 +67,14 @@ class FALReportEntry(models.Model):
 
     density = models.FloatField(verbose_name="густина", null=True, blank=True)
 
-    remains = models.FloatField(verbose_name="залишок")
-    income = models.FloatField(verbose_name="надійшло")
+    remains = models.FloatField(verbose_name="залишок (л)")
+    income = models.FloatField(verbose_name="надійшло (л)")
+    outcome_burned_ltr = models.FloatField(
+        verbose_name="спалено (л)",
+    )
+    outcome_burned = models.FloatField(
+        verbose_name="спалено (кг)",
+    )
     outcome = models.FloatField(verbose_name="вибуло")
 
     class Meta:
@@ -80,6 +86,9 @@ class FALReportEntry(models.Model):
 
     def get_outcome_kgs(self):
         return self.get_kgs(self.outcome)
+
+    def get_burned_kgs(self):
+        return self.outcome_burned
 
     def get_income_kgs(self):
         return self.get_kgs(self.income)
