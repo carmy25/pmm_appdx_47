@@ -48,8 +48,7 @@ def attendance_form(request):
         grand_total = sum(daily_totals)
 
         # Create complete totals row including the grand total
-        totals = ['Всього'] + daily_totals + [num2text(int(grand_total),
-                                                       main_units=((u'година', u'години', u'годин'), 'f'))]
+        totals = ['Всього'] + daily_totals + [num2text(int(grand_total),)]
         df.loc[len(df)] = totals  # Add the totals row to the display DataFrame
 
         output = BytesIO()
@@ -66,8 +65,6 @@ def attendance_form(request):
         ws.column_dimensions[get_column_letter(ws.max_column)].width = 50
 
         # Define styles
-        green_fill = PatternFill(start_color='90EE90', end_color='90EE90', fill_type='solid')
-        red_fill = PatternFill(start_color='FFB6C1', end_color='FFB6C1', fill_type='solid')
         center_alignment = Alignment(horizontal='center')
 
         # Apply formatting to cells with numbers
@@ -88,12 +85,6 @@ def attendance_form(request):
                     cell.font = openpyxl.styles.Font(bold=True)
                     cell.fill = PatternFill(start_color='E8F5E9', end_color='E8F5E9',
                                             fill_type='solid')  # Very light green
-                else:
-                    if cell.value == 3:
-                        cell.fill = green_fill
-                    elif cell.value == '-':
-                        cell.fill = red_fill
-
             # Format total cell
             total_cell = row[-1]  # Last cell in the row
             total_cell.alignment = Alignment(
