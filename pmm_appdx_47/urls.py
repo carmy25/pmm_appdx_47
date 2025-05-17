@@ -37,4 +37,5 @@ apps.get_app_config("constance").verbose_name = "Налаштування"
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("_nested_admin/", include('nested_admin.urls')),
+    path("prod/", include("prod_handout.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

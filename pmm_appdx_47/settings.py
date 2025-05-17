@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "auditlog",
     "fals.apps.FalsConfig",
     "garbage.apps.GarbageConfig",
+    "prod_handout.apps.ProdHandoutConfig",
     "receipts.apps.ReceiptsConfig",
     "departments.apps.DepartmentsConfig",
     "summary_reports.apps.SummaryReportsConfig",
